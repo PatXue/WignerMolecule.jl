@@ -9,6 +9,7 @@ HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 PeriodicArrays = "ebeed567-01e3-4f0a-88fa-2070a64c066d"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
@@ -17,6 +18,7 @@ HDF5 = "0.17.2"
 LinearAlgebra = "1.11.0"
 PeriodicArrays = "0.1.0"
 Random = "1.11.0"
+Revise = "3.9.0"
 StaticArrays = "1.9.15"
 julia = "1.6.7"
 
