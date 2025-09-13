@@ -1,16 +1,25 @@
+struct WignerParams
+    J_SS::Float64           # Spin-spin coupling
+    J_EzEz_SS::Float64      # Spin-ηz coupling
+    J_EzEz::Float64         # ηz coupling
+    J_EAM_SS::ComplexF64    # Spin-η weird coupling (J+)
+    J_EMEP_SS::ComplexF64   # Spin-η± coupling
+    J_EMEM_SS::Float64      # Spin-η- coupling
+    J_EMEP::ComplexF64      # η± coupling
+    J_EMEM::Float64         # η- coupling
+end
+
 # Note: Using temperature in units of energy (k_B = 1)
 # All energy units are in terms of J2a (best to set J2a = 1)
-struct MC{AlgType} <: AbstractMC
+struct WignerMC{AlgType} <: AbstractMC
     T::Float64     # Temperature
-    J1::Float64    # Nearest neighbor coupling energy
-    J2a::Float64   # Next-nearest neighbor coupling energy (NE-SW direction)
-    J2b::Float64   # Next-nearest neighbor coupling energy (NW-SE direction)
-    K::Float64     # Biquadratic coupling energy
+    params::WignerParams
 
     outdir::String # Output directory for local spin current plots
     savefreq::Int  # No. of sweeps between saving local spin current
 
     spins::PeriodicMatrix{SpinVector}
+    ηs::PeriodicMatrix{SpinVector}
 end
 
 function MC{AlgType}(; T=0.5, J1=0.1, J2a=1.0, J2b=-1.0, K=0.1, Lx::Int=20,
