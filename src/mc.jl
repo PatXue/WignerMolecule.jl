@@ -1,3 +1,4 @@
+# All energy units are in units of meV
 struct WignerParams
     J_SS::Float64           # Spin-spin coupling
     J_EzEz_SS::Float64      # Spin-ηz coupling
@@ -9,37 +10,27 @@ struct WignerParams
     J_EMEM::Float64         # η- coupling
 end
 
+# Default WignerParams values (for testing)
+const default_params = (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+
 # Note: Using temperature in units of energy (k_B = 1)
-# All energy units are in terms of J2a (best to set J2a = 1)
 struct WignerMC{AlgType} <: AbstractMC
     T::Float64     # Temperature
     params::WignerParams
-
-    outdir::String # Output directory for local spin current plots
-    savefreq::Int  # No. of sweeps between saving local spin current
-
     spins::PeriodicMatrix{SpinVector}
     ηs::PeriodicMatrix{SpinVector}
 end
 
-function MC{AlgType}(; T=0.5, J1=0.1, J2a=1.0, J2b=-1.0, K=0.1, Lx::Int=20,
-                     Ly::Int=20, outdir=".", savefreq=0) where {AlgType}
-    MC{AlgType}(T, J1, J2a, J2b, K, outdir, savefreq,
-                fill(zeros(SpinVector), (Lx, Ly)))
+function WignerMC{AlgType}(; T=1.0, wigparams=default_params, Lx=40, Ly=40) where {AlgType}
+    return WignerMC{AlgType}(T, WignerParams(wigparams...),
+                             fill(zeros(SpinVector), (Lx, Ly)))
 end
 
-function MC{AlgType}(params::AbstractDict) where {AlgType}
+function WignerMC{AlgType}(params::AbstractDict) where {AlgType}
     Lx, Ly = params[:Lx], params[:Ly]
     T = params[:T]
-    J1 = params[:J1]
-    J2a = params[:J2a]
-    J2b = params[:J2b]
-    K = params[:K]
-
-    outdir = haskey(params, :outdir) ? params[:outdir] : "."
-    savefreq = haskey(params, :savefreq) ? params[:savefreq] : 0
-
-    return MC{AlgType}(; T, J1, J2a, J2b, K, Lx, Ly, outdir, savefreq)
+    wigparams = params[:wigparams]
+    return WignerMC{AlgType}(; T, wigparams, Lx, Ly)
 end
 
 function Carlo.init!(mc::MC, ctx::Carlo.MCContext, params::AbstractDict)
