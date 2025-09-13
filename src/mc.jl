@@ -125,10 +125,13 @@ end
 
 function Carlo.write_checkpoint(mc::WignerMC, out::HDF5.Group)
     out["spins"] = mc.spins
+    out["etas"] = mc.ηs
     return nothing
 end
 function Carlo.read_checkpoint!(mc::WignerMC, in::HDF5.Group)
     raw_spins = read(in, "spins")
+    raw_ηs = read(in, "etas")
     mc.spins .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_spins)
+    mc.ηs .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_ηs)
     return nothing
 end
