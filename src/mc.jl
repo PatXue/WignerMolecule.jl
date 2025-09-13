@@ -33,7 +33,7 @@ function WignerMC{AlgType}(params::AbstractDict) where {AlgType}
     return WignerMC{AlgType}(; T, wigparams, Lx, Ly)
 end
 
-function Carlo.init!(mc::MC, ctx::Carlo.MCContext, params::AbstractDict)
+function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
     init_type::Symbol = params[:init_type]
     if init_type == :const
         for I in eachindex(mc.spins)
@@ -54,24 +54,11 @@ function Carlo.init!(mc::MC, ctx::Carlo.MCContext, params::AbstractDict)
     return nothing
 end
 
-function Carlo.sweep!(mc::MC, ctx::Carlo.MCContext)
+function Carlo.sweep!(mc::WignerMC, ctx::Carlo.MCContext)
     Carlo.sweep!(mc, ctx.rng)
 end
 
-# Returns if spin current should be saved on this sweep (assuming thermalized)
-function is_save_sweep(mc::MC, ctx::Carlo.MCContext)
-    measure_sweeps = ctx.sweeps - ctx.thermalization_sweeps
-    return mc.savefreq > 0 && measure_sweeps % mc.savefreq == 0
-end
-
-function save_spin(mc::MC, ctx::Carlo.MCContext)
-    jldopen("$(mc.outdir)/spins.jld2", "a+") do file
-        sweep_name = "sweep$(ctx.sweeps - ctx.thermalization_sweeps)"
-        file[sweep_name] = Matrix(mc.spins)
-    end
-end
-
-function Carlo.measure!(mc::MC, ctx::Carlo.MCContext)
+function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     N = Lx * Ly
     # Magnetization per lattice site
@@ -128,7 +115,7 @@ function Carlo.measure!(mc::MC, ctx::Carlo.MCContext)
     return nothing
 end
 
-function Carlo.register_evaluables(::Type{MC{AlgType}}, eval::AbstractEvaluator,
+function Carlo.register_evaluables(::Type{WignerMC{AlgType}}, eval::AbstractEvaluator,
                                    params::AbstractDict) where {AlgType}
     T = params[:T]
     J2a = params[:J2a]
@@ -144,11 +131,11 @@ function Carlo.register_evaluables(::Type{MC{AlgType}}, eval::AbstractEvaluator,
     return nothing
 end
 
-function Carlo.write_checkpoint(mc::MC, out::HDF5.Group)
+function Carlo.write_checkpoint(mc::WignerMC, out::HDF5.Group)
     out["spins"] = mc.spins
     return nothing
 end
-function Carlo.read_checkpoint!(mc::MC, in::HDF5.Group)
+function Carlo.read_checkpoint!(mc::WignerMC, in::HDF5.Group)
     raw_spins = read(in, "spins")
     mc.spins .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_spins)
     return nothing
