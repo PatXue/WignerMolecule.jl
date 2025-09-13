@@ -39,17 +39,9 @@ function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
         for I in eachindex(mc.spins)
             mc.spins[I] = SpinVector(0, 0, 1)
         end
-    elseif init_type == :orth
-        init_orth!(mc.spins)
-    elseif init_type == :eag
-        init_eag!(mc.spins)
-    elseif init_type == :dir
-        dir::String = params[:dir] # Directory to read spin dump file from
-        h5open("$dir/run0001.dump.h5") do file
-            Carlo.read_checkpoint!(mc, file["simulation"])
-        end
     else
         rand!(ctx.rng, mc.spins)
+        rand!(ctx.rng, mc.ηs)
     end
     return nothing
 end
