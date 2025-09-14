@@ -61,13 +61,6 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
 
     # Energy per lattice site
     energy = 0.0
-    # Averaged adjacent dot products
-    Dx0 = Dy0 = 0.0
-    Dxπ = Dyπ = 0.0
-    # Spin current
-    spin_curr = zeros(3)
-    x_hat = SVector(1, 0, 0)
-
     for y in 1:Ly
         for x in 1:Lx
             energy += half_energy(mc, x, y)
@@ -88,21 +81,6 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     energy /= N
     measure!(ctx, :Energy, energy)
     measure!(ctx, :Energy2, energy^2)
-    Dx0 /= N
-    Dy0 /= N
-    measure!(ctx, :Dx0, Dx0)
-    measure!(ctx, :Dy0, Dy0)
-    Dxπ /= N
-    Dyπ /= N
-    measure!(ctx, :Dxπ, abs(Dxπ))
-    measure!(ctx, :Dyπ, abs(Dyπ))
-    spin_curr /= N
-    measure!(ctx, :J_s, norm(spin_curr))
-    measure!(ctx, :P, norm(x_hat × spin_curr))
-
-    if is_save_sweep(mc, ctx)
-        save_spin(mc, ctx)
-    end
 
     return nothing
 end
