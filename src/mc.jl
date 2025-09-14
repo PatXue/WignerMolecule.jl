@@ -60,6 +60,11 @@ function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
         ν = ω^(j-1)
         sj = mc.spins[nns[j]]
         ηj = mc.ηs[nns[j]]
+
+        # η raising and lowering operators
+        η_p = η[1] - 1.0im*η[2]
+        η_m = η[1] + 1.0im*η[2]
+        ηj_p = ηj[1] - 1.0im*ηj[2]
         ηj_m = ηj[1] + 1.0im*ηj[2]
 
         E_spin = 0.0 + 0.0im
