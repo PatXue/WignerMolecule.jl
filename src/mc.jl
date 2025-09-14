@@ -62,7 +62,6 @@ function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
         ηj = mc.ηs[nns[j]]
 
         # η raising and lowering operators
-        η_p = η[1] - 1.0im*η[2]
         η_m = η[1] + 1.0im*η[2]
         ηj_p = ηj[1] - 1.0im*ηj[2]
         ηj_m = ηj[1] + 1.0im*ηj[2]
@@ -70,18 +69,17 @@ function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
         E_spin = 0.0 + 0.0im
         E_η = 0.0 + 0.0im
 
-        # η-only energ
-        E_η +=   J_EzEz * η[3] * ηj[3]
-        E_η += 2*J_EMEP *     (ηj[1]+1.0im*ηj[2]) * (ηj[1]-1.0im*ηj[2])
-        E_η += 2*J_EMEM * ν * (η[1]+1.0im*η[2]) * (ηj[1]+1.0im*ηj[2])
+        # η-only energy
+        E_η +=   J_EzEz *     η[3] * ηj[3]
+        E_η += 2*J_EMEP *     η_m * ηj_p
+        E_η += 2*J_EMEM * ν * η_m * ηj_m
 
         # η-S energy
-        E_spin = 0. + 0.0im
-        E_spin +=   J_EzEz_SS *      ηi[3] * ηj[3]
-        E_spin += 2*J_EMEP_SS *     (ηi[1]+1.0im*ηi[2]) * (ηj[1]-1.0im*ηj[2])
-        E_spin += 2*J_EMEM_SS * ν * (ηi[1]+1.0im*ηi[2]) * (ηj[1]+1.0im*ηj[2])
+        E_spin +=   J_EzEz_SS *     η[3] * ηj[3]
+        E_spin += 2*J_EMEP_SS *     η_m * ηj_p
+        E_spin += 2*J_EMEM_SS * ν * η_m * ηj_m
         E_spin += J_SS
-        E_spin += 2*J_EAM_SS * ((ηi[1] + 1.0im*ηi[2])/ν + (ηj[1] - 1.0im*ηj[2])*ν)
+        E_spin += 2*J_EAM_SS * (η_m/ν + ηj_p*ν)
     end
 end
 
