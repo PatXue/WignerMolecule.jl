@@ -56,6 +56,7 @@ const ω::ComplexF64 = exp(im * 2π/3)
 function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
     # Nearest neighbor lattice positions
     nns = ((x+1, y), (x+1, y-1), (x, y-1), (x-1, y), (x-1, y+1), (x, y+1))
+    E = 0.0
     for j in eachindex(nns)
         ν = ω^(j-1)
         sj = mc.spins[nns[j]]
@@ -80,7 +81,11 @@ function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
         E_spin += 2*J_EMEM_SS * ν * η_m * ηj_m
         E_spin += J_SS
         E_spin += 2*J_EAM_SS * (η_m/ν + ηj_p*ν)
+
+        E += real(E_spin * (s⋅sj) + E_η)
     end
+
+    return E
 end
 
 # Calculate the energy contribution of a site (x, y), considering only half of
