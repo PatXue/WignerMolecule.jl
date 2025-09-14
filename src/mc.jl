@@ -76,10 +76,9 @@ end
 function Carlo.register_evaluables(::Type{WignerMC{AlgType}}, eval::AbstractEvaluator,
                                    params::AbstractDict) where {AlgType}
     T = params[:T]
-    J2a = params[:J2a]
     N = params[:Lx] * params[:Ly]
     evaluate!(eval, :χ, (:Mag, :Mag2)) do mag, mag2
-        return N * J2a/T * (mag2 - mag^2)
+        return N / T * (mag2 - mag^2)
     end
 
     evaluate!(eval, :HeatCap, (:Energy2, :Energy)) do E2, E
