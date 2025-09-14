@@ -50,14 +50,34 @@ function Carlo.sweep!(mc::WignerMC, ctx::Carlo.MCContext)
     Carlo.sweep!(mc, ctx.rng)
 end
 
-# Calculate the energy at a lattice site (x, y) if it had spin s
-function energy(mc::WignerMC, s::SpinVector, x, y)
-    nn = nn_sum(mc.spins, x, y)
-    nnna = nnna_sum(mc.spins, x, y)
-    nnnb = nnnb_sum(mc.spins, x, y)
-    H0 = s ⋅ (mc.J1 * nn + mc.J2a * nnna + mc.J2b * nnnb)
-    biquad = mc.K * ((s ⋅ mc.spins[x-1, y])^2 + (s ⋅ mc.spins[x+1, y])^2)
-    return H0 + biquad
+const ω::ComplexF64 = exp(im * 2π/3)
+# Calculate the energy at a lattice site (x, y) if it had spin s and
+# pseudospin η
+function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
+    # Nearest neighbor lattice positions
+    nns = ((x+1, y), (x+1, y-1), (x, y-1), (x-1, y), (x-1, y+1), (x, y+1))
+    for j in eachindex(nns)
+        ν = ω^(j-1)
+        sj = mc.spins[nns[j]]
+        ηj = mc.ηs[nns[j]]
+        ηj_m = ηj[1] + 1.0im*ηj[2]
+
+        E_spin = 0.0 + 0.0im
+        E_η = 0.0 + 0.0im
+
+        # η-only energ
+        E_η +=   J_EzEz * η[3] * ηj[3]
+        E_η += 2*J_EMEP *     (ηj[1]+1.0im*ηj[2]) * (ηj[1]-1.0im*ηj[2])
+        E_η += 2*J_EMEM * ν * (η[1]+1.0im*η[2]) * (ηj[1]+1.0im*ηj[2])
+
+        # η-S energy
+        E_spin = 0. + 0.0im
+        E_spin +=   J_EzEz_SS *      ηi[3] * ηj[3]
+        E_spin += 2*J_EMEP_SS *     (ηi[1]+1.0im*ηi[2]) * (ηj[1]-1.0im*ηj[2])
+        E_spin += 2*J_EMEM_SS * ν * (ηi[1]+1.0im*ηi[2]) * (ηj[1]+1.0im*ηj[2])
+        E_spin += J_SS
+        E_spin += 2*J_EAM_SS * ((ηi[1] + 1.0im*ηi[2])/ν + (ηj[1] - 1.0im*ηj[2])*ν)
+    end
 end
 
 # Calculate the energy contribution of a site (x, y), considering only half of
