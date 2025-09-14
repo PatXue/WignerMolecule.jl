@@ -64,18 +64,6 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     for y in 1:Ly
         for x in 1:Lx
             energy += half_energy(mc, x, y)
-
-            s = mc.spins[x, y]
-            sx = mc.spins[x+1, y]
-            sy = mc.spins[x, y+1]
-            x_dot = s ⋅ sx
-            y_dot = s ⋅ sy
-            Dx0 += x_dot
-            Dy0 += y_dot
-            Dxπ += x_dot * (-1)^(x+y)
-            Dyπ += y_dot * (-1)^(x+y)
-
-            spin_curr += s × sx
         end
     end
     energy /= N
