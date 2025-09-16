@@ -1,6 +1,6 @@
 module WignerMolecule
 
-export WignerMC
+export WignerMC, WignerParams
 
 import Random.AbstractRNG
 import Random.default_rng

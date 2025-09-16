@@ -11,7 +11,7 @@ struct WignerParams
 end
 
 # Default WignerParams values (for testing)
-const default_params = (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+const default_params = WignerParams(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 
 # Note: Using temperature in units of energy (k_B = 1)
 struct WignerMC{AlgType} <: AbstractMC
@@ -22,7 +22,7 @@ struct WignerMC{AlgType} <: AbstractMC
 end
 
 function WignerMC{AlgType}(; T=1.0, wigparams=default_params, Lx=40, Ly=40) where {AlgType}
-    return WignerMC{AlgType}(T, WignerParams(wigparams...),
+    return WignerMC{AlgType}(T, wigparams, fill(zeros(SpinVector), (Lx, Ly)),
                              fill(zeros(SpinVector), (Lx, Ly)))
 end
 
