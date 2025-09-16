@@ -21,9 +21,9 @@ function Carlo.sweep!(mc::WignerMC{:Metropolis}, rng::AbstractRNG=default_rng())
             prob = exp(-ΔE / mc.T)
             if prob >= 1.0 || rand(rng) < prob
                 if type == :s
-                    mc.spins = new_s
+                    mc.spins[x, y] = new_s
                 elseif type == :η
-                    mc.ηs = new_η
+                    mc.ηs[x, y] = new_η
                 end
             end
         end

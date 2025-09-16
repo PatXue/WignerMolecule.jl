@@ -59,8 +59,8 @@ function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
     E = 0.0
     for j in eachindex(nns)
         ν = ω^(j-1)
-        sj = mc.spins[nns[j]]
-        ηj = mc.ηs[nns[j]]
+        sj = mc.spins[nns[j]...]
+        ηj = mc.ηs[nns[j]...]
 
         # η raising and lowering operators
         η_m = η[1] + 1.0im*η[2]
