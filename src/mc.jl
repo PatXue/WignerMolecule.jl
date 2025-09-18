@@ -19,18 +19,24 @@ struct WignerMC{AlgType} <: AbstractMC
     params::WignerParams
     spins::PeriodicMatrix{SpinVector}
     ηs::PeriodicMatrix{SpinVector}
+
+    outdir::String # Output directory for local spin current plots
+    savefreq::Int  # No. of sweeps between saving local spin current
 end
 
-function WignerMC{AlgType}(; T=1.0, wigparams=default_params, Lx=40, Ly=40) where {AlgType}
+function WignerMC{AlgType}(; T=1.0, wigparams=default_params, Lx=40, Ly=40,
+    outdir=".", savefreq=0) where {AlgType}
     return WignerMC{AlgType}(T, wigparams, fill(zeros(SpinVector), (Lx, Ly)),
-                             fill(zeros(SpinVector), (Lx, Ly)))
+                             fill(zeros(SpinVector), (Lx, Ly)), outdir, savefreq)
 end
 
 function WignerMC{AlgType}(params::AbstractDict) where {AlgType}
     Lx, Ly = params[:Lx], params[:Ly]
     T = params[:T]
     wigparams = params[:wigparams]
-    return WignerMC{AlgType}(; T, wigparams, Lx, Ly)
+    outdir = get(params, :outdir, ".")
+    savefreq = get(params, :savefreq, 0)
+    return WignerMC{AlgType}(; T, wigparams, Lx, Ly, outdir, savefreq)
 end
 
 function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
@@ -38,6 +44,7 @@ function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
     if init_type == :const
         for I in eachindex(mc.spins)
             mc.spins[I] = SpinVector(0, 0, 1)
+            mc.ηs[I] = SpinVector(0, 0, 1)
         end
     else
         rand!(ctx.rng, mc.spins)
@@ -147,6 +154,21 @@ function half_energy(mc::WignerMC, x, y)
     return E
 end
 
+# Returns if spins should be saved on this sweep (assuming thermalized)
+function is_save_sweep(mc::WignerMC, ctx::Carlo.MCContext)
+    measure_sweeps = ctx.sweeps - ctx.thermalization_sweeps
+    return mc.savefreq > 0 && measure_sweeps % mc.savefreq == 0
+end
+
+# Save spins to JLD2 file
+function save_spin(mc::WignerMC, ctx::Carlo.MCContext)
+    jldopen("$(mc.outdir)/spins.jld2", "a+") do file
+        sweep_name = "sweep$(ctx.sweeps - ctx.thermalization_sweeps)"
+        file[sweep_name * "-spins"] = Matrix(mc.spins)
+        file[sweep_name * "-etas"] = Matrix(mc.ηs)
+    end
+end
+
 function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     N = Lx * Ly
@@ -166,6 +188,10 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     energy /= N
     measure!(ctx, :Energy, energy)
     measure!(ctx, :Energy2, energy^2)
+
+    if is_save_sweep(mc, ctx)
+        save_spin(mc, ctx)
+    end
 
     return nothing
 end
