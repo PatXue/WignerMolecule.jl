@@ -4,3 +4,19 @@ function Random.rand(rng::AbstractRNG, ::Random.SamplerType{SpinVector})
     θ = acos(2 * rand(rng) - 1)
     return SpinVector(cos(ϕ)sin(θ), sin(ϕ)sin(θ), cos(θ))
 end
+
+function init_eag!(spins::AbstractMatrix{SpinVector})
+    for I in eachindex(IndexCartesian(), spins)
+        x, y = Tuple(I)
+        spin_sign = mod(x+y, 4) < 2 ? 1.0 : -1.0
+        spins[I] = spin_sign * SVector(1.0, 0.0, 0.0)
+    end
+end
+
+function init_orth!(spins::AbstractMatrix{SpinVector})
+    for I in eachindex(IndexCartesian(), spins)
+        x, y = Tuple(I)
+        θ = π/2 * (x + y)
+        spins[I] = SVector(cos(θ), sin(θ), 0.0)
+    end
+end
