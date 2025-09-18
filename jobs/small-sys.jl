@@ -15,6 +15,7 @@ tm.binsize = 100
 
 tm.savefreq = 5000
 
+tm.wigparams = WignerParams(-2.12742, -7.37151, -2.60026, (-1.5492-3.67457im), (2.22406+3.06319im), 0.672249, (0.215811+0.332566im), 0.815589)
 Ts = (0.25, 4.0)
 for T in Iterators.product(Ts)
     tm.T = T
