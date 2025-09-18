@@ -40,13 +40,13 @@ function WignerMC{AlgType}(params::AbstractDict) where {AlgType}
 end
 
 function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
-    init_type::Symbol = params[:init_type]
+    init_type::Symbol = get(params, :init_type, :rand)
     if init_type == :const
         for I in eachindex(mc.spins)
             mc.spins[I] = SpinVector(0, 0, 1)
             mc.ηs[I] = SpinVector(0, 0, 1)
         end
-    else
+    elseif init_type == :rand
         rand!(ctx.rng, mc.spins)
         rand!(ctx.rng, mc.ηs)
     end
