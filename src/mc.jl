@@ -103,6 +103,18 @@ end
 function half_energy(mc::WignerMC, x, y)
     # Nearest neighbor lattice positions
     nns = ((x+1, y), (x+1, y-1), (x, y-1))
+    # Coupling energies
+    J_SS = mc.params.J_SS
+    J_EzEz_SS = mc.params.J_EzEz_SS
+    J_EzEz = mc.params.J_EzEz
+    J_EAM_SS = mc.params.J_EAM_SS
+    J_EMEP_SS = mc.params.J_EMEP_SS
+    J_EMEM_SS = mc.params.J_EMEM_SS
+    J_EMEP = mc.params.J_EMEP
+    J_EMEM = mc.params.J_EMEM
+
+    s = mc.spins[x, y]
+    η = mc.ηs[x, y]
     E = 0.0
     for j in eachindex(nns)
         ν = ω^(j-1)
