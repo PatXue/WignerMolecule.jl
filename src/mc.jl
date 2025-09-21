@@ -181,6 +181,10 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     measure!(ctx, :Mag2, mag^2)
     measure!(ctx, :Mag4, mag^4)
 
+    η_sum = sum(mc.ηs)
+    measure!(ctx, :ηz, η_sum[3] / N)
+    measure!(ctx, :ηxy, sqrt(η_sum[1]^2 + η_sum[2]^2) / N)
+
     # Energy per lattice site
     energy = 0.0
     for y in 1:Ly
