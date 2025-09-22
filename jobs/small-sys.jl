@@ -12,6 +12,7 @@ tm.Lx = tm.Ly = L
 tm.sweeps = 20000
 tm.thermalization = 0
 tm.binsize = 100
+tm.init_type = :const
 
 tm.savefreq = 5000
 
