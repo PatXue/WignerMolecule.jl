@@ -30,12 +30,12 @@ tm.wigparams = WignerParams(
 Ts = 0.5:0.5:7
 for T in Ts
     tm.T = T
-    spins_dir = "small-sys.data/$(current_task_name(tm))"
+    spins_dir = "afm-fe.data/$(current_task_name(tm))"
     tm.outdir = spins_dir
     task(tm)
 end
 
-job = JobInfo("small-sys", WignerMC{:Metropolis};
+job = JobInfo("afm-fe", WignerMC{:Metropolis};
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
