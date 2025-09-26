@@ -20,3 +20,11 @@ function init_orth!(spins::AbstractMatrix{SpinVector})
         spins[I] = SVector(cos(θ), sin(θ), 0.0)
     end
 end
+
+function init_afm_fe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{SpinVector})
+    for I in eachindex(IndexCartesian(), spins)
+        x, _ = Tuple(I)
+        spins[I] = SVector(0, 0, (-1)^x)
+        ηs[I] = SVector(cos(π/3), sin(π/3), 0)
+    end
+end

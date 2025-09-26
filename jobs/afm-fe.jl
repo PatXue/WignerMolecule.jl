@@ -12,7 +12,7 @@ tm.Lx = tm.Ly = L
 tm.sweeps = 20000
 tm.thermalization = 5000
 tm.binsize = 100
-tm.init_type = :const
+tm.init_type = :afm_fe
 
 tm.savefreq = 5000
 

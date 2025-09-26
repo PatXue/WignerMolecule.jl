@@ -50,6 +50,8 @@ function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
     elseif init_type == :rand
         rand!(ctx.rng, mc.spins)
         rand!(ctx.rng, mc.ηs)
+    elseif init_type == :afm_fe
+        init_afm_fe!(mc.spins, mc.ηs)
     end
     return nothing
 end
