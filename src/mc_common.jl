@@ -130,8 +130,8 @@ end
 function save_spin(mc::WignerMC, ctx::Carlo.MCContext)
     jldopen("$(mc.outdir)/spins.jld2", "a+") do file
         sweep_name = "sweep$(ctx.sweeps - ctx.thermalization_sweeps)"
-        file[sweep_name * "-spins"] = Matrix(mc.spins)
-        file[sweep_name * "-etas"] = Matrix(mc.ηs)
+        file[sweep_name * "-spins"] = Array(mc.spins)
+        file[sweep_name * "-etas"] = Array(mc.ηs)
     end
 end
 
@@ -139,12 +139,12 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     N = Lx * Ly
     # Magnetization per lattice site
-    mag = norm(sum(mc.spins)) / N
+    mag = norm(sum(mc.spins, dims=(1, 2))) / N
     measure!(ctx, :Mag, mag)
     measure!(ctx, :Mag2, mag^2)
     measure!(ctx, :Mag4, mag^4)
 
-    η_sum = sum(mc.ηs)
+    η_sum = sum(mc.ηs, dims=(1, 2))
     measure!(ctx, :ηz, η_sum[3] / N)
     measure!(ctx, :ηxy, sqrt(η_sum[1]^2 + η_sum[2]^2) / N)
 
