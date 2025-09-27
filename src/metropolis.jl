@@ -1,15 +1,13 @@
 function Carlo.sweep!(mc::WignerMC{:Metropolis}, rng::AbstractRNG=default_rng())
-    Lx, Ly = size(mc.spins)
+    sites = collect(sites_iter(mc))
     for _ in 1:length(mc.spins)
         for type in (:s, :η)
-            # Select site for spin change
-            x = rand(rng, 1:Lx)
-            y = rand(rng, 1:Ly)
+            x, y = rand(sites)
 
-            old_s = mc.spins[x, y]
-            old_η = mc.ηs[x, y]
+            old_s = mc.spins[:, x, y]
+            old_η = mc.ηs[:, x, y]
             old_E = energy(mc, old_s, old_η, x, y)
-            new_s = new_η = rand(rng, SpinVector)
+            new_s = new_η = rand_spin(rng)
             if type == :s
                 new_E = energy(mc, new_s, old_η, x, y)
             elseif type == :η
@@ -21,9 +19,9 @@ function Carlo.sweep!(mc::WignerMC{:Metropolis}, rng::AbstractRNG=default_rng())
             prob = exp(-ΔE / mc.T)
             if prob >= 1.0 || rand(rng) < prob
                 if type == :s
-                    mc.spins[x, y] = new_s
+                    mc.spins[:, x, y] .= new_s
                 elseif type == :η
-                    mc.ηs[x, y] = new_η
+                    mc.ηs[:, x, y] .= new_η
                 end
             end
         end
