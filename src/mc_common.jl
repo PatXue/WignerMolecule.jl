@@ -24,7 +24,7 @@ end
 const ω::ComplexF64 = exp(im * 2π/3)
 # Calculate the energy at a lattice site (x, y) if it had spin s and
 # pseudospin η
-function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
+function energy(mc::WignerMC, s, η, x, y)
     # Nearest neighbor lattice positions
     nns = ((x+1, y), (x+1, y-1), (x, y-1), (x-1, y), (x-1, y+1), (x, y+1))
     # Coupling energies
