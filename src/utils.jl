@@ -1,35 +1,30 @@
-"""
-    rand_spin(rng::AbstractRNG = default_rng())
-
-Generate a uniformly random spin vector (normalized to 1)
-"""
-function rand_spin(rng::AbstractRNG = default_rng())
+const SpinVector = SVector{3, Float64}
+function Random.rand(rng::AbstractRNG, ::Random.SamplerType{SpinVector})
     ϕ = 2π * rand(rng)
     θ = acos(2 * rand(rng) - 1)
-    return (cos(ϕ)sin(θ), sin(ϕ)sin(θ), cos(θ))
+    return SpinVector(cos(ϕ)sin(θ), sin(ϕ)sin(θ), cos(θ))
 end
 
-"""
-    spins_iter(mc::WignerMC)
-
-Returns iterable over spin-η pairs in `mc`
-"""
-function spins_iter(mc::WignerMC)
-    zip(eachslice(mc.spins, dims=(2, 3)), eachslice(mc.ηs, dims=(2, 3)))
-end
-
-sites_iter(mc::WignerMC) = Iterators.product(axes(mc.spins, 2), axes(mc.spins, 3))
-
-function init_orth!(mc::WignerMC)
-    for (x, y) in sites_iter(mc)
-        θ = π/2 * (x + y)
-        mc.spins[:, x, y] .= (cos(θ), sin(θ), 0.0)
+function init_eag!(spins::AbstractMatrix{SpinVector})
+    for I in eachindex(IndexCartesian(), spins)
+        x, y = Tuple(I)
+        spin_sign = mod(x+y, 4) < 2 ? 1.0 : -1.0
+        spins[I] = spin_sign * SVector(1.0, 0.0, 0.0)
     end
 end
 
-function init_afm_fe!(mc::WignerMC)
-    for (x, y) in sites_iter(mc)
-        mc.spins[:, x, y] .= (0, 0, (-1)^x)
-        mc.ηs[:, x, y] .= (cos(pi/2), -sin(pi/2), 0)
+function init_orth!(spins::AbstractMatrix{SpinVector})
+    for I in eachindex(IndexCartesian(), spins)
+        x, y = Tuple(I)
+        θ = π/2 * (x + y)
+        spins[I] = SVector(cos(θ), sin(θ), 0.0)
+    end
+end
+
+function init_afm_fe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{SpinVector})
+    for I in eachindex(IndexCartesian(), spins)
+        x, _ = Tuple(I)
+        spins[I] = SVector(0, 0, (-1)^x)
+        ηs[I] = SVector(cos(π/3), sin(π/3), 0)
     end
 end
