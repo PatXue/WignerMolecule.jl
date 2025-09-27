@@ -18,17 +18,17 @@ const default_params = WignerParams(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1e-3
 struct WignerMC{AlgType} <: AbstractMC
     T::Float64     # Temperature
     params::WignerParams
-    spins::PeriodicMatrix{SpinVector}
-    ηs::PeriodicMatrix{SpinVector}
+    spins::PeriodicArray{Float64, 3}
+    ηs::PeriodicArray{Float64, 3}
 
-    outdir::String # Output directory for local spin current plots
-    savefreq::Int  # No. of sweeps between saving local spin current
+    outdir::String # Output directory for local spin plots
+    savefreq::Int  # No. of sweeps between saving local spin
 end
 
 function WignerMC{AlgType}(; T=1.0, wigparams=default_params, Lx=40, Ly=40,
     outdir=".", savefreq=0) where {AlgType}
-    return WignerMC{AlgType}(T, wigparams, fill(zeros(SpinVector), (Lx, Ly)),
-                             fill(zeros(SpinVector), (Lx, Ly)), outdir, savefreq)
+    return WignerMC{AlgType}(T, wigparams, zeros((Lx, Ly, 3)),
+                             zeros((Lx, Ly, 3)), outdir, savefreq)
 end
 
 function WignerMC{AlgType}(params::AbstractDict) where {AlgType}
