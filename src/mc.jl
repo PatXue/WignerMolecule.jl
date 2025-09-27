@@ -18,8 +18,8 @@ const default_params = WignerParams(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1e-3
 struct WignerMC{AlgType} <: AbstractMC
     T::Float64     # Temperature
     params::WignerParams
-    spins::PeriodicArray{Float64, 3}
-    ηs::PeriodicArray{Float64, 3}
+    spins::Array{Float64, 3}
+    ηs::Array{Float64, 3}
 
     outdir::String # Output directory for local spin plots
     savefreq::Int  # No. of sweeps between saving local spin

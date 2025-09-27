@@ -26,7 +26,10 @@ const ω::ComplexF64 = exp(im * 2π/3)
 # pseudospin η
 function energy(mc::WignerMC, s, η, x, y)
     # Nearest neighbor lattice positions
-    nns = ((x+1, y), (x+1, y-1), (x, y-1), (x-1, y), (x-1, y+1), (x, y+1))
+    raw_nns = ((x+1, y), (x+1, y-1), (x, y-1), (x-1, y), (x-1, y+1), (x, y+1))
+    _, Lx, Ly = size(mc.spins)
+    nns = map(site -> mod1.(site, (Lx, Ly)), raw_nns)
+
     # Coupling energies
     J_SS = mc.params.J_SS
     J_EzEz_SS = mc.params.J_EzEz_SS
@@ -74,7 +77,10 @@ end
 # its bonds (avoids double counting when calculating total energy)
 function half_energy(mc::WignerMC, x, y)
     # Nearest neighbor lattice positions
-    nns = ((x+1, y), (x+1, y-1), (x, y-1))
+    raw_nns = ((x+1, y), (x+1, y-1), (x, y-1))
+    _, Lx, Ly = size(mc.spins)
+    nns = map(site -> mod1.(site, (Lx, Ly)), raw_nns)
+
     # Coupling energies
     J_SS = mc.params.J_SS
     J_EzEz_SS = mc.params.J_EzEz_SS

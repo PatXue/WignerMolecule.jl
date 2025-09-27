@@ -9,9 +9,7 @@ using Carlo
 using HDF5
 using JLD2
 using LinearAlgebra
-using PeriodicArrays
 using Random
-using StaticArrays
 
 include("mc.jl")
 include("utils.jl")
