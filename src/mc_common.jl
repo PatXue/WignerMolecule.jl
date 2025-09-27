@@ -1,7 +1,4 @@
 # MC functions common to all algorithm types
-spins_iter(mc::WignerMC) = zip(eachslice(mc.spins, dims=(1,2)),
-                               eachslice(mc.ηs, dims=(1,2)))
-
 function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
     init_type::Symbol = get(params, :init_type, :rand)
     if init_type == :const
@@ -15,7 +12,7 @@ function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
             η .= rand_spin(ctx.rng)
         end
     elseif init_type == :afm_fe
-        init_afm_fe!(mc.spins, mc.ηs)
+        init_afm_fe!(mc)
     end
     return nothing
 end
@@ -43,8 +40,8 @@ function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
     E = 0.0
     for j in eachindex(nns)
         ν = ω^(j-1)
-        sj = mc.spins[nns[j]...]
-        ηj = mc.ηs[nns[j]...]
+        sj = mc.spins[nns[j]..., :]
+        ηj = mc.ηs[nns[j]..., :]
 
         # η raising and lowering operators
         η_m = η[1] + 1.0im*η[2]
@@ -88,13 +85,13 @@ function half_energy(mc::WignerMC, x, y)
     J_EMEP = mc.params.J_EMEP
     J_EMEM = mc.params.J_EMEM
 
-    s = mc.spins[x, y]
-    η = mc.ηs[x, y]
+    s = mc.spins[x, y, :]
+    η = mc.ηs[x, y, :]
     E = 0.0
     for j in eachindex(nns)
         ν = ω^(j-1)
-        sj = mc.spins[nns[j]...]
-        ηj = mc.ηs[nns[j]...]
+        sj = mc.spins[nns[j]..., :]
+        ηj = mc.ηs[nns[j]..., :]
 
         # η raising and lowering operators
         η_m = η[1] + 1.0im*η[2]
