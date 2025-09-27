@@ -23,13 +23,13 @@ sites_iter(mc::WignerMC) = Iterators.product(axes(mc.spins, 2), axes(mc.spins, 3
 function init_orth!(mc::WignerMC)
     for (x, y) in sites_iter(mc)
         θ = π/2 * (x + y)
-        mc.spins[:, x, y] = (cos(θ), sin(θ), 0.0)
+        mc.spins[:, x, y] .= (cos(θ), sin(θ), 0.0)
     end
 end
 
 function init_afm_fe!(mc::WignerMC)
     for (x, y) in sites_iter(mc)
-        mc.spins[:, x, y] = (0, 0, (-1)^x)
-        mc.ηs[:, x, y] = (cos(π/3), sin(π/3), 0)
+        mc.spins[:, x, y] .= (0, 0, (-1)^x)
+        mc.ηs[:, x, y] .= (cos(pi/2), -sin(pi/2), 0)
     end
 end
