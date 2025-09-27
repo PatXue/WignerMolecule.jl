@@ -1,7 +1,7 @@
-function Random.rand(rng::AbstractRNG, ::Random.SamplerType{SpinVector})
+function rand_spin(rng::AbstractRNG = default_rng())
     ϕ = 2π * rand(rng)
     θ = acos(2 * rand(rng) - 1)
-    return SpinVector(cos(ϕ)sin(θ), sin(ϕ)sin(θ), cos(θ))
+    return (cos(ϕ)sin(θ), sin(ϕ)sin(θ), cos(θ))
 end
 
 function init_eag!(spins::AbstractMatrix{SpinVector})

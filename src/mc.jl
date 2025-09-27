@@ -40,16 +40,21 @@ function WignerMC{AlgType}(params::AbstractDict) where {AlgType}
     return WignerMC{AlgType}(; T, wigparams, Lx, Ly, outdir, savefreq)
 end
 
+spins_iter(mc::WignerMC) = zip(eachslice(mc.spins, dims=(1,2)),
+                               eachslice(mc.ηs, dims=(1,2)))
+
 function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
     init_type::Symbol = get(params, :init_type, :rand)
     if init_type == :const
-        for I in eachindex(mc.spins)
-            mc.spins[I] = SpinVector(0, 0, 1)
-            mc.ηs[I] = SpinVector(0, 0, 1)
+        for (spin, η) in spins_iter(mc)
+            spin .= (0, 0, 1)
+            η .= (0, 0, 1)
         end
     elseif init_type == :rand
-        rand!(ctx.rng, mc.spins)
-        rand!(ctx.rng, mc.ηs)
+        for (spin, η) in spins_iter(mc)
+            spin .= rand_spin(ctx.rng)
+            η .= rand_spin(ctx.rng)
+        end
     elseif init_type == :afm_fe
         init_afm_fe!(mc.spins, mc.ηs)
     end
