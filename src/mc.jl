@@ -27,8 +27,8 @@ end
 
 function WignerMC{AlgType}(; T=1.0, wigparams=default_params, Lx=40, Ly=40,
     outdir=".", savefreq=0) where {AlgType}
-    return WignerMC{AlgType}(T, wigparams, zeros((Lx, Ly, 3)),
-                             zeros((Lx, Ly, 3)), outdir, savefreq)
+    return WignerMC{AlgType}(T, wigparams, zeros((3, Lx, Ly)),
+                             zeros((3, Lx, Ly)), outdir, savefreq)
 end
 
 function WignerMC{AlgType}(params::AbstractDict) where {AlgType}

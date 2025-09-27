@@ -40,8 +40,8 @@ function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
     E = 0.0
     for j in eachindex(nns)
         ν = ω^(j-1)
-        sj = mc.spins[nns[j]..., :]
-        ηj = mc.ηs[nns[j]..., :]
+        sj = mc.spins[:, nns[j]...]
+        ηj = mc.ηs[:, nns[j]...]
 
         # η raising and lowering operators
         η_m = η[1] + 1.0im*η[2]
@@ -85,13 +85,13 @@ function half_energy(mc::WignerMC, x, y)
     J_EMEP = mc.params.J_EMEP
     J_EMEM = mc.params.J_EMEM
 
-    s = mc.spins[x, y, :]
-    η = mc.ηs[x, y, :]
+    s = mc.spins[:, x, y]
+    η = mc.ηs[:, x, y]
     E = 0.0
     for j in eachindex(nns)
         ν = ω^(j-1)
-        sj = mc.spins[nns[j]..., :]
-        ηj = mc.ηs[nns[j]..., :]
+        sj = mc.spins[:, nns[j]...]
+        ηj = mc.ηs[:, nns[j]...]
 
         # η raising and lowering operators
         η_m = η[1] + 1.0im*η[2]
@@ -139,14 +139,14 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     N = Lx * Ly
     # Magnetization per lattice site
-    mag = norm(sum(mc.spins, dims=(1, 2))) / N
+    mag = norm(sum(mc.spins, dims=(2, 3))) / N
     measure!(ctx, :Mag, mag)
     measure!(ctx, :Mag2, mag^2)
     measure!(ctx, :Mag4, mag^4)
 
-    η_sum = sum(mc.ηs, dims=(1, 2))
-    measure!(ctx, :ηz, η_sum[3] / N)
-    measure!(ctx, :ηxy, sqrt(η_sum[1]^2 + η_sum[2]^2) / N)
+    η_sum = sum(mc.ηs, dims=(2, 3)) / N
+    measure!(ctx, :ηz, η_sum[3])
+    measure!(ctx, :ηxy, sqrt(η_sum[1]^2 + η_sum[2]^2))
 
     # Energy per lattice site
     energy = 0.0

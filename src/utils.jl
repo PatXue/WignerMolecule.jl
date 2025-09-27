@@ -15,21 +15,21 @@ end
 Returns iterable over spin-η pairs in `mc`
 """
 function spins_iter(mc::WignerMC)
-    zip(eachslice(mc.spins, dims=(1,2)), eachslice(mc.ηs, dims=(1,2)))
+    zip(eachslice(mc.spins, dims=(2, 3)), eachslice(mc.ηs, dims=(2, 3)))
 end
 
-sites_iter(mc::WignerMC) = Iterators.product(axes(mc.spins, 1), axes(mc.spins, 2))
+sites_iter(mc::WignerMC) = Iterators.product(axes(mc.spins, 2), axes(mc.spins, 3))
 
 function init_orth!(mc::WignerMC)
     for (x, y) in sites_iter(mc)
         θ = π/2 * (x + y)
-        mc.spins[x, y, :] = (cos(θ), sin(θ), 0.0)
+        mc.spins[:, x, y] = (cos(θ), sin(θ), 0.0)
     end
 end
 
 function init_afm_fe!(mc::WignerMC)
     for (x, y) in sites_iter(mc)
-        mc.spins[x, y, :] = SVector(0, 0, (-1)^x)
-        mc.ηs[x, y, :] = SVector(cos(π/3), sin(π/3), 0)
+        mc.spins[:, x, y] = (0, 0, (-1)^x)
+        mc.ηs[:, x, y] = (cos(π/3), sin(π/3), 0)
     end
 end
