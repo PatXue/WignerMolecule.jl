@@ -1,3 +1,4 @@
 Manifest*.toml
 *.data
 *.results.json
+class-opt
