@@ -10,7 +10,7 @@ tm = TaskMaker()
 L = 20
 tm.Lx = tm.Ly = L
 tm.sweeps = 20000
-tm.thermalization = 0
+tm.thermalization = 20000
 tm.binsize = 100
 tm.init_type = :afm_fe
 
@@ -27,8 +27,9 @@ tm.wigparams = WignerParams(
     3.55356,
     0
 )
-Ts = 0.0:0.5:5.0
+Ts = 0.0:0.1:1.0
 for T in Ts
+    # tm.thermalization = T < 0.1 ? 40000 : 20000
     tm.T = max(T, 0.01)
     spins_dir = "afm-fe-center.data/$(current_task_name(tm))"
     tm.outdir = spins_dir
