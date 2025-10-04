@@ -6,6 +6,7 @@ import Random.AbstractRNG
 import Random.default_rng
 
 using Carlo
+using FFTW
 using HDF5
 using JLD2
 using LinearAlgebra
