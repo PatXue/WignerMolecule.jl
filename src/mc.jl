@@ -218,6 +218,10 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     measure!(ctx, :Energy, energy)
     measure!(ctx, :Energy2, energy^2)
 
+    update_fourier!(mc)
+    measure!(ctx, :spin_ks, mc.spinks)
+    measure!(ctx, :eta_ks, mc.ηks)
+
     if is_save_sweep(mc, ctx)
         save_spin(mc, ctx)
     end

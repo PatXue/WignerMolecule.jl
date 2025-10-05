@@ -14,8 +14,6 @@ tm.thermalization = 60000
 tm.binsize = 100
 tm.init_type = :afm_fe
 
-tm.savefreq = 5000
-
 tm.wigparams = WignerParams(
     21.7432,
     -7.96475,
