@@ -21,14 +21,23 @@ struct WignerMC{AlgType} <: AbstractMC
     spins::PeriodicMatrix{SpinVector}
     ηs::PeriodicMatrix{SpinVector}
 
+    spinks::Array{ComplexF64, 3}    # Fourier transformed spins
+    ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
+
     outdir::String # Output directory for local spin current plots
     savefreq::Int  # No. of sweeps between saving local spin current
 end
 
 function WignerMC{AlgType}(; T=1.0, wigparams=default_params, Lx=40, Ly=40,
     outdir=".", savefreq=0) where {AlgType}
-    return WignerMC{AlgType}(T, wigparams, fill(zeros(SpinVector), (Lx, Ly)),
-                             fill(zeros(SpinVector), (Lx, Ly)), outdir, savefreq)
+    init_spins = fill(zeros(SpinVector), (Lx, Ly))
+    init_ηs = fill(zeros(SpinVector), (Lx, Ly))
+    return WignerMC{AlgType}(
+        T, wigparams, init_spins, init_ηs,
+        Array{ComplexF64}(undef, (Lx, Ly, 3)),
+        Array{ComplexF64}(undef, (Lx, Ly, 3)),
+        outdir, savefreq
+    )
 end
 
 function WignerMC{AlgType}(params::AbstractDict) where {AlgType}
@@ -38,6 +47,16 @@ function WignerMC{AlgType}(params::AbstractDict) where {AlgType}
     outdir = get(params, :outdir, ".")
     savefreq = get(params, :savefreq, 0)
     return WignerMC{AlgType}(; T, wigparams, Lx, Ly, outdir, savefreq)
+end
+
+function update_fourier!(mc::WignerMC)
+    for i in 1:3
+        mc.spinks[:, :, i] .= getindex.(mc.spins, i)
+        mc.ηks[:, :, i] .= getindex.(mc.ηs, i)
+    end
+    fft!(mc.spinks, (1, 2))
+    fft!(mc.ηks, (1, 2))
+    return nothing
 end
 
 function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
@@ -53,6 +72,7 @@ function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
     elseif init_type == :afm_fe
         init_afm_fe!(mc.spins, mc.ηs)
     end
+    update_fourier!(mc)
     return nothing
 end
 
