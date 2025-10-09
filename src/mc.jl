@@ -61,11 +61,11 @@ function update_fourier!(mc::WignerMC)
     fft!(mc.spinks, (1, 2))
     fft!(mc.ηks, (1, 2))
     map!(v -> sum(abs2.(v)), mc.spink_corrs, eachslice(mc.spinks, dims=(1, 2)))
-    ηk_iter = eachslice(mc.ηks, dims=(1, 2))
-    for I in eachindex(ηk_iter)
-        η = ηk_iter[I]
-        mc.ηk_corrs[I, :, :] .= η * η'
-    end
+    # ηk_iter = eachslice(mc.ηks, dims=(1, 2))
+    # for I in eachindex(ηk_iter)
+    #     η = ηk_iter[I]
+    #     mc.ηk_corrs[I, :, :] .= η * η'
+    # end
     return nothing
 end
 
@@ -230,7 +230,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
 
     update_fourier!(mc)
     measure!(ctx, :spink_corrs, mc.spink_corrs)
-    measure!(ctx, :etak_corrs, mc.ηk_corrs)
+    # measure!(ctx, :etak_corrs, mc.ηk_corrs)
 
     if is_save_sweep(mc, ctx)
         save_spin(mc, ctx)
