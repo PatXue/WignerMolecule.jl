@@ -23,6 +23,8 @@ struct WignerMC{AlgType} <: AbstractMC
 
     spinks::Array{ComplexF64, 3}    # Fourier transformed spins
     ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
+    spink_corrs::Matrix{Float64}    # Correlations of Fourier spins
+    ηk_corrs::Array{ComplexF64, 4}  # Correlations of Fourier ηs
 
     outdir::String # Output directory for local spin current plots
     savefreq::Int  # No. of sweeps between saving local spin current
@@ -36,6 +38,8 @@ function WignerMC{AlgType}(; T=1.0, wigparams=default_params, Lx=40, Ly=40,
         T, wigparams, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
+        Matrix{Float64}(undef, (Lx, Ly)),
+        Array{ComplexF64}(undef, (Lx, Ly, 3, 3)),
         outdir, savefreq
     )
 end
@@ -56,6 +60,12 @@ function update_fourier!(mc::WignerMC)
     end
     fft!(mc.spinks, (1, 2))
     fft!(mc.ηks, (1, 2))
+    map!(v -> sum(abs2.(v)), mc.spink_corrs, eachslice(mc.spinks, dims=(1, 2)))
+    ηk_iter = eachslice(mc.ηks, dims=(1, 2))
+    for I in eachindex(ηk_iter)
+        η = ηk_iter[I]
+        mc.ηk_corrs[I, :, :] .= η * η'
+    end
     return nothing
 end
 
@@ -219,8 +229,8 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     measure!(ctx, :Energy2, energy^2)
 
     update_fourier!(mc)
-    measure!(ctx, :spin_ks, mc.spinks)
-    measure!(ctx, :eta_ks, mc.ηks)
+    measure!(ctx, :spink_corrs, mc.spink_corrs)
+    measure!(ctx, :etak_corrs, mc.ηk_corrs)
 
     if is_save_sweep(mc, ctx)
         save_spin(mc, ctx)
