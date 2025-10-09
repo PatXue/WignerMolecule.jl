@@ -60,7 +60,7 @@ function update_fourier!(mc::WignerMC)
     end
     fft!(mc.spinks, (1, 2))
     fft!(mc.ηks, (1, 2))
-    map!(v -> sum(abs2.(v)), mc.spink_corrs, eachslice(mc.spinks, dims=(1, 2)))
+    mc.spink_corrs .= sum(abs2.(mc.spinks), dims=3)
     # ηk_iter = eachslice(mc.ηks, dims=(1, 2))
     # for I in eachindex(ηk_iter)
     #     η = ηk_iter[I]
