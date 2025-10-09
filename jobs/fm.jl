@@ -7,7 +7,7 @@ using Carlo.JobTools
 
 tm = TaskMaker()
 
-L = 20
+L = 40
 tm.Lx = tm.Ly = L
 tm.sweeps = 20000
 tm.thermalization = 0
@@ -20,12 +20,12 @@ tm.wigparams = WignerParams(-2.12742, -7.37151, -2.60026, (-1.5492-3.67457im), (
 Ts = 1:0.25:5
 for T in Ts
     tm.T = T
-    spins_dir = "small-sys.data/$(current_task_name(tm))"
+    spins_dir = "fm.data/$(current_task_name(tm))"
     tm.outdir = spins_dir
     task(tm)
 end
 
-job = JobInfo("small-sys", WignerMC{:Metropolis};
+job = JobInfo("fm", WignerMC{:Metropolis};
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
