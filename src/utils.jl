@@ -1,4 +1,3 @@
-const SpinVector = SVector{3, Float64}
 function Random.rand(rng::AbstractRNG, ::Random.SamplerType{SpinVector})
     ϕ = 2π * rand(rng)
     θ = acos(2 * rand(rng) - 1)
@@ -26,5 +25,38 @@ function init_afm_fe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{Spi
         x, _ = Tuple(I)
         spins[I] = SVector(0, 0, (-1)^x)
         ηs[I] = SVector(cos(π/3), -sin(π/3), 0)
+    end
+end
+
+# Perform Fourier transform on MC, updating preallocated spinks and ηks
+# matrices, as well as calculating momentum-space correlations
+function update_fourier!(mc::WignerMC)
+    for i in 1:3
+        mc.spinks[:, :, i] .= getindex.(mc.spins, i)
+        mc.ηks[:, :, i] .= getindex.(mc.ηs, i)
+    end
+    fft!(mc.spinks, (1, 2))
+    fft!(mc.ηks, (1, 2))
+    mc.spink_corrs .= sum(abs2.(mc.spinks), dims=3)
+    ηk_iter = eachslice(mc.ηks, dims=(1, 2))
+    for I in eachindex(ηk_iter)
+        η = ηk_iter[I]
+        mc.ηk_corrs[I, :, :] .= η .* η'
+    end
+    return nothing
+end
+
+# Returns if spins should be saved on this sweep (assuming thermalized)
+function is_save_sweep(mc::WignerMC, ctx::Carlo.MCContext)
+    measure_sweeps = ctx.sweeps - ctx.thermalization_sweeps
+    return mc.savefreq > 0 && measure_sweeps % mc.savefreq == 0
+end
+
+# Save spins to JLD2 file
+function save_spin(mc::WignerMC, ctx::Carlo.MCContext)
+    jldopen("$(mc.outdir)/spins.jld2", "a+") do file
+        sweep_name = "sweep$(ctx.sweeps - ctx.thermalization_sweeps)"
+        file[sweep_name * "-spins"] = Matrix(mc.spins)
+        file[sweep_name * "-etas"] = Matrix(mc.ηs)
     end
 end

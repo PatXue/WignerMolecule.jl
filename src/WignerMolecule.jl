@@ -14,8 +14,9 @@ using PeriodicArrays
 using Random
 using StaticArrays
 
-include("utils.jl")
 include("mc.jl")
+include("utils.jl")
+include("common.jl")
 include("metropolis.jl")
 
 end
