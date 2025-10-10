@@ -8,11 +8,10 @@ struct WignerParams
     J_EMEM_SS::Float64      # Spin-η- coupling
     J_EMEP::ComplexF64      # η± coupling
     J_EMEM::Float64         # η- coupling
-    H::Float64              # Bias field
 end
 
 # Default WignerParams values (for testing)
-const default_params = WignerParams(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1e-3)
+const default_params = WignerParams(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 
 const SpinVector = SVector{3, Float64}
 # Note: Using temperature in units of energy (k_B = 1)

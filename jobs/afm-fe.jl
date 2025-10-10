@@ -23,7 +23,6 @@ tm.wigparams = WignerParams(
     11.1589,
     (0.778735-1.96819im),
     3.55356,
-    0
 )
 Ts = 0.0:0.025:0.3
 for T in Ts

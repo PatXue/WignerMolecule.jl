@@ -63,7 +63,6 @@ function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
 
         E += real(E_spin * (s⋅sj) + E_η)
     end
-    E -= mc.params.H * s[3]
 
     return E
 end
@@ -113,7 +112,6 @@ function half_energy(mc::WignerMC, x, y)
 
         E += real(E_spin * (s⋅sj) + E_η)
     end
-    E -= mc.params.H * s[3]
 
     return E
 end

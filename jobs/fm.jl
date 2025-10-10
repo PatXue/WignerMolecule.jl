@@ -14,7 +14,7 @@ tm.thermalization = 10000
 tm.binsize = 100
 tm.init_type = :const
 
-tm.wigparams = WignerParams(-2.12742, -7.37151, -2.60026, (-1.5492-3.67457im), (2.22406+3.06319im), 0.672249, (0.215811+0.332566im), 0.815589, 1e-2)
+tm.wigparams = WignerParams(-2.12742, -7.37151, -2.60026, (-1.5492-3.67457im), (2.22406+3.06319im), 0.672249, (0.215811+0.332566im), 0.815589)
 Ts = 1:0.25:5
 for T in Ts
     tm.T = T
