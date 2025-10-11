@@ -2,7 +2,7 @@
 
 julia_version = "1.12.0"
 manifest_format = "2.0"
-project_hash = "f8d4cc195531c3ff71fe321b092c04e65e4ee5d2"
+project_hash = "2db616f70e6a0456a25d88b0207cdc2dfc204139"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -145,6 +145,14 @@ deps = ["ArgParse", "Dates", "ElasticArrays", "HDF5", "JSON", "Logging", "MPI", 
 git-tree-sha1 = "8c05acf455cebdd6c01de9a1c2ee94ebac2c06d0"
 uuid = "780c37f4-4e5a-43de-9e79-65c261e525a4"
 version = "0.2.5"
+
+[[deps.CarloAnalysis]]
+deps = ["CairoMakie", "Carlo", "DataFrames", "HDF5"]
+git-tree-sha1 = "553094f1db476702c2a89a6fb71ecc04782c9ba6"
+repo-rev = "main"
+repo-url = "https://github.com/PatXue/CarloAnalysis.jl"
+uuid = "074ae576-0ee5-4533-b44a-9466da945657"
+version = "1.0.0-DEV"
 
 [[deps.ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra"]
@@ -668,9 +676,9 @@ version = "0.16.2"
 
 [[deps.IntervalArithmetic]]
 deps = ["CRlibm", "MacroTools", "OpenBLASConsistentFPCSR_jll", "Printf", "Random", "RoundingEmulator"]
-git-tree-sha1 = "815e74f416953c348c9da1d1bc977bbc97c84e18"
+git-tree-sha1 = "bf0210c01fb7d67c31fed97d7c1d1716b98ea689"
 uuid = "d1acc4aa-44c8-5952-acd4-ba5d80a2a253"
-version = "1.0.0"
+version = "1.0.1"
 
     [deps.IntervalArithmetic.extensions]
     IntervalArithmeticArblibExt = "Arblib"
