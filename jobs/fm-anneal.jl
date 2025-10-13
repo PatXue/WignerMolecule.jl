@@ -24,7 +24,7 @@ for T in Ts
     task(tm)
 end
 
-job = JobInfo("fm", WignerMC{:Metropolis};
+job = JobInfo("fm-anneal", WignerMC{:Metropolis};
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
