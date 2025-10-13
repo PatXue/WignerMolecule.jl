@@ -61,10 +61,10 @@ function save_spin(mc::WignerMC, ctx::Carlo.MCContext)
     end
 end
 
-function calc_therm_temp(mc::WignerMC, ctx::Carlo.MCContext)
+function calc_temp(mc::WignerMC, ctx::Carlo.MCContext)
     if is_thermalized(ctx)
         return mc.T
     else
-        return (mc.T + mc.init_T) * ctx.sweeps/ctx.thermalization_sweeps
+        return mc.init_T + (mc.T - mc.init_T) * ctx.sweeps/ctx.thermalization_sweeps
     end
 end

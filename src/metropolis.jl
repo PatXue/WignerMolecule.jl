@@ -1,7 +1,7 @@
 function Carlo.sweep!(mc::WignerMC{:Metropolis}, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     rng = ctx.rng
-    T = calc_therm_temp(mc, ctx)
+    T = calc_temp(mc, ctx)
     for _ in 1:length(mc.spins)
         for type in (:s, :η)
             # Select site for spin change
