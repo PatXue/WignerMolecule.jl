@@ -1,5 +1,7 @@
-function Carlo.sweep!(mc::WignerMC{:Metropolis}, rng::AbstractRNG=default_rng())
+function Carlo.sweep!(mc::WignerMC{:Metropolis}, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
+    rng = ctx.rng
+    T = calc_therm_temp(mc, ctx)
     for _ in 1:length(mc.spins)
         for type in (:s, :η)
             # Select site for spin change
@@ -18,7 +20,7 @@ function Carlo.sweep!(mc::WignerMC{:Metropolis}, rng::AbstractRNG=default_rng())
             ΔE = new_E - old_E
 
             # Probability of accepting spin flip (for ΔE ≤ 0 always accept)
-            prob = exp(-ΔE / mc.T)
+            prob = exp(-ΔE / T)
             if prob >= 1.0 || rand(rng) < prob
                 if type == :s
                     mc.spins[x, y] = new_s

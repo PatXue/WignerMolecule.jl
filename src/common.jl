@@ -15,10 +15,6 @@ function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
     return nothing
 end
 
-function Carlo.sweep!(mc::WignerMC, ctx::Carlo.MCContext)
-    Carlo.sweep!(mc, ctx.rng)
-end
-
 const ω::ComplexF64 = exp(im * 2π/3)
 # Calculate the energy at a lattice site (x, y) if it had spin s and
 # pseudospin η
