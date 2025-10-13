@@ -37,7 +37,7 @@ function WignerMC{AlgType}(; T=1.0, init_T=1.0, wigparams=default_params, Lx=40,
     init_spins = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     return WignerMC{AlgType}(
-        T, init_T=1.0, wigparams, init_spins, init_ηs,
+        T, init_T, wigparams, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Matrix{Float64}(undef, (Lx, Ly)),
