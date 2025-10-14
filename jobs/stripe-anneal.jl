@@ -17,7 +17,7 @@ tm.binsize = 100
 
 tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 5, 20, 6)]...)
 tm.init_T = 10
-Ts = 1:0.5:5
+Ts = 0.5:0.5:5
 for T in Ts
     tm.T = T
     spins_dir = "$jobname.data/$(current_task_name(tm))"
