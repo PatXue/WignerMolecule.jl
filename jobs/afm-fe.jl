@@ -9,7 +9,7 @@ tm = TaskMaker()
 
 L = 20
 tm.Lx = tm.Ly = L
-tm.sweeps = 40000
+tm.sweeps = 60000
 tm.thermalization = 60000
 tm.binsize = 100
 tm.init_type = :afm_fe
