@@ -10,6 +10,8 @@ function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
         rand!(ctx.rng, mc.ηs)
     elseif init_type == :afm_fe
         init_afm_fe!(mc.spins, mc.ηs)
+    elseif init_type == :stripe
+        init_stripe!(mc.spins, mc.ηs)
     end
     update_fourier!(mc)
     return nothing

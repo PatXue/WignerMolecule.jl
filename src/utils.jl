@@ -28,6 +28,14 @@ function init_afm_fe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{Spi
     end
 end
 
+function init_stripe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{SpinVector})
+    for I in eachindex(IndexCartesian(), spins)
+        x, _ = Tuple(I)
+        spins[I] = SVector(0, 0, (-1)^(x ÷ 2))
+        ηs[I] = (-1)^x .* SVector(-cos(π/3), sin(π/3), 0)
+    end
+end
+
 # Perform Fourier transform on MC, updating preallocated spinks and ηks
 # matrices, as well as calculating momentum-space correlations
 function update_fourier!(mc::WignerMC)
