@@ -17,12 +17,16 @@ tm.binsize = 100
 
 tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 5, 20, 9)]...)
 tm.init_T = 10
-Ts = 1:0.25:5
-for T in Ts
-    tm.T = T
-    spins_dir = "$jobname.data/$(current_task_name(tm))"
-    tm.outdir = spins_dir
-    task(tm)
+Ts = 0.5:0.5:7
+Ls = [20, 30, 40]
+for L in Ls
+    tm.Lx = tm.Ly = L
+    for T in Ts
+        tm.T = max(T, 0.01)
+        spins_dir = "$jobname.data/$(current_task_name(tm))"
+        tm.outdir = spins_dir
+        task(tm)
+    end
 end
 
 job = JobInfo("$jobname", WignerMC{:Metropolis};

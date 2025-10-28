@@ -10,19 +10,22 @@ tm = TaskMaker()
 jobname = "afm-fe-anneal"
 
 L = 20
-tm.Lx = tm.Ly = L
-tm.sweeps = 70000
+tm.sweeps = 50000
 tm.thermalization = 50000
 tm.binsize = 100
 
 tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 11, 20, 10)]...)
 tm.init_T = 10
-Ts = 0.0:0.025:0.3
-for T in Ts
-    tm.T = max(T, 0.01)
-    spins_dir = "$jobname.data/$(current_task_name(tm))"
-    tm.outdir = spins_dir
-    task(tm)
+Ts = 0.0:0.05:0.5
+Ls = [20, 30, 40]
+for L in Ls
+    tm.Lx = tm.Ly = L
+    for T in Ts
+        tm.T = max(T, 0.01)
+        spins_dir = "$jobname.data/$(current_task_name(tm))"
+        tm.outdir = spins_dir
+        task(tm)
+    end
 end
 
 job = JobInfo("$jobname", WignerMC{:Metropolis};
