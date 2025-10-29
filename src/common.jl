@@ -1,15 +1,20 @@
+# Initialize the WignerMC spins
 function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
     init_type::Symbol = get(params, :init_type, :rand)
+
+    rand!(ctx.rng, mc.spins)
+    rand!(ctx.rng, mc.ηs)
     if init_type == :const
         for I in eachindex(mc.spins)
             mc.spins[I] = SpinVector(0, 0, 1)
             mc.ηs[I] = SpinVector(0, 0, 1)
         end
-    elseif init_type == :rand
-        rand!(ctx.rng, mc.spins)
-        rand!(ctx.rng, mc.ηs)
     elseif init_type == :afm_fe
         init_afm_fe!(mc.spins, mc.ηs)
+    elseif init_type == :afm_fe_s
+        init_afm_fe_s!(mc.spins)
+    elseif init_type == :afm_fe_eta
+        init_afm_fe_eta!(mc.ηs)
     elseif init_type == :stripe
         init_stripe!(mc.spins, mc.ηs)
     end

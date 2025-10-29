@@ -20,12 +20,23 @@ function init_orth!(spins::AbstractMatrix{SpinVector})
     end
 end
 
-function init_afm_fe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{SpinVector})
+function init_afm_fe_s!(spins::AbstractMatrix{SpinVector})
     for I in eachindex(IndexCartesian(), spins)
         x, _ = Tuple(I)
         spins[I] = SVector(0, 0, (-1)^x)
         ηs[I] = SVector(cos(π/3), -sin(π/3), 0)
     end
+end
+
+function init_afm_fe_eta!(ηs::AbstractMatrix{SpinVector})
+    for I in eachindex(IndexCartesian(), ηs)
+        ηs[I] = SVector(cos(π/3), -sin(π/3), 0)
+    end
+end
+
+function init_afm_fe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{SpinVector})
+    init_afm_fe_s!(spins)
+    init_afm_fe_eta!(ηs)
 end
 
 function init_stripe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{SpinVector})
