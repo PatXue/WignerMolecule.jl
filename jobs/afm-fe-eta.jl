@@ -17,7 +17,7 @@ tm.binsize = 500
 tm.init_type = :afm_fe_s
 
 tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 11, 20, 10)]...)
-Ts = 0.0:0.05:0.5
+Ts = 0.0:0.1:2.0
 for T in Ts
     # tm.thermalization = T < 0.3 ? 40000 : 20000
     tm.T = max(T, 0.01)
