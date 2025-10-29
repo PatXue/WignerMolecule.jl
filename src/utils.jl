@@ -24,7 +24,6 @@ function init_afm_fe_s!(spins::AbstractMatrix{SpinVector})
     for I in eachindex(IndexCartesian(), spins)
         x, _ = Tuple(I)
         spins[I] = SVector(0, 0, (-1)^x)
-        ηs[I] = SVector(cos(π/3), -sin(π/3), 0)
     end
 end
 
