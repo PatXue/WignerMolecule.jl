@@ -1,7 +1,7 @@
 name = "WignerMolecule"
 uuid = "a601b020-ef02-470b-8b5c-5764e2d1f630"
-authors = ["PatXue <95881915+PatXue@users.noreply.github.com> and contributors"]
 version = "1.0.0-DEV"
+authors = ["PatXue <95881915+PatXue@users.noreply.github.com> and contributors"]
 
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
@@ -17,7 +17,7 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
 BenchmarkTools = "1.6.0"
-Carlo = "0.2.5"
+Carlo = "<0.2.6"
 FFTW = "1.10.0"
 HDF5 = "0.17.2"
 JLD2 = "0.6.2"
