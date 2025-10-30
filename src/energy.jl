@@ -98,7 +98,7 @@ function s_energydiff(mc::WignerMC, s_diff::SpinVector, x, y)
         ΔE += E_spin * (s_diff ⋅ sj)
     end
 
-    return s_diff ⋅ weighted_sj
+    return ΔE
 end
 
 # Calculate the energy difference at a lattice site (x, y) if the η changed
