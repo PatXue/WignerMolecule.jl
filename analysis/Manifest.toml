@@ -148,7 +148,7 @@ version = "0.2.6"
 
 [[deps.CarloAnalysis]]
 deps = ["CairoMakie", "Carlo", "DataFrames", "HDF5"]
-git-tree-sha1 = "35fdecafc40841ce76bac94702c75bcf730fad96"
+git-tree-sha1 = "de8b44cc1ee591ea206496471cc2d7d75f709fc6"
 repo-rev = "main"
 repo-url = "https://github.com/PatXue/CarloAnalysis.jl"
 uuid = "074ae576-0ee5-4533-b44a-9466da945657"
