@@ -9,7 +9,6 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "afm-fe-anneal"
 
-L = 20
 tm.sweeps = 50000
 tm.thermalization = 50000
 tm.binsize = 100
