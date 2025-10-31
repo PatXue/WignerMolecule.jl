@@ -38,8 +38,8 @@ function bond_energy(mc::WignerMC, s::SpinVector, η::SpinVector, ν, pos)
 end
 
 # Calculate the energy at a lattice site (x, y) if it had spin s and
-# pseudospin η
-function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
+# pseudospin η, with no bias field
+function energy_nobias(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
     # Nearest neighbor lattice positions
     nns = ((x+1, y), (x+1, y-1), (x, y-1), (x-1, y), (x-1, y+1), (x, y+1))
     E = 0.0
@@ -50,9 +50,19 @@ function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
     return E
 end
 
+function energy(mc::WignerMC{AlgType, Nothing}, s::SpinVector, η::SpinVector,
+    x, y) where {AlgType}
+    return energy_nobias(mc, s, η, x, y)
+end
+
+function energy(mc::WignerMC{AlgType, B}, s::SpinVector, η::SpinVector,
+    x, y) where {AlgType, B}
+    return energy_nobias(mc, s, η, x, y) + (s ⋅ mc.bias(x, y))
+end
+
 # Calculate the energy contribution of a site (x, y), considering only half of
 # its bonds (avoids double counting when calculating total energy)
-function half_energy(mc::WignerMC, x, y)
+function half_energy_nobias(mc::WignerMC, x, y)
     # Nearest neighbor lattice positions
     nns = ((x+1, y), (x+1, y-1), (x, y-1))
     E = 0.0
@@ -61,6 +71,14 @@ function half_energy(mc::WignerMC, x, y)
         E += bond_energy(mc, mc.spins[x, y], mc.ηs[x, y], ν, nns[j])
     end
     return E
+end
+
+function half_energy(mc::WignerMC{AlgType, Nothing}, x, y) where {AlgType}
+    return half_energy_nobias(mc, x, y)
+end
+
+function half_energy(mc::WignerMC{AlgType, B}, x, y) where {AlgType, B}
+    return half_energy_nobias(mc, x, y) + (s ⋅ mc.bias(x, y))
 end
 
 # Calculate the energy difference at a lattice site (x, y) if the spin changed
