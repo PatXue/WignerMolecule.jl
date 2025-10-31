@@ -10,7 +10,7 @@ tm = TaskMaker()
 jobname = "afm-fe-bias"
 
 tm.sweeps = 20000
-tm.thermalization = 20000
+tm.thermalization = 40000
 tm.binsize = 200
 
 afm_bias(B) = (x, _) -> [0, 0, B * (-1)^x]
@@ -19,14 +19,16 @@ bias_type = typeof(tm.bias)
 
 tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 11, 20, 10)]...)
 tm.init_T = 10
-Ts = 0.0:0.1:1.0
+tm.T = 0.01
 Ls = [20]
+Bs = 0.0:1.0:10.0
 for L in Ls
     tm.Lx = tm.Ly = L
-    for T in Ts
-        tm.T = max(T, 0.01)
+    for B in Bs
         spins_dir = "$jobname.data/$(current_task_name(tm))"
         tm.outdir = spins_dir
+        tm.B = B
+        tm.bias = afm_bias(B)
         task(tm)
     end
 end
