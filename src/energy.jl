@@ -77,7 +77,7 @@ function half_energy(mc::WignerMC{AlgType, Nothing}, x, y) where {AlgType}
 end
 
 function half_energy(mc::WignerMC, x, y)
-    return half_energy_nobias(mc, x, y) + (s ⋅ mc.bias(x, y))
+    return half_energy_nobias(mc, x, y) + (mc.spins[x, y] ⋅ mc.bias(x, y))
 end
 
 # Calculate the energy difference at a lattice site (x, y) if the spin changed
