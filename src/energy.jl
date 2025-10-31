@@ -55,8 +55,7 @@ function energy(mc::WignerMC{AlgType, Nothing}, s::SpinVector, η::SpinVector,
     return energy_nobias(mc, s, η, x, y)
 end
 
-function energy(mc::WignerMC{AlgType, B}, s::SpinVector, η::SpinVector,
-    x, y) where {AlgType, B}
+function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
     return energy_nobias(mc, s, η, x, y) + (s ⋅ mc.bias(x, y))
 end
 
@@ -77,7 +76,7 @@ function half_energy(mc::WignerMC{AlgType, Nothing}, x, y) where {AlgType}
     return half_energy_nobias(mc, x, y)
 end
 
-function half_energy(mc::WignerMC{AlgType, B}, x, y) where {AlgType, B}
+function half_energy(mc::WignerMC, x, y)
     return half_energy_nobias(mc, x, y) + (s ⋅ mc.bias(x, y))
 end
 
