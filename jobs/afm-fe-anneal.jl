@@ -27,7 +27,7 @@ for L in Ls
     end
 end
 
-job = JobInfo("$jobname", WignerMC{:Metropolis};
+job = JobInfo("$jobname", WignerMC{:Metropolis, Nothing};
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
