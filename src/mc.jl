@@ -15,10 +15,11 @@ const default_params = WignerParams(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 
 const SpinVector = SVector{3, Float64}
 # Note: Using temperature in units of energy (k_B = 1)
-struct WignerMC{AlgType} <: AbstractMC
+struct WignerMC{AlgType, B} <: AbstractMC
     T::Float64          # Temperature
     init_T::Float64     # Initial temperature (for thermalization)
     params::WignerParams
+    bias::B
 
     spins::PeriodicMatrix{SpinVector}
     ηs::PeriodicMatrix{SpinVector}
@@ -32,12 +33,12 @@ struct WignerMC{AlgType} <: AbstractMC
     savefreq::Int  # No. of sweeps between saving local spin current
 end
 
-function WignerMC{AlgType}(; T=1.0, init_T=1.0, wigparams=default_params, Lx=40, Ly=40,
-    outdir=".", savefreq=0) where {AlgType}
+function WignerMC{AlgType, B}(; T=1.0, init_T=1.0, wigparams=default_params,
+    bias, Lx=40, Ly=40, outdir=".", savefreq=0) where {AlgType, B}
     init_spins = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
-    return WignerMC{AlgType}(
-        T, init_T, wigparams, init_spins, init_ηs,
+    return WignerMC{AlgType, B}(
+        T, init_T, wigparams, bias, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Matrix{Float64}(undef, (Lx, Ly)),
@@ -46,12 +47,13 @@ function WignerMC{AlgType}(; T=1.0, init_T=1.0, wigparams=default_params, Lx=40,
     )
 end
 
-function WignerMC{AlgType}(params::AbstractDict) where {AlgType}
+function WignerMC{AlgType, B}(params::AbstractDict) where {AlgType, B}
     Lx, Ly = params[:Lx], params[:Ly]
     T = params[:T]
     init_T = get(params, :init_T, T)
     wigparams = params[:wigparams]
+    bias = get(params, :bias, nothing)
     outdir = get(params, :outdir, ".")
     savefreq = get(params, :savefreq, 0)
-    return WignerMC{AlgType}(; T, init_T, wigparams, Lx, Ly, outdir, savefreq)
+    return WignerMC{AlgType, B}(; T, init_T, wigparams, bias, Lx, Ly, outdir, savefreq)
 end
