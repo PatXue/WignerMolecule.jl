@@ -21,7 +21,7 @@ tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 11, 20, 10)]...)
 tm.init_T = 10
 tm.T = 0.01
 Ls = [20]
-Bs = 0.0:1.0:10.0
+Bs = 0.0:1.0:20.0
 for L in Ls
     tm.Lx = tm.Ly = L
     for B in Bs
