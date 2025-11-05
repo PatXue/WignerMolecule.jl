@@ -14,7 +14,7 @@ tm.thermalization = 50000
 tm.binsize = 500
 
 stripe_bias(B) = (x, _) -> [0, 0, B * (-1)^(div(x, 2))]
-tm.bias = afm_bias(1.0)
+tm.bias = stripe_bias(1.0)
 bias_type = typeof(tm.bias)
 
 tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 5, 20, 6)]...)
