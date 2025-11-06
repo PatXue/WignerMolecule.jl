@@ -38,12 +38,23 @@ function init_afm_fe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{Spi
     init_afm_fe_eta!(ηs)
 end
 
-function init_stripe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{SpinVector})
+function init_stripe_s!(spins::AbstractMatrix{SpinVector})
     for I in eachindex(IndexCartesian(), spins)
         x, _ = Tuple(I)
         spins[I] = SVector(0, 0, (-1)^(x ÷ 2))
+    end
+end
+
+function init_stripe_eta!(ηs::AbstractMatrix{SpinVector})
+    for I in eachindex(IndexCartesian(), ηs)
+        x, _ = Tuple(I)
         ηs[I] = (-1)^x .* SVector(-cos(π/3), sin(π/3), 0)
     end
+end
+
+function init_stripe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{SpinVector})
+    init_stripe_s!(spins)
+    init_stripe_eta!(ηs)
 end
 
 # Perform Fourier transform on MC, updating preallocated spinks and ηks
