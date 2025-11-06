@@ -22,18 +22,17 @@ raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
 tm.init_T = 10
-tm.T = 0.01
 Ls = [20]
-Bs = 0.0:2.5:40.0
-for L in Ls
+Ts = [0.01, 1.0]
+Bs = 0.0:0.2:2.0
+for (B, T, L) in Iterators.product(Bs, Ts, Ls)
     tm.Lx = tm.Ly = L
-    for B in Bs
-        spins_dir = "$jobname.data/$(current_task_name(tm))"
-        tm.outdir = spins_dir
-        tm.B = B
-        tm.bias = afm_bias(B)
-        task(tm)
-    end
+    tm.T = T
+    tm.B = B
+    spins_dir = "$jobname.data/$(current_task_name(tm))"
+    tm.outdir = spins_dir
+    tm.bias = afm_bias(B)
+    task(tm)
 end
 
 job = JobInfo("$jobname", WignerMC{:Metropolis, bias_type};
