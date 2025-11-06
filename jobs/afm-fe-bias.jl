@@ -3,21 +3,24 @@ Pkg.activate("..")
 
 using Carlo
 using Carlo.JobTools
+using LinearAlgebra
 using JLD2
 using WignerMolecule
 
 tm = TaskMaker()
 jobname = "afm-fe-bias"
 
-tm.sweeps = 150000
-tm.thermalization = 150000
-tm.binsize = 2000
+tm.sweeps = 100000
+tm.thermalization = 100000
+tm.binsize = 1000
 
 afm_bias(B) = (x, _) -> [0, 0, B * (-1)^x]
 tm.bias = afm_bias(1.0)
 bias_type = typeof(tm.bias)
 
-tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 11, 20, 10)]...)
+raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
+norm_params = raw_params ./ norm(raw_params)
+tm.wigparams = WignerParams(norm_params...)
 tm.init_T = 10
 tm.T = 0.01
 Ls = [20]
