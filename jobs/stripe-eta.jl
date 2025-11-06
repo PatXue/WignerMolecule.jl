@@ -4,6 +4,7 @@ Pkg.activate("..")
 using WignerMolecule
 using Carlo
 using Carlo.JobTools
+using LinearAlgebra
 using JLD2
 
 tm = TaskMaker()
