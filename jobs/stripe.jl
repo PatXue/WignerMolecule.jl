@@ -17,9 +17,9 @@ tm.binsize = 500
 tm.init_type = :stripe
 
 tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 5, 20, 6)]...)
-Ts = 0.5:0.5:5
+Ts = 0.0:0.25:2.0
 for T in Ts
-    tm.T = T
+    tm.T = max(T, 0.01)
     spins_dir = "$jobname.data/$(current_task_name(tm))"
     tm.outdir = spins_dir
     task(tm)
