@@ -48,7 +48,7 @@ end
 function init_stripe_eta!(ηs::AbstractMatrix{SpinVector})
     for I in eachindex(IndexCartesian(), ηs)
         x, _ = Tuple(I)
-        ηs[I] = (-1)^x .* SVector(-cos(π/3), sin(π/3), 0)
+        ηs[I] = (-1)^x .* SVector(cos(π/3), -sin(π/3), 0)
     end
 end
 
