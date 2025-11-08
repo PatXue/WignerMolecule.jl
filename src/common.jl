@@ -31,10 +31,13 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     N = Lx * Ly
     # Magnetization per lattice site
-    mag = norm(sum(mc.spins)) / N
+    mag_v = sum(mc.spins) ./ N
+    mag = norm(mag_v)
     measure!(ctx, :Mag, mag)
     measure!(ctx, :Mag2, mag^2)
     measure!(ctx, :Mag4, mag^4)
+    measure!(ctx, :Mag_θ, acos(mag_v[3] / mag))
+    measure!(ctx, :Mag_ϕ, atan(mag_v[2] / mag, mag_v[1] / mag))
 
     η_sum = sum(mc.ηs)
     measure!(ctx, :ηz, abs(η_sum[3] / N))
