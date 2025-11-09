@@ -11,9 +11,9 @@ jobname = "fm-anneal"
 
 L = 20
 tm.Lx = tm.Ly = L
-tm.sweeps = 20000
-tm.thermalization = 20000
-tm.binsize = 100
+tm.sweeps = 50000
+tm.thermalization = 50000
+tm.binsize = 500
 
 tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 5, 20, 9)]...)
 tm.init_T = 10
