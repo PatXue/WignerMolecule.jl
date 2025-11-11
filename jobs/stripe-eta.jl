@@ -20,7 +20,7 @@ tm.init_type = :stripe_s
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ts = 0.0:0.5:5.0
+Ts = 0.0:0.5:10.0
 for T in Ts
     # tm.thermalization = T < 0.3 ? 40000 : 20000
     tm.T = max(T, 0.01)
