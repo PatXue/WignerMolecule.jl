@@ -10,7 +10,7 @@ using JLD2
 tm = TaskMaker()
 jobname = "stripe-eta"
 
-L = 20
+L = 40
 tm.Lx = tm.Ly = L
 tm.sweeps = 50000
 tm.thermalization = 0
