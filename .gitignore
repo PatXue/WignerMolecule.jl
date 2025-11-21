@@ -1,7 +1,10 @@
-*Manifest.toml
-*.data
-*.results.json
-class-opt
 .DS_store
 .vscode
+
+*Manifest.toml
+
+class-opt
 analysis/plots
+jobs/logs
+*.data
+*.results.json
