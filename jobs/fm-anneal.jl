@@ -9,8 +9,6 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "fm-anneal"
 
-L = 20
-tm.Lx = tm.Ly = L
 tm.sweeps = 50000
 tm.thermalization = 50000
 tm.binsize = 500
@@ -21,6 +19,7 @@ Ts = 0.5:0.5:7
 Ls = [20, 40, 80]
 for L in Ls
     tm.Lx = tm.Ly = L
+    tm.sweeps = 50000 * L/20
     for T in Ts
         tm.T = max(T, 0.01)
         spins_dir = "$jobname.data/$(current_task_name(tm))"
