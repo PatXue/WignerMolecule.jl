@@ -3,4 +3,5 @@
 *.results.json
 class-opt
 .DS_store
+.vscode
 analysis/plots
