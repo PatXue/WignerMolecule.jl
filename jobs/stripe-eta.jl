@@ -12,7 +12,7 @@ jobname = "stripe-eta"
 
 L = 40
 tm.Lx = tm.Ly = L
-tm.sweeps = 50000
+tm.sweeps = 100000
 tm.thermalization = 0
 tm.binsize = 500
 tm.init_type = :stripe_s
