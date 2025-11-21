@@ -18,7 +18,7 @@ tm.binsize = 500
 tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 5, 20, 9)]...)
 tm.init_T = 10
 Ts = 0.5:0.5:7
-Ls = [20, 30, 40]
+Ls = [20, 40, 80]
 for L in Ls
     tm.Lx = tm.Ly = L
     for T in Ts
