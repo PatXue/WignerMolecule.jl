@@ -12,9 +12,9 @@ jobname = "stripe-eta-ground"
 
 L = 40
 tm.Lx = tm.Ly = L
-tm.sweeps = 100000
+tm.sweeps = 100
 tm.thermalization = 0
-tm.binsize = 500
+tm.binsize = 1
 tm.init_type = :stripe
 
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
