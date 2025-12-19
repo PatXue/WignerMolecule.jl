@@ -19,6 +19,7 @@ tm.bias = fm_bias(1.0)
 bias_type = typeof(tm.bias)
 
 tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 5, 20, 9)]...)
+tm.init_T = 10
 tm.T = 0.5
 tm.Lx = tm.Ly = 80
 Bs = 0.0:1.0:10.0
