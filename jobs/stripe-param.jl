@@ -31,7 +31,7 @@ for a in as
     task(tm)
 end
 
-job = JobInfo("$jobname", WignerMC{:Metropolis, Nothing};
+job = JobInfo("$jobname", WignerMC{:Metropolis_η, Nothing};
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
