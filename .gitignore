@@ -8,3 +8,7 @@ analysis/plots
 jobs/logs
 *.data
 *.results.json
+
+# Tex outputs
+*.pdf
+*synctex.gz

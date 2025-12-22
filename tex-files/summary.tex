@@ -1,0 +1,53 @@
+\documentclass{article}
+
+\title{Phases Progress Summary}
+
+\begin{document}
+
+\section{Ferromagnet}
+\subsection{Next Steps}
+\begin{itemize}
+    \item At high temperatures, the average spins are biased towards the x-direction
+    \begin{itemize}
+        \item Tested ground state energies for different directions, no difference
+        \item Averaged 10000\^2 random spins, doesn’t seem biased
+    \end{itemize}
+    \item Bias field behavior near transition point
+\end{itemize}
+
+\subsection{Results}
+\begin{itemize}
+    \item State is ordered below 4.5meV
+    \item Transition temperature does not seem affected by system size
+    \item At 80x80, can see spin waves (spin correlations peak off gamma)
+    \item However, still seems to have a transition at the same temperature, the spin correlation peak suddenly broadens
+    \item Initializing in ground state, no longer see spin waves
+\end{itemize}
+
+\section{Antiferromagnet-Ferroelectric}
+\subsection{Next Steps}
+\begin{itemize}
+    \item Try sweeping AFM-FE parameter space
+\end{itemize}
+\subsection{Result}
+\begin{itemize}
+    \item Orders weakly in annealed runs with no bias
+    \item With bias field, system seems to transition to phase at some finite bias field, doesn’t change with system size
+    \item Increasing temperature moves transition to higher field
+    \item Eta-only runs show strong ordering up to very high temperatures
+\end{itemize}
+
+\section{Stripe}
+\subsection{Next Steps}
+\begin{itemize}
+    \item In eta-only runs, etas order uniformly in x direction, and energy decreases as temperature increases
+    \item Also happens in bias field runs
+    \item Also happens in eta-only runs initialized in ground state
+    \item Can see M eta correlator fall from ground state value to 0 in MC time
+    \item Try different coupling parameters to see if the uniform eta-x phase appears
+    \item In eta-only runs, eta correlator decreases with am, and increases with epsilon
+    \item Varying the strength of only the J+ coupling, seems increasing its magnitude strengthens the uniform phase
+    \item Try cluster or different eta sampling?
+\end{itemize}
+
+\end{document}
