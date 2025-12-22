@@ -19,10 +19,20 @@ tm.init_type = :stripe
 
 param_d = load_object("all_params.jld2")
 tm.T = 0.1
-as = 3:8
-for a in as
-    tm.a_m = a
-    raw_params = param_d[(45, 5, 20, a)]
+params = Iterators.flatten((
+    [(4, e) for e in 5:11],
+    [(5, e) for e in 5:8],
+    [(6, e) for e in 5:8],
+    [(7, e) for e in 5:7],
+    [(8, 5), (9, 5)]
+),)
+for param in params
+    tm.a_m = param[1]
+    tm.epsilon = param[2]
+    raw_params = collect(param_d[(45, param[2], 20, param[1])])
+    for i in (1, 2, 3, 6, 8)
+        raw_params[i] = real(raw_params[i])
+    end
     norm_params = raw_params ./ norm(raw_params)
     tm.wigparams = WignerParams(norm_params...)
 
