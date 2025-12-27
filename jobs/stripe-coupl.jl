@@ -19,11 +19,11 @@ tm.init_type = :stripe
 
 param_d = load_object("all_params.jld2")
 tm.T = 0.1
-mults = 0.0:0.1:2.0
+mults = Iterators.flatten((0.0:0.1:1.5, 2.0:0.5:10.0),)
 for mult in mults
     tm.mult = mult
     raw_params = collect(param_d[(45, 5, 20, 7)])
-    raw_params[4] *= mult
+    raw_params[5] *= mult
     norm_params = raw_params ./ norm(raw_params)
     tm.wigparams = WignerParams(norm_params...)
 
