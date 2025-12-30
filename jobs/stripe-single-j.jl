@@ -17,11 +17,12 @@ tm.thermalization = 50000
 tm.binsize = 500
 tm.init_type = :stripe
 Ts = 0.0:0.2:2.0
+min_T = 0.05
 
 tm.J = :EAM_Re
 tm.wigparams = WignerParams(0, 0, 0, 1.0, 0, 0, 0, 0)
 for T in Ts
-    tm.T = T
+    tm.T = max(T, min_T)
     spins_dir = "$jobname.data/$(current_task_name(tm))"
     tm.outdir = spins_dir
     task(tm)
@@ -29,7 +30,7 @@ end
 tm.J = :EAM_Im
 tm.wigparams = WignerParams(0, 0, 0, 1.0im, 0, 0, 0, 0)
 for T in Ts
-    tm.T = T
+    tm.T = max(T, min_T)
     spins_dir = "$jobname.data/$(current_task_name(tm))"
     tm.outdir = spins_dir
     task(tm)
@@ -38,7 +39,7 @@ end
 tm.J = :PM_Re
 tm.wigparams = WignerParams(0, 0, 0, 0, 1.0, 0, 0, 0)
 for T in Ts
-    tm.T = T
+    tm.T = max(T, min_T)
     spins_dir = "$jobname.data/$(current_task_name(tm))"
     tm.outdir = spins_dir
     task(tm)
@@ -46,7 +47,7 @@ end
 tm.J = :PM_Im
 tm.wigparams = WignerParams(0, 0, 0, 0, 1.0im, 0, 0, 0)
 for T in Ts
-    tm.T = T
+    tm.T = max(T, min_T)
     spins_dir = "$jobname.data/$(current_task_name(tm))"
     tm.outdir = spins_dir
     task(tm)
