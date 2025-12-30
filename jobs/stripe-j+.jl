@@ -8,7 +8,7 @@ using LinearAlgebra
 using WignerMolecule
 
 tm = TaskMaker()
-jobname = "stripe-j+"
+jobname = "stripe-single-j"
 
 L = 40
 tm.Lx = tm.Ly = L
@@ -18,7 +18,7 @@ tm.binsize = 500
 tm.init_type = :stripe
 Ts = 0.0:0.2:2.0
 
-tm.J = :Re
+tm.J = :EAM_Re
 tm.wigparams = WignerParams(0, 0, 0, 1.0, 0, 0, 0, 0)
 for T in Ts
     tm.T = T
@@ -26,9 +26,25 @@ for T in Ts
     tm.outdir = spins_dir
     task(tm)
 end
-
-tm.J = :Im
+tm.J = :EAM_Im
 tm.wigparams = WignerParams(0, 0, 0, 1.0im, 0, 0, 0, 0)
+for T in Ts
+    tm.T = T
+    spins_dir = "$jobname.data/$(current_task_name(tm))"
+    tm.outdir = spins_dir
+    task(tm)
+end
+
+tm.J = :PM_Re
+tm.wigparams = WignerParams(0, 0, 0, 0, 1.0, 0, 0, 0)
+for T in Ts
+    tm.T = T
+    spins_dir = "$jobname.data/$(current_task_name(tm))"
+    tm.outdir = spins_dir
+    task(tm)
+end
+tm.J = :PM_Im
+tm.wigparams = WignerParams(0, 0, 0, 0, 1.0im, 0, 0, 0)
 for T in Ts
     tm.T = T
     spins_dir = "$jobname.data/$(current_task_name(tm))"
