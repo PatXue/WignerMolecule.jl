@@ -49,7 +49,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     E = 0.0
     for y in 1:Ly
         for x in 1:Lx
-            E += E(mc, x, y)
+            E += energy(mc, x, y)
         end
     end
     E /= 2N
