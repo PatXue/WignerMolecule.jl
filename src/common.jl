@@ -46,15 +46,15 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     measure!(ctx, :ηxy, sqrt(η[1]^2 + η[2]^2))
 
     # Energy per lattice site
-    energy = 0.0
+    E = 0.0
     for y in 1:Ly
         for x in 1:Lx
-            energy += energy(mc, x, y)
+            E += E(mc, x, y)
         end
     end
-    energy /= 2N
-    measure!(ctx, :Energy, energy)
-    measure!(ctx, :Energy2, energy^2)
+    E /= 2N
+    measure!(ctx, :Energy, E)
+    measure!(ctx, :Energy2, E^2)
 
     update_fourier!(mc)
     measure!(ctx, :spink_corrs, mc.spink_corrs)
