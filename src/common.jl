@@ -49,10 +49,10 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     energy = 0.0
     for y in 1:Ly
         for x in 1:Lx
-            energy += half_energy(mc, x, y)
+            energy += energy(mc, x, y)
         end
     end
-    energy /= N
+    energy /= 2N
     measure!(ctx, :Energy, energy)
     measure!(ctx, :Energy2, energy^2)
 

@@ -59,6 +59,10 @@ function energy(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
     return energy_nobias(mc, s, η, x, y) + (s ⋅ mc.bias(x, y))
 end
 
+function energy(mc::WignerMC, x, y)
+    return energy(mc, mc.spins[x,y], mc.ηs[x,y], x, y)
+end
+
 # Calculate the energy contribution of a site (x, y), considering only half of
 # its bonds (avoids double counting when calculating total energy)
 function half_energy_nobias(mc::WignerMC, x, y)
