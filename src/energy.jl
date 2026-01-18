@@ -1,6 +1,7 @@
 const ω::ComplexF64 = exp(im * 2π/3)
 
-function bond_energy(mc::WignerMC, s::SpinVector, η::SpinVector, ν, pos)
+function bond_energy(mc::WignerMC, s::SpinVector, η::SpinVector,
+                     sj::SpinVector, ηj::SpinVector, ν)
     # Coupling energies
     J_SS = mc.params.J_SS
     J_EzEz_SS = mc.params.J_EzEz_SS
@@ -10,9 +11,6 @@ function bond_energy(mc::WignerMC, s::SpinVector, η::SpinVector, ν, pos)
     J_EMEM_SS = mc.params.J_EMEM_SS
     J_EMEP = mc.params.J_EMEP
     J_EMEM = mc.params.J_EMEM
-
-    sj = mc.spins[pos...]
-    ηj = mc.ηs[pos...]
 
     # η raising and lowering operators
     η_m = η[1] + 1.0im*η[2]
@@ -67,11 +65,16 @@ end
 # its bonds (avoids double counting when calculating total energy)
 function half_energy_nobias(mc::WignerMC, x, y)
     # Nearest neighbor lattice positions
-    nns = ((x+1, y), (x+1, y-1), (x, y-1))
+    nns = ((x+1, y), (x-1, y+1), (x, y-1))
     E = 0.0
+    s = mc.spins[x, y]
+    η = mc.ηs[x, y]
     for j in eachindex(nns)
         ν = ω^(j-1)
-        E += bond_energy(mc, mc.spins[x, y], mc.ηs[x, y], ν, nns[j])
+        nn = nns[j]
+        sj = mc.spins[nn...]
+        ηj = mc.ηs[nn...]
+        E += bond_energy(mc, s, η, sj, ηj, ν)
     end
     return E
 end
