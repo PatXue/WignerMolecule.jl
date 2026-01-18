@@ -38,12 +38,25 @@ end
 # Calculate the energy at a lattice site (x, y) if it had spin s and
 # pseudospin η, with no bias field
 function energy_nobias(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
-    # Nearest neighbor lattice positions
-    nns = ((x+1, y), (x+1, y-1), (x, y-1), (x-1, y), (x-1, y+1), (x, y+1))
     E = 0.0
+    # Nearest neighbor lattice positions along a1,a2,a3
+    nns = ((x+1, y), (x-1, y+1), (x, y-1))
     for j in eachindex(nns)
         ν = ω^(j-1)
-        E += bond_energy(mc, s, η, ν, nns[j])
+        nn = nns[j]
+        sj = mc.spins[nn...]
+        ηj = mc.ηs[nn...]
+        E += bond_energy(mc, s, η, sj, ηj, ν)
+    end
+
+    # Nearest neighbor lattice positions along -a1,-a2,-a3
+    nns = ((x-1, y), (x+1, y-1), (x, y+1))
+    for j in eachindex(nns)
+        ν = ω^(j-1)
+        nn = nns[j]
+        sj = mc.spins[nn...]
+        ηj = mc.ηs[nn...]
+        E += bond_energy(mc, sj, ηj, s, η, ν)
     end
     return E
 end
