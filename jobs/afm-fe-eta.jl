@@ -23,7 +23,7 @@ tm.wigparams = WignerParams(norm_params...)
 Ts = 0.0:0.25:10.0
 for T in Ts
     # tm.thermalization = T < 0.3 ? 40000 : 20000
-    tm.T = max(T, 0.01)
+    tm.T = max(T, 0.1)
     spins_dir = "$jobname.data/$(current_task_name(tm))"
     tm.outdir = spins_dir
     task(tm)
