@@ -13,14 +13,14 @@ jobname = "afm-fe-eta"
 L = 20
 tm.Lx = tm.Ly = L
 tm.sweeps = 30000
-tm.thermalization = 0
+tm.thermalization = 10000
 tm.binsize = 500
 tm.init_type = :afm_fe_s
 
 raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ts = 0.0:0.25:10.0
+Ts = 0.0:0.5:9.5
 for T in Ts
     # tm.thermalization = T < 0.3 ? 40000 : 20000
     tm.T = max(T, 0.1)
