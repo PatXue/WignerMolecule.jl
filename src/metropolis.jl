@@ -10,12 +10,12 @@ function Carlo.sweep!(mc::WignerMC{:Metropolis}, ctx::Carlo.MCContext)
 
             old_s = mc.spins[x, y]
             old_η = mc.ηs[x, y]
-            old_E = energy(mc, old_s, old_η, x, y)
+            old_E = energy(mc, calc_B(mc, ctx), x, y)
             new_s = new_η = rand(rng, SpinVector)
             if type == :s
-                new_E = energy(mc, new_s, old_η, x, y)
+                new_E = energy(mc, new_s, old_η, calc_B(mc, ctx), x, y)
             elseif type == :η
-                new_E = energy(mc, old_s, new_η, x, y)
+                new_E = energy(mc, old_s, new_η, calc_B(mc, ctx), x, y)
             end
             ΔE = new_E - old_E
 
@@ -45,9 +45,9 @@ function Carlo.sweep!(mc::WignerMC{:Metropolis_s}, ctx::Carlo.MCContext)
 
         old_s = mc.spins[x, y]
         old_η = mc.ηs[x, y]
-        old_E = energy(mc, old_s, old_η, x, y)
+        old_E = energy(mc, calc_B(mc, ctx), x, y)
         new_s = rand(rng, SpinVector)
-        new_E = energy(mc, new_s, old_η, x, y)
+        new_E = energy(mc, new_s, old_η, calc_B(mc, ctx), x, y)
         ΔE = new_E - old_E
 
         # Probability of accepting spin flip (for ΔE ≤ 0 always accept)
@@ -71,9 +71,9 @@ function Carlo.sweep!(mc::WignerMC{:Metropolis_η}, ctx::Carlo.MCContext)
 
         old_s = mc.spins[x, y]
         old_η = mc.ηs[x, y]
-        old_E = energy(mc, old_s, old_η, x, y)
+        old_E = energy(mc, calc_B(mc, ctx), x, y)
         new_η = rand(rng, SpinVector)
-        new_E = energy(mc, old_s, new_η, x, y)
+        new_E = energy(mc, old_s, new_η, calc_B(mc, ctx), x, y)
         ΔE = new_E - old_E
 
         # Probability of accepting spin flip (for ΔE ≤ 0 always accept)
