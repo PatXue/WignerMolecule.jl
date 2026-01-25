@@ -67,8 +67,8 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     return nothing
 end
 
-function Carlo.register_evaluables(::Type{WignerMC{AlgType, B}}, eval::AbstractEvaluator,
-                                   params::AbstractDict) where {AlgType, B}
+function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::AbstractEvaluator,
+                                   params::AbstractDict) where {AlgType, BiasType}
     T = params[:T]
     N = params[:Lx] * params[:Ly]
     evaluate!(eval, :χ, (:Mag, :Mag2)) do mag, mag2
