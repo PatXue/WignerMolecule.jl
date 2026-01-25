@@ -99,3 +99,11 @@ function calc_temp(mc::WignerMC, ctx::Carlo.MCContext)
         return mc.init_T + (mc.T - mc.init_T) * ctx.sweeps/ctx.thermalization_sweeps
     end
 end
+
+function calc_B(mc::WignerMC, ctx::Carlo.MCContext)
+    if is_thermalized(ctx)
+        return mc.B
+    else
+        return mc.init_B + (mc.B - mc.init_B) * ctx.sweeps/ctx.thermalization_sweeps
+    end
+end
