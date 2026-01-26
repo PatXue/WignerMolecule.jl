@@ -15,11 +15,16 @@ tm.Lx = tm.Ly = L
 tm.sweeps = 50000
 tm.thermalization = 50000
 tm.binsize = 500
+tm.init_type = :stripe
+
+stripe_bias = (x, _) -> [0, 0, (-1)^(div(x, 2))]
+bias_type = typeof(stripe_bias)
+tm.B = 0.0
+tm.init_B = 10.0
 
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-tm.init_T = 10
 Ts = 0.1:0.1:2.0
 for T in Ts
     tm.T = T
