@@ -12,8 +12,9 @@ tm = TaskMaker()
 jobname = "stripe-bias"
 
 tm.sweeps = 50000
-tm.thermalization = 100000
+tm.thermalization = 50000
 tm.binsize = 500
+tm.init_type = :stripe
 
 stripe_bias(x, _) = [0, 0, (-1)^(div(x, 2))]
 tm.bias = stripe_bias
