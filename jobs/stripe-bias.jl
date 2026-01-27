@@ -5,6 +5,7 @@ using Carlo
 using Carlo.JobTools
 using LinearAlgebra
 using JLD2
+using JSON
 using WignerMolecule
 
 tm = TaskMaker()
@@ -14,24 +15,24 @@ tm.sweeps = 50000
 tm.thermalization = 100000
 tm.binsize = 500
 
-stripe_bias(B) = (x, _) -> [0, 0, B * (-1)^(div(x, 2))]
-tm.bias = stripe_bias(1.0)
-bias_type = typeof(tm.bias)
+stripe_bias(x, _) = [0, 0, (-1)^(div(x, 2))]
+tm.bias = stripe_bias
+bias_type = typeof(stripe_bias)
+JSON.lower(f::bias_type) = f(1, 1)
 
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-tm.init_T = 10
 tm.T = 0.1
-Ls = [20, 40, 80]
-Bs = 0.0:0.05:0.5
+tm.init_B = 10.0
+Ls = [20]
+Bs = 0.0:0.1:1.0
 for L in Ls
     tm.Lx = tm.Ly = L
     for B in Bs
         spins_dir = "$jobname.data/$(current_task_name(tm))"
         tm.outdir = spins_dir
         tm.B = B
-        tm.bias = stripe_bias(B)
         task(tm)
     end
 end
