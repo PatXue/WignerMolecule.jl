@@ -14,7 +14,7 @@ jobname = "stripe-anneal"
 L = 20
 tm.Lx = tm.Ly = L
 tm.sweeps = 50000
-tm.thermalization = 50000
+tm.thermalization = 75000
 tm.binsize = 500
 tm.init_type = :stripe
 
