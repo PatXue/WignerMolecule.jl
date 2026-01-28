@@ -13,9 +13,6 @@ jobname = "stripe-anneal"
 
 L = 20
 tm.Lx = tm.Ly = L
-tm.sweeps = 50000
-tm.thermalization = 75000
-tm.binsize = 500
 tm.init_type = :stripe
 
 stripe_bias(x, _) = [0, 0, (-1)^(div(x, 2))]
@@ -28,12 +25,19 @@ JSON.lower(f::bias_type) = f(1, 1)
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ts = 0.1:0.1:2.0
-for T in Ts
-    tm.T = T
-    spins_dir = "$jobname.data/$(current_task_name(tm))"
-    tm.outdir = spins_dir
-    task(tm)
+Ls = [20, 40, 80]
+Ts = 0.1:0.1:1.0
+for L in Ls
+    tm.Lx = tm.Ly = L
+    tm.sweeps = 100000 * div(L, 20)
+    tm.thermalization = 100000 * div(L, 20)
+    tm.binsize = 500
+    for T in Ts
+        tm.T = T
+        spins_dir = "$jobname.data/$(current_task_name(tm))"
+        tm.outdir = spins_dir
+        task(tm)
+    end
 end
 
 job = JobInfo("$jobname", WignerMC{:Metropolis, bias_type};
