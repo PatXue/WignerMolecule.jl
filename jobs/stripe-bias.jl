@@ -24,12 +24,12 @@ JSON.lower(f::bias_type) = f(1, 1)
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-tm.T = 0.6
 tm.init_B = 10.0
-Ls = [20]
+tm.Lx = tm.Ly = 20
+Ts = [0.5, 0.6, 0.7]
 Bs = 0.0:0.1:1.0
-for L in Ls
-    tm.Lx = tm.Ly = L
+for T in Ts
+    tm.T = T
     for B in Bs
         spins_dir = "$jobname.data/$(current_task_name(tm))"
         tm.outdir = spins_dir
