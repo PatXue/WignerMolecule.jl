@@ -27,7 +27,7 @@ tm.wigparams = WignerParams(norm_params...)
 tm.init_B = 10.0
 tm.Lx = tm.Ly = 20
 Ts = [0.5, 0.6, 0.7]
-Bs = 0.0:0.1:1.0
+Bs = 0.0:0.05:0.5
 for T in Ts
     tm.T = T
     for B in Bs
