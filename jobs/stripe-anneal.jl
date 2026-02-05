@@ -31,7 +31,10 @@ for L in Ls
     tm.Lx = tm.Ly = L
     tm.sweeps = 100000 * div(L, 20)
     tm.thermalization = 100000 * div(L, 20)
-    tm.binsize = div(tm.sweeps, 100)
+    if L == 80
+        tm.sweeps = 2 * tm.sweeps
+    end
+    tm.binsize = div(tm.thermalization, 100)
     for T in Ts
         tm.T = T
         spins_dir = "$jobname.data/$(current_task_name(tm))"
