@@ -104,6 +104,7 @@ function calc_B(mc::WignerMC, ctx::Carlo.MCContext)
     if is_thermalized(ctx)
         return mc.B
     else
-        return mc.init_B + (mc.B - mc.init_B) * ctx.sweeps/ctx.thermalization_sweeps
+        ΔB = (mc.B - mc.init_B) * ctx.sweeps/ctx.thermalization_sweeps * 2
+        return mc.init_B + sign(ΔB) * min(abs(ΔB), abs(mc.B - mc.init_B))
     end
 end
