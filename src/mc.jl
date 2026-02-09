@@ -28,8 +28,6 @@ struct WignerMC{AlgType, BiasType} <: AbstractMC
 
     spinks::Array{ComplexF64, 3}    # Fourier transformed spins
     ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
-    spink_corrs::Matrix{Float64}    # Correlations of Fourier spins
-    ηk_corrs::Array{ComplexF64, 4}  # Correlations of Fourier ηs
 
     outdir::String # Output directory for local spin current plots
     savefreq::Int  # No. of sweeps between saving local spin current
@@ -43,8 +41,6 @@ function WignerMC{AlgType, BiasType}(; T=1.0, init_T=1.0, wigparams=default_para
         T, init_T, wigparams, B, init_B, bias, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
-        Matrix{Float64}(undef, (Lx, Ly)),
-        Array{ComplexF64}(undef, (Lx, Ly, 3, 3)),
         outdir, savefreq
     )
 end
