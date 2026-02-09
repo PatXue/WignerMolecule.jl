@@ -108,3 +108,33 @@ function calc_B(mc::WignerMC, ctx::Carlo.MCContext)
         return mc.init_B + sign(ΔB) * min(abs(ΔB), abs(mc.B - mc.init_B))
     end
 end
+
+function gen_path(Lx, Ly)
+    pos = (1, 1)
+    path = [pos]
+    while pos[1] < div(Lx, 2) + 1
+        pos = pos .+ (1, 0)
+        push!(path, pos)
+    end
+    M_pos = length(path)
+    while pos[2] < div(Ly, 3, RoundNearest) + 1
+        pos = pos .+ (1, 2)
+        push!(path, pos)
+    end
+    K_pos = length(path)
+    while pos[1] > 2
+        pos = pos .- (2, 1)
+        push!(path, pos)
+    end
+    return (path, M_pos, K_pos)
+end
+
+Γ(corrs) = abs(corrs[1,1])
+function M(corrs)
+    Lx, _ = size(corrs[i])
+    return abs(corrs[i][div(Lx, 2)+1, 1])
+end
+function half_M(corrs)
+    Lx, _ = size(corrs[i])
+    return abs(corrs[i][div(Lx, 4)+1, 1])
+end
