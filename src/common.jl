@@ -57,8 +57,16 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     measure!(ctx, :Energy2, E^2)
 
     update_fourier!(mc)
-    measure!(ctx, :spink_corrs, mc.spink_corrs)
-    measure!(ctx, :etak_corrs, mc.ηk_corrs)
+    path, M_pos, K_pos = gen_path(Lx, Ly)
+    ηk_path = mc.ηks[path...]
+    measure!(ctx, :ηk_Γ, Γ(mc.ηks))
+    measure!(ctx, :ηk_M, M(mc.ηks))
+    measure!(ctx, :ηk_half_M, half_M(mc.ηks))
+    measure!(ctx, :ηk_path, ηk_path)
+    measure!(ctx, :ηk_corr_Γ, Γ(mc.ηks) * Γ(mc.ηks)')
+    measure!(ctx, :ηk_corr_M, M(mc.ηks) * M(mc.ηks)')
+    measure!(ctx, :ηk_corr_half_M, half_M(mc.ηks) * half_M(mc.ηks)')
+    measure!(ctx, :ηk_corr_path, adjoint.(ηk_path) .* ηk_path)
 
     if is_save_sweep(mc, ctx)
         save_spin(mc, ctx)
