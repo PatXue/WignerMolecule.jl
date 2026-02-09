@@ -68,12 +68,6 @@ function update_fourier!(mc::WignerMC)
     mc.spinks ./= length(mc.spins)
     fft!(mc.ηks, (1, 2))
     mc.ηks ./= length(mc.ηs)
-    mc.spink_corrs .= sum(abs2.(mc.spinks), dims=3)
-    ηk_iter = eachslice(mc.ηks, dims=(1, 2))
-    for I in eachindex(ηk_iter)
-        η = ηk_iter[I]
-        mc.ηk_corrs[I, :, :] .= η .* η'
-    end
     return nothing
 end
 
