@@ -13,6 +13,27 @@ end
 # Default WignerParams values (for testing)
 const default_params = WignerParams(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 
+# Γ-M-K-Γ path through BZ
+function gen_path(Lx, Ly)
+    pos = (1, 1)
+    path = [pos]
+    while pos[1] < div(Lx, 2) + 1
+        pos = pos .+ (1, 0)
+        push!(path, pos)
+    end
+    M_pos = length(path)
+    while pos[2] < div(Ly, 3, RoundNearest) + 1
+        pos = pos .+ (1, 2)
+        push!(path, pos)
+    end
+    K_pos = length(path)
+    while pos[1] > 2
+        pos = pos .- (2, 1)
+        push!(path, pos)
+    end
+    return (path, M_pos, K_pos)
+end
+
 const SpinVector = SVector{3, Float64}
 # Note: Using temperature in units of energy (k_B = 1)
 struct WignerMC{AlgType, BiasType} <: AbstractMC
@@ -28,6 +49,8 @@ struct WignerMC{AlgType, BiasType} <: AbstractMC
 
     spinks::Array{ComplexF64, 3}    # Fourier transformed spins
     ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
+    spink_path::Matrix{ComplexF64}
+    ηk_path::Matrix{ComplexF64}
 
     outdir::String # Output directory for local spin current plots
     savefreq::Int  # No. of sweeps between saving local spin current
@@ -37,10 +60,13 @@ function WignerMC{AlgType, BiasType}(; T=1.0, init_T=1.0, wigparams=default_para
     B, init_B, bias, Lx=40, Ly=40, outdir=".", savefreq=0) where {AlgType, BiasType}
     init_spins = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
+    path, _, _ = gen_path(Lx, Ly)
     return WignerMC{AlgType, BiasType}(
         T, init_T, wigparams, B, init_B, bias, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
+        Matrix{ComplexF64}(undef, (3, length(path))),
+        Matrix{ComplexF64}(undef, (3, length(path))),
         outdir, savefreq
     )
 end
