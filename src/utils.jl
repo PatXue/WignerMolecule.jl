@@ -132,3 +132,5 @@ function half_M(corrs)
     Lx, _ = size(corrs[i])
     return corrs[div(Lx, 4)+1, 1, :]
 end
+
+norm2(v) = sum(abs2.(v))
