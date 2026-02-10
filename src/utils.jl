@@ -125,11 +125,11 @@ end
 
 Γ(corrs) = corrs[1,1,:]
 function M(corrs)
-    Lx, _ = size(corrs[i])
+    Lx, _ = size(corrs)
     return corrs[div(Lx, 2)+1, 1, :]
 end
 function half_M(corrs)
-    Lx, _ = size(corrs[i])
+    Lx, _ = size(corrs)
     return corrs[div(Lx, 4)+1, 1, :]
 end
 
