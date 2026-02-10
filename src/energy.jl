@@ -67,7 +67,7 @@ function energy(mc::WignerMC{AlgType, Nothing}, s::SpinVector, η::SpinVector,
 end
 
 function energy(mc::WignerMC, s::SpinVector, η::SpinVector, B, x, y)
-    return energy_nobias(mc, s, η, x, y) + B * (s ⋅ mc.bias(x, y))
+    return energy_nobias(mc, s, η, x, y) - B * (s ⋅ mc.bias(x, y))
 end
 
 function energy(mc::WignerMC, B, x, y)
@@ -97,7 +97,7 @@ function half_energy(mc::WignerMC{AlgType, Nothing}, _, x, y) where {AlgType}
 end
 
 function half_energy(mc::WignerMC, B, x, y)
-    return half_energy_nobias(mc, x, y) + B * (mc.spins[x, y] ⋅ mc.bias(x, y))
+    return half_energy_nobias(mc, x, y) - B * (mc.spins[x, y] ⋅ mc.bias(x, y))
 end
 
 # Calculate the energy difference at a lattice site (x, y) if the spin changed
