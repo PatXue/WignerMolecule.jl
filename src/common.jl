@@ -58,7 +58,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
 
     update_fourier!(mc)
     path, M_pos, K_pos = gen_path(Lx, Ly)
-    ηk_path = mc.ηks[path...]
+    ηk_path = [mc.ηks[x, y, :] for (x, y) in path]
     measure!(ctx, :ηk_Γ, Γ(mc.ηks))
     measure!(ctx, :ηk_M, M(mc.ηks))
     measure!(ctx, :ηk_half_M, half_M(mc.ηks))
@@ -67,7 +67,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     measure!(ctx, :ηk_corr_M, M(mc.ηks) * M(mc.ηks)')
     measure!(ctx, :ηk_corr_half_M, half_M(mc.ηks) * half_M(mc.ηks)')
     measure!(ctx, :ηk_corr_path, ηk_path .* adjoint.(ηk_path))
-    spink_path = mc.spinks[path...]
+    spink_path = [mc.spinks[x, y, :] for (x, y) in path]
     measure!(ctx, :sk_Γ, Γ(mc.spinks))
     measure!(ctx, :sk_M, M(mc.spinks))
     measure!(ctx, :sk_half_M, half_M(mc.spinks))

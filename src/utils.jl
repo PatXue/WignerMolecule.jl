@@ -123,12 +123,12 @@ function gen_path(Lx, Ly)
     return (path, M_pos, K_pos)
 end
 
-Γ(corrs) = abs(corrs[1,1])
+Γ(corrs) = corrs[1,1,:]
 function M(corrs)
     Lx, _ = size(corrs[i])
-    return abs(corrs[i][div(Lx, 2)+1, 1])
+    return corrs[div(Lx, 2)+1, 1, :]
 end
 function half_M(corrs)
     Lx, _ = size(corrs[i])
-    return abs(corrs[i][div(Lx, 4)+1, 1])
+    return corrs[div(Lx, 4)+1, 1, :]
 end
