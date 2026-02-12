@@ -93,6 +93,7 @@ function save_spin(mc::WignerMC, ctx::Carlo.MCContext)
     end
 end
 
+# Calculate temperature during thermalization
 function calc_temp(mc::WignerMC, ctx::Carlo.MCContext)
     if is_thermalized(ctx)
         return mc.T
@@ -100,7 +101,7 @@ function calc_temp(mc::WignerMC, ctx::Carlo.MCContext)
         return mc.init_T + (mc.T - mc.init_T) * ctx.sweeps/ctx.thermalization_sweeps
     end
 end
-
+# Calculate bias field during thermalization
 function calc_B(mc::WignerMC, ctx::Carlo.MCContext)
     if is_thermalized(ctx)
         return mc.B
@@ -110,6 +111,7 @@ function calc_B(mc::WignerMC, ctx::Carlo.MCContext)
     end
 end
 
+# Indexing functions for Γ and M point correlators
 Γ(corrs) = corrs[1,1,:]
 function M(corrs)
     Lx, _ = size(corrs)
@@ -118,6 +120,18 @@ end
 function half_M(corrs)
     Lx, _ = size(corrs)
     return corrs[div(Lx, 4)+1, 1, :]
+end
+
+# Calculate skyrmion number
+function calc_Q(spins)
+    Q = 0.0
+    for I in eachindex(spins)
+        x, y = Tuple(I)
+        s = spins[I]
+        Q += s ⋅ (spins[x+1,y] × spins[x,y+1])
+        Q += s ⋅ (spins[x+1,y-1] × spins[x+1,y])
+    end
+    return Q
 end
 
 norm2(v) = sum(abs2.(v))
