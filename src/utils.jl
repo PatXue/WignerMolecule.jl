@@ -131,7 +131,7 @@ function calc_Q(spins)
         Q += s ⋅ (spins[x+1,y] × spins[x,y+1])
         Q += s ⋅ (spins[x+1,y-1] × spins[x+1,y])
     end
-    return Q
+    return Q / (4π)
 end
 
 norm2(v) = sum(abs2.(v))
