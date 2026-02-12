@@ -68,13 +68,13 @@ function update_fourier!(mc::WignerMC)
     mc.spinks ./= length(mc.spins)
     fft!(mc.ηks, (1, 2))
     mc.ηks ./= length(mc.ηs)
-    path, _, _ = gen_path(size(mc.spins)...)
-    i = 1
-    for (x, y) in path
-        mc.spink_path[:, i] .= mc.spinks[x, y, :]
-        mc.ηk_path[:, i] .= mc.ηks[x, y, :]
-        i += 1
-    end
+    # path, _, _ = gen_path(size(mc.spins)...)
+    # i = 1
+    # for (x, y) in path
+    #     mc.spink_path[:, i] .= mc.spinks[x, y, :]
+    #     mc.ηk_path[:, i] .= mc.ηks[x, y, :]
+    #     i += 1
+    # end
     return nothing
 end
 
