@@ -74,6 +74,10 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     measure!(ctx, :sk_corr_half_M, norm2(half_M(mc.spinks)))
     # measure!(ctx, :sk_corr_path, norm2.(mc.spink_path))
 
+    Q = calc_Q(mc.spins)
+    measure!(ctx, :Q, Q)
+    measure!(ctx, :Q2, Q^2)
+
     if is_save_sweep(mc, ctx)
         save_spin(mc, ctx)
     end
@@ -91,6 +95,10 @@ function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::Ab
 
     evaluate!(eval, :HeatCap, (:Energy2, :Energy)) do E2, E
         return N * (E2 - E^2) / T^2
+    end
+
+    evaluate!(eval, :ChiQ, (:Q2, :Q)) do Q2, Q
+        return N * (Q2 - Q^2) / T^2
     end
 
     return nothing
