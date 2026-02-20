@@ -8,7 +8,7 @@ using JSON
 using WignerMolecule
 
 tm = TaskMaker()
-jobname = "heisen"
+jobname = "heisen-bias"
 tm.init_type = :const
 
 fm_bias(_, _) = [0, 0, 1]
@@ -17,7 +17,7 @@ bias_type = typeof(fm_bias)
 tm.init_B = 10.0
 JSON.lower(f::bias_type) = f(1, 1)
 
-tm.wigparams = WignerParams(1, 0, 0, 0, 0, 0, 0, 0)
+tm.wigparams = WignerParams(-1, 0, 0, 0, 0, 0, 0, 0)
 tm.Lx = tm.Ly = 20
 Ls = [20]
 Ts = [4.5, 5.5, 6.5]
