@@ -10,10 +10,6 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "afm-fe-bias"
-
-tm.sweeps = 100000
-tm.thermalization = 100000
-tm.binsize = 1000
 tm.init_type = :afm_fe
 
 afm_bias(x, _) = [0, 0, (-1)^x]
@@ -26,11 +22,15 @@ raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
 tm.init_T = 10
-Ls = [20]
+Ls = [20, 40, 80]
 Ts = [0.2, 0.3, 0.4]
-Bs = 0.0:0.05:0.5
+Bs = 0.0:0.04:0.4
 for (B, T, L) in Iterators.product(Bs, Ts, Ls)
     tm.Lx = tm.Ly = L
+    tm.sweeps = 50000 * div(L, 20)
+    tm.thermalization = tm.sweeps
+    tm.binsize = div(tm.sweeps, 100)
+
     tm.T = T
     tm.B = B
     spins_dir = "$jobname.data/$(current_task_name(tm))"
