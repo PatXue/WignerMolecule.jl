@@ -20,7 +20,7 @@ JSON.lower(f::bias_type) = f(1, 1)
 
 tm.wigparams = WignerParams(-1, 0, 0, 0, 0, 0, 0, 0)
 tm.Lx = tm.Ly = 20
-Ls = [20]
+Ls = [20, 40, 80]
 Ts = 0.1:0.1:2.0
 for L in Ls
     tm.Lx = tm.Ly = L
