@@ -74,7 +74,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     measure!(ctx, :sk_corr_half_M, norm2(half_M(mc.spinks)))
     # measure!(ctx, :sk_corr_path, norm2.(mc.spink_path))
 
-    Q = calc_Q(mc.spins)
+    Q = calc_Q(mc.spins) / N
     measure!(ctx, :Q, Q)
     measure!(ctx, :Q2, Q^2)
 
