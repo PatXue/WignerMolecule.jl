@@ -88,17 +88,16 @@ end
 function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::AbstractEvaluator,
                                    params::AbstractDict) where {AlgType, BiasType}
     T = params[:T]
-    N = params[:Lx] * params[:Ly]
     evaluate!(eval, :χ, (:Mag, :Mag2)) do mag, mag2
-        return N / T * (mag2 - mag^2)
+        return (mag2 - mag^2) / T
     end
 
     evaluate!(eval, :HeatCap, (:Energy2, :Energy)) do E2, E
-        return N * (E2 - E^2) / T^2
+        return (E2 - E^2) / T^2
     end
 
     evaluate!(eval, :ChiQ, (:Q2, :Q)) do Q2, Q
-        return N * (Q2 - Q^2) / T^2
+        return (Q2 - Q^2) / T^2
     end
 
     return nothing
