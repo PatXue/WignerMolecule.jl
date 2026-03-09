@@ -21,7 +21,7 @@ JSON.lower(f::bias_type) = f(1, 1)
 tm.wigparams = WignerParams(-1, 0, 0, 0, 0, 0, 0, 0)
 tm.Lx = tm.Ly = 20
 Ls = [20, 40, 80]
-Ts = 0.1:0.1:2.0
+Ts = 0.6:0.05:1.5
 for L in Ls
     tm.Lx = tm.Ly = L
     tm.sweeps = 25000 * div(L, 20)
