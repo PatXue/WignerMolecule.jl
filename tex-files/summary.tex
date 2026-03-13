@@ -1,29 +1,34 @@
 \documentclass{article}
 
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+
 \title{Phases Progress Summary}
 
 \begin{document}
 
 \section{Ferromagnet}
-\subsection{Next Steps}
+\subsection{Zero-Field}
 \begin{itemize}
-    \item At high temperatures, the average spins are biased towards the x-direction
-    \begin{itemize}
-        \item Tested ground state energies for different directions, no difference
-        \item Averaged $10000^2$ random spins, doesn’t seem biased
-    \end{itemize}
-    \item Bias field behavior near transition point
-\end{itemize}
-
-\subsection{Results}
-\begin{itemize}
-    \item State is ordered below 4.5meV
+    \item State is ordered below $T=4.5$ meV, when initialized in ground state (high bias field),
+    also see heat capacity spike at that temperature
     \item Transition temperature does not seem affected by system size
-    \item At 80$\times$80, can see spin waves (spin correlations peak off $\Gamma$)
-    \item However, still seems to have a transition at the same temperature, the spin correlation peak suddenly broadens
-    \item Initializing in ground state, no longer see spin waves
+\end{itemize}
+\begin{center}
+    \includegraphics[width=0.75\textwidth]{fm_mag.png}\\
+    \includegraphics[width=0.75\textwidth]{fm_heatcap.png}
+\end{center}
+
+\subsection{Finite Bias Field}
+\begin{itemize}
+    \item Applying a constant bias field on the spins
+    \item Swept temperature below, at, and above transition (4.5, 5.5, 6.5 meV)
+    \item Varied system size between 20$\times$20, 40$\times$40, and 80$\times$80
+    \item At all system sizes, below transition temperature, $\eta_z$ is flat for
+    low fields
 \end{itemize}
 
+\newpage
 \section{Antiferromagnet-Ferroelectric}
 \subsection{Next Steps}
 \begin{itemize}
@@ -37,6 +42,7 @@
     \item Eta-only runs show strong ordering up to very high temperatures
 \end{itemize}
 
+\newpage
 \section{Stripe}
 \subsection{Next Steps}
 \begin{itemize}
