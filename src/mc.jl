@@ -57,7 +57,7 @@ struct WignerMC{AlgType, BiasType} <: AbstractMC
 end
 
 function WignerMC{AlgType, BiasType}(; T=1.0, init_T=1.0, wigparams=default_params,
-    B, init_B, bias, Lx=40, Ly=40, outdir=".", savefreq=0) where {AlgType, BiasType}
+    B=0.0, init_B=0.0, bias, Lx=40, Ly=40, outdir=".", savefreq=0) where {AlgType, BiasType}
     init_spins = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     path, _, _ = gen_path(Lx, Ly)
