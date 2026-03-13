@@ -4,10 +4,11 @@
 *Manifest.toml
 
 class-opt
-analysis/plots
 jobs/logs
 *.data
 *.results.json
+
+*.png
 
 # Tex outputs
 *.pdf
