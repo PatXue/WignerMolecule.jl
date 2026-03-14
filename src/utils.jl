@@ -57,6 +57,25 @@ function init_stripe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{Spi
     init_stripe_eta!(ηs)
 end
 
+function init_skyrm!(mc::WignerMC, xi; etatype=:const)
+    if etatype == :const
+        mc.ηs .= SpinVector(0, 0, 1)
+    else
+        rand!(mc.etas)
+    end
+
+    Lx, Ly = size(mc.spins)
+    X, Y = Lx/2, Ly/2
+    for (x, y) in Iterators.product(1:Lx, 1:Ly)
+        r = sqrt((x-X)^2 + (y-Y)^2)
+        if r > xi
+            mc.spins[x, y] = SpinVector(0, 0, -1)
+        else
+            mc.spins[x, y] = SpinVector(sin(πr/xi) * ((x-X)/r), sin(πr/xi) * ((y-Y)/r), cos(πr/xi))
+        end
+    end
+end
+
 # Perform Fourier transform on MC, updating preallocated spinks and ηks
 # matrices, as well as calculating momentum-space correlations
 function update_fourier!(mc::WignerMC)

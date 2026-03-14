@@ -1,7 +1,7 @@
 module WignerMolecule
 
 export WignerMC, WignerParams
-export total_energy
+export total_energy, init_skyrm!
 
 import Random.AbstractRNG
 import Random.default_rng
