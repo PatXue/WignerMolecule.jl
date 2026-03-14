@@ -101,11 +101,11 @@ function half_energy(mc::WignerMC, B, x, y)
 end
 
 # Calculate the total energy per lattice site
-function total_energy(mc::WignerMC)
+function total_energy(mc::WignerMC, B)
     tot_energy = 0.0
     for I in eachindex(mc.spins)
         x, y = Tuple(I)
-        tot_energy += half_energy(mc, mc.B, x, y)
+        tot_energy += half_energy(mc, B, x, y)
     end
     return tot_energy / length(mc.spins)
 end
