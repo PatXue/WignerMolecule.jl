@@ -1,7 +1,7 @@
 module WignerMolecule
 
 export WignerMC, WignerParams
-export energy, half_energy
+export total_energy
 
 import Random.AbstractRNG
 import Random.default_rng

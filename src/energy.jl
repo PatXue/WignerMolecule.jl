@@ -100,6 +100,16 @@ function half_energy(mc::WignerMC, B, x, y)
     return half_energy_nobias(mc, x, y) - B * (mc.spins[x, y] ⋅ mc.bias(x, y))
 end
 
+# Calculate the total energy per lattice site
+function total_energy(mc::WignerMC)
+    tot_energy = 0.0
+    for I in eachindex(mc.spins)
+        x, y = Tuple(I)
+        tot_energy += half_energy(mc, mc.B, x, y)
+    end
+    return tot_energy / length(mc.spins)
+end
+
 # Calculate the energy difference at a lattice site (x, y) if the spin changed
 # by s_diff
 function s_energydiff(mc::WignerMC, s_diff::SpinVector, x, y)
