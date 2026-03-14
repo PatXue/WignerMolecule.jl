@@ -105,7 +105,7 @@ function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::Ab
     end
 
     evaluate!(eval, :ChiQ, (:Q2, :Q)) do Q2, Q
-        return N * (Q2 - Q^2) / T^2
+        return N * (Q2 - Q^2)
     end
 
     return nothing
