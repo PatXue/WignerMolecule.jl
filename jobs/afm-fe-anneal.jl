@@ -10,10 +10,6 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "afm-fe-anneal"
-
-tm.sweeps = 50000
-tm.thermalization = 50000
-tm.binsize = div(tm.sweeps, 100)
 tm.init_type = :afm_fe
 
 afm_bias(x, _) = [0, 0, (-1)^x]
@@ -27,9 +23,12 @@ raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
 Ts = 0.05:0.05:0.6
-Ls = [20]
+Ls = [20, 40, 80]
 for L in Ls
     tm.Lx = tm.Ly = L
+    tm.sweeps = 50000 * div(L, 20)
+    tm.thermalization = tm.sweeps
+    tm.binsize = div(tm.sweeps, 100)
     for T in Ts
         tm.T = max(T, 0.01)
         task(tm)
