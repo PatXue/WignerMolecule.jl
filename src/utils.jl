@@ -59,9 +59,9 @@ end
 
 function init_skyrm!(mc::WignerMC, xi; etatype=:const)
     if etatype == :const
-        mc.ηs .= SpinVector(0, 0, 1)
+        fill!(mc.ηs, SpinVector(0, 0, 1))
     else
-        rand!(mc.etas)
+        rand!(mc.ηs)
     end
 
     Lx, Ly = size(mc.spins)
@@ -71,7 +71,7 @@ function init_skyrm!(mc::WignerMC, xi; etatype=:const)
         if r > xi
             mc.spins[x, y] = SpinVector(0, 0, -1)
         else
-            mc.spins[x, y] = SpinVector(sin(πr/xi) * ((x-X)/r), sin(πr/xi) * ((y-Y)/r), cos(πr/xi))
+            mc.spins[x, y] = SpinVector(sin(π*r/xi) * ((x-X)/r), sin(π*r/xi) * ((y-Y)/r), cos(π*r/xi))
         end
     end
 end
