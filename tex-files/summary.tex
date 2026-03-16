@@ -10,7 +10,7 @@
 \section{Ferromagnet}
 For the ferromagnet, temperature and energy are in units of meV, and order
 parameters are the spin expectation (magnetization) and $\eta_z$ expectation.
-\subsection{Zero-Field}
+\subsection{Zero Field}
 \begin{itemize}
     \item State is ordered below $T=4.5$ meV, when initialized in ground state (high bias field),
     also see heat capacity spike at that temperature
@@ -36,13 +36,19 @@ parameters are the spin expectation (magnetization) and $\eta_z$ expectation.
 
 \newpage
 \section{Antiferromagnet-Ferroelectric}
-\subsection{Next Steps}
+\subsection{Zero Field}
 \begin{itemize}
-    \item Try sweeping AFM-FE parameter space
+    \item Spins don't show a clear transition, but in plane $\eta_{xy}$ does show a transition
+    \item Also see a peak in heat capacity at the same temperature
 \end{itemize}
-\subsection{Result}
+\begin{center}
+    \includegraphics[width=0.9\textwidth]{afm_fe_mag.png}
+    \includegraphics[width=0.9\textwidth]{afm_fe_energy.png}
+\end{center}
+
+\subsection{Finite Field}
 \begin{itemize}
-    \item Orders weakly in annealed runs with no bias
+    \item Alternating bias field on spins (wave vector M)
     \item With bias field, system seems to transition to phase at some finite bias field, doesn’t change with system size
     \item Increasing temperature moves transition to higher field
     \item Eta-only runs show strong ordering up to very high temperatures
