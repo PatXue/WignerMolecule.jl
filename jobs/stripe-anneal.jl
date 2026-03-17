@@ -29,8 +29,8 @@ Ls = [20, 40, 80]
 Ts = 0.1:0.1:1.0
 for L in Ls
     tm.Lx = tm.Ly = L
-    tm.sweeps = 100000 * div(L, 20)
-    tm.thermalization = 100000 * div(L, 20)
+    tm.sweeps = 50000 * div(L, 20)
+    tm.thermalization = 50000 * div(L, 20)
     if L == 80
         tm.sweeps = 2 * tm.sweeps
     end
