@@ -69,9 +69,11 @@ function init_skyrm!(mc::WignerMC, xi; etatype=:const)
     for (x, y) in Iterators.product(1:Lx, 1:Ly)
         r = sqrt((x-X)^2 + (y-Y)^2)
         if r > xi
+            mc.spins[x, y] = SpinVector(0, 0, 1)
+        elseif r == 0
             mc.spins[x, y] = SpinVector(0, 0, -1)
         else
-            mc.spins[x, y] = SpinVector(sin(π*r/xi) * ((x-X)/r), sin(π*r/xi) * ((y-Y)/r), cos(π*r/xi))
+            mc.spins[x, y] = SpinVector(sin(π*r/xi) * ((x-X)/r), sin(π*r/xi) * ((y-Y)/r), -cos(π*r/xi))
         end
     end
 end
