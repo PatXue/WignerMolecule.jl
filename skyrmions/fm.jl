@@ -6,14 +6,14 @@ using JSON
 using LinearAlgebra
 using WignerMolecule
 
-stripe_bias(x, _) = [0, 0, (-1)^(div(x, 2))]
-bias = stripe_bias
+fm_bias(_, _) = [0, 0, 1]
+bias = fm_bias
 bias_type = typeof(stripe_bias)
-JSON.lower(f::bias_type) = f(1, 1)
 
 Lx = Ly = 40
+B = 1.0
 
-raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
+raw_params = load_object("all_params.jld2")[(45, 5, 20, 9)]
 norm_params = raw_params ./ norm(raw_params)
 wigparams = WignerParams(norm_params...)
 
