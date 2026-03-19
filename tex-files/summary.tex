@@ -12,8 +12,8 @@ For the ferromagnet, temperature and energy are in units of meV, and order
 parameters are the spin expectation (magnetization) and $\eta_z$ expectation.
 \subsection{Zero Field}
 \begin{itemize}
-    \item State is ordered below $T=4.5$ meV, when initialized in ground state (high bias field),
-    also see heat capacity spike at that temperature
+    \item State is ordered below $T=4.5$ meV ($\approx 52$ K), when initialized
+    in ground state (high bias field), also see heat capacity spike at that temperature
     \item Transition temperature does not seem affected by system size
 \end{itemize}
 \begin{center}
@@ -42,6 +42,7 @@ norm of in-plane $\vec{\eta}$ and the Fourier spin correlation at M.
 \subsection{Zero Field}
 \begin{itemize}
     \item Spins don't show a clear transition, but in plane $\eta_{xy}$ does show a transition
+    at $T=0.3\approx 114$ K
     \item Also see a peak in heat capacity at the same temperature
 \end{itemize}
 \begin{center}
@@ -62,9 +63,26 @@ norm of in-plane $\vec{\eta}$ and the Fourier spin correlation at M.
 
 \newpage
 \section{Stripe}
+For stripe, the Hamiltonian is normalized, and the energy and T are in units
+of the Hamiltonian (37.56 meV). The order parameters are the Fourier correlations
+of in-plane $\vec{\eta}$ at M, and spins at M/2
 \subsection{Zero Field}
 \begin{itemize}
-    \item See
+    \item See transition in spins, $\eta$, and heat capacity at T=0.5 ($\approx 436$ K)
 \end{itemize}
+\begin{center}
+    \includegraphics[width=0.9\textwidth]{plots/stripe_mag.png}
+    \includegraphics[width=0.9\textwidth]{plots/stripe_sus.png}
+\end{center}
+\subsection{Finite Field}
+\begin{itemize}
+    \item Bias field is in stripe pattern on the spins
+    \item See significant flat region in correlation vs. B at high T which seems to grow with T
+    \item Seems to line up with skyrmion susceptibility falling
+\end{itemize}
+\begin{center}
+    \includegraphics[width=0.9\textwidth]{plots/stripe_bias_mag.png}
+    \includegraphics[width=0.9\textwidth]{plots/stripe_bias_sus.png}
+\end{center}
 
 \end{document}
