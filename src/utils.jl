@@ -60,6 +60,8 @@ end
 function init_skyrm!(mc::WignerMC, xi; etatype=:const)
     if etatype == :const
         fill!(mc.ηs, SpinVector(0, 0, 1))
+    elseif etatype == :stripe
+        init_stripe_eta!(mc.ηs)
     else
         rand!(mc.ηs)
     end
