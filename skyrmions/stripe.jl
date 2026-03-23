@@ -19,7 +19,11 @@ wigparams = WignerParams(norm_params...)
 
 mc = WignerMC{:None, bias_type}(; wigparams, bias, Lx, Ly)
 for xi in 1:20
-    init_skyrm!(mc, xi)
+    init_skyrm!(mc, xi, etatype=:stripe)
+    for I in eachindex(mc.spins)
+        x, y = Tuple(I)
+        mc.spins[I] = mc.spins[I] .* (-1)^(div(x,2))
+    end
     E = total_energy(mc, B)
-    println("Size $xi: $E")
+    println("Size $(lpad(string(xi), 2, '0')): $E")
 end
