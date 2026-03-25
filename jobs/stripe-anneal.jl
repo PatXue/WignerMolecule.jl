@@ -19,7 +19,7 @@ stripe_bias(x, _) = [0, 0, (-1)^(div(x, 2))]
 tm.bias = stripe_bias
 bias_type = typeof(stripe_bias)
 tm.B = 0.0
-tm.init_B = 10.0
+tm.init_B = 5.0
 JSON.lower(f::bias_type) = f(1, 1)
 
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
@@ -30,11 +30,8 @@ Ts = 0.1:0.1:1.0
 for L in Ls
     tm.Lx = tm.Ly = L
     tm.sweeps = 50000 * div(L, 20)
-    tm.thermalization = 50000 * div(L, 20)
-    if L == 80
-        tm.sweeps = 2 * tm.sweeps
-    end
-    tm.binsize = div(tm.thermalization, 100)
+    tm.thermalization = 100000 * div(L, 20)
+    tm.binsize = div(tm.sweeps, 100)
     for T in Ts
         tm.T = T
         spins_dir = "$jobname.data/$(current_task_name(tm))"
