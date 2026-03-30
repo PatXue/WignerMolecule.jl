@@ -9,21 +9,21 @@ using LinearAlgebra
 using WignerMolecule
 
 tm = TaskMaker()
-jobname = "afm-fe-anneal"
-tm.init_type = :afm_fe
+jobname = "afm-afe-left"
+tm.init_type = :afm_afe
 
-afm_bias(x, _) = [0, 0, (-1)^x]
+afm_bias(x, y) = [0, 0, (-1)^(x + div(y,2))]
 tm.bias = afm_bias
 bias_type = typeof(afm_bias)
 tm.B = 0.0
 tm.init_B = 10.0
 JSON.lower(f::bias_type) = f(1, 1)
 
-raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
+raw_params = load_object("all_params.jld2")[(45, 11, 20, 7)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ts = 0.05:0.05:0.6
-Ls = [20, 40, 80]
+Ts = 0.1:0.1:1.0
+Ls = [20]
 for L in Ls
     tm.Lx = tm.Ly = L
     tm.sweeps = 50000 * div(L, 20)
