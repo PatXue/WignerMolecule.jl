@@ -21,6 +21,8 @@ function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
         init_stripe_s!(mc.spins)
     elseif init_type == :stripe_eta
         init_stripe_eta!(mc.ηs)
+    elseif init_type == :afm_afe
+        init_afm_afe!(mc.spins, mc.ηs)
     end
 
     update_fourier!(mc)

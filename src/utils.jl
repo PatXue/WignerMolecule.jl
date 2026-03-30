@@ -57,6 +57,25 @@ function init_stripe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{Spi
     init_stripe_eta!(ηs)
 end
 
+function init_afm_afe_s!(spins::AbstractMatrix{SpinVector})
+    for I in eachindex(IndexCartesian(), spins)
+        x, _ = Tuple(I)
+        spins[I] = SVector(0, 0, (-1)^(x + div(y,2)))
+    end
+end
+
+function init_afm_afe_eta!(ηs::AbstractMatrix{SpinVector})
+    for I in eachindex(IndexCartesian(), ηs)
+        _, y = Tuple(I)
+        ηs[I] = SVector(0, (-1)^y, 0)
+    end
+end
+
+function init_afm_afe!(spins::AbstractMatrix{SpinVector}, ηs::AbstractMatrix{SpinVector})
+    init_afm_afe_s!(spins)
+    init_afm_afe_eta!(ηs)
+end
+
 function init_skyrm!(mc::WignerMC, xi; etatype=:const)
     if etatype == :const
         fill!(mc.ηs, SpinVector(0, 0, 1))
