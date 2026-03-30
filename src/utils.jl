@@ -59,7 +59,7 @@ end
 
 function init_afm_afe_s!(spins::AbstractMatrix{SpinVector})
     for I in eachindex(IndexCartesian(), spins)
-        x, _ = Tuple(I)
+        x, y = Tuple(I)
         spins[I] = SVector(0, 0, (-1)^(x + div(y,2)))
     end
 end
