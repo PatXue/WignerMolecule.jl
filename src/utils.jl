@@ -159,12 +159,12 @@ end
 function K(corrs)
     Lx, _ = size(corrs)
     n = div(Lx, 3)
-    return corrs[2n+1,n+1]
+    return corrs[2n+1,n+1,:]
 end
 function half_K(corrs)
     Lx, _ = size(corrs)
     n = div(Lx, 6)
-    return corrs[2n+1,n+1]
+    return corrs[2n+1,n+1,:]
 end
 
 # Calculate skyrmion number
