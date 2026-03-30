@@ -166,7 +166,7 @@ function M3(corrs)
 end
 function half_K(corrs)
     Lx, _ = size(corrs)
-    n = div(Lx, 6)
+    n = div(Lx, 4)
     return corrs[2n+1,n+1,:]
 end
 
