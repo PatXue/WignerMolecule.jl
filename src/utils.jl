@@ -67,7 +67,7 @@ end
 function init_afm_afe_eta!(ηs::AbstractMatrix{SpinVector})
     for I in eachindex(IndexCartesian(), ηs)
         _, y = Tuple(I)
-        ηs[I] = SVector(0, (-1)^y, 0)
+        ηs[I] = SVector(0, (-1)^(y+1), 0)
     end
 end
 
