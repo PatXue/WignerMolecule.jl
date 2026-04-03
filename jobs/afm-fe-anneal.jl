@@ -24,15 +24,13 @@ norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
 Ts = 0.05:0.05:0.6
 Ls = [20, 40, 80]
-for L in Ls
+for (L, T) in Iterators.product(Ls, Ts)
     tm.Lx = tm.Ly = L
     tm.sweeps = 50000 * div(L, 20)
-    tm.thermalization = tm.sweeps
+    tm.thermalization = (T <= 0.4 ? 2 : 1) * tm.sweeps
     tm.binsize = div(tm.sweeps, 100)
-    for T in Ts
-        tm.T = max(T, 0.01)
-        task(tm)
-    end
+    tm.T = max(T, 0.01)
+    task(tm)
 end
 
 job = JobInfo("$jobname", WignerMC{:Metropolis, bias_type};
