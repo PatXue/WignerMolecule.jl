@@ -22,5 +22,6 @@ include("utils.jl")
 include("energy.jl")
 include("common.jl")
 include("metropolis.jl")
+include("HighTemp.jl")
 
 end
