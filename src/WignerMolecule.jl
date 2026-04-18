@@ -11,10 +11,10 @@ using FFTW
 using HDF5
 using JLD2
 using LinearAlgebra
-using PeriodicArrays
 using Random
 using StaticArrays
 
+include("PeriodicArrays.jl")
 include("mc.jl")
 include("utils.jl")
 include("energy.jl")
