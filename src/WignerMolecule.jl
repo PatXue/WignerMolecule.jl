@@ -17,6 +17,7 @@ include("PeriodicArrays.jl")
 using .PeriodicArrays
 
 include("mc.jl")
+include("initializers.jl")
 include("utils.jl")
 include("energy.jl")
 include("common.jl")
