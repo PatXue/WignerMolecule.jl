@@ -13,8 +13,9 @@ using JLD2
 using LinearAlgebra
 using Random
 using StaticArrays
-
 include("PeriodicArrays.jl")
+using .PeriodicArrays
+
 include("mc.jl")
 include("utils.jl")
 include("energy.jl")
