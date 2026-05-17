@@ -1,8 +1,3 @@
-# Sampling functions for high-T expectations
-module HighTemp
-
-export randomize!
-
 # Randomize spins in MC
 function randomize!(mc::WignerMC)
     rand!(mc.spins)
@@ -20,6 +15,4 @@ function sample!(mc::WignerMC, n, fs::Vararg{Function, N}) where {N}
         @. errs = errs + vals^2
     end
     @. return (means / n, sqrt((errs - means) / (n-1)))
-end
-
 end
