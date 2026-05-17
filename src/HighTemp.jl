@@ -14,5 +14,5 @@ function sample!(mc::WignerMC, n, fs::Vararg{Function, N}) where {N}
         @. means = means + vals
         @. errs = errs + vals^2
     end
-    @. return (means / n, sqrt((errs - means) / (n-1)))
+    @. return (means / n, sqrt((errs - means) / (n-1) / n))
 end
