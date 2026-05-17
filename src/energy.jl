@@ -101,7 +101,7 @@ function half_energy(mc::WignerMC, B, x, y)
 end
 
 # Calculate the total energy of MC
-function total_energy(mc::WignerMC, B)
+function total_energy(mc::WignerMC, B=0.0)
     tot_energy = 0.0
     for I in eachindex(mc.spins)
         x, y = Tuple(I)
