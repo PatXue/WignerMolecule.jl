@@ -82,3 +82,10 @@ function calc_Q(spins)
 end
 
 norm2(v) = sum(abs2.(v))
+
+# Randomize spins in MC
+function randomize!(mc::WignerMC)
+    rand!(mc.spins)
+    rand!(mc.ηs)
+    update_fourier!(mc)
+end
