@@ -2,6 +2,7 @@ import Pkg
 Pkg.activate(@__DIR__)
 
 using JLD2
+using LinearAlgebra
 using WignerMolecule
 
 norm2(v) = sum(abs2.(v))
