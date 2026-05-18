@@ -26,9 +26,9 @@ Ts = 0.05:0.05:0.6
 Ls = [20, 40, 80]
 for (T, L) in Iterators.product(Ts, Ls)
     tm.Lx = tm.Ly = L
-    tm.sweeps = 50000 * div(L, 20)
-    tm.thermalization = (T <= 0.4 ? 2 : 1) * tm.sweeps
-    tm.binsize = div(tm.sweeps, 100)
+    tm.sweeps = 100000 * div(L, 20)
+    tm.thermalization = (T <= 0.4 ? 2 : 1) * 50000 * div(L, 20)
+    tm.binsize = div(50000 * div(L,20), 100)
     tm.T = max(T, 0.01)
     task(tm)
 end
