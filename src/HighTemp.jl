@@ -2,6 +2,7 @@
 function randomize!(mc::WignerMC)
     rand!(mc.spins)
     rand!(mc.ηs)
+    update_fourier!(mc)
 end
 
 # Sample values of functions in fs over n runs on random spins
