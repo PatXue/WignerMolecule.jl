@@ -10,6 +10,9 @@ jobs/logs
 
 *.png
 
+# High temp outputs
+high-temp/expectations.jld2
+
 # Tex outputs
 *.pdf
 *synctex.gz
