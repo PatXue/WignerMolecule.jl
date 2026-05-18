@@ -5,7 +5,7 @@ export Expectation, combine, addsample
 struct Expectation
     val::Float64    # Value of measured expectation
     err::Float64    # Std. dev in measured expectation
-    n::UInt64       # Number of samples expectations calculated from
+    n::Int          # Number of samples expectations calculated from
 end
 
 """
