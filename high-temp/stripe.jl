@@ -45,5 +45,8 @@ for i in 1:ord
     all_data["stripe/ηH$i"] = avg_ηk[i]
     all_data["stripe/ηzH$i"] = avg_ηz[i]
     println("H^$i: $(avg_energy[i])")
+    println("sH^$(i-1): $(avg_sk[i])")
+    println("ηH^$(i-1): $(avg_ηk[i])")
+    println("ηzH^$(i-1): $(avg_ηz[i])")
 end
 save("expectations.jld2", all_data)
