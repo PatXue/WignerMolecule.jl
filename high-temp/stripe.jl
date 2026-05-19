@@ -16,19 +16,21 @@ norm_params = raw_params ./ norm(raw_params)
 wigparams = WignerParams(norm_params...)
 mc = WignerMC{:HighTemp, Nothing}(; Lx, Ly, wigparams, bias=nothing)
 
-all_data = load("expectations.jld2")
-avg_energy = get(all_data, "stripe/energy", Expectation(0,0,0))
-
-n = 10^3
 ord = 4
+all_data = load("expectations.jld2")
+avg_energy = [get(all_data, "stripe/H$i", Expectation(0,0,0)) for i in 1:ord]
+
+n = 10^5
 for _ in 1:n
     randomize!(mc)
     E = total_energy(mc)
     sk = mc.spinks[div(L, 4)+1, 1, :]
     ηk = mc.ηks[div(Lx, 2)+1, 1, :]
-    global avg_energy = addsample(avg_energy, E)
+    avg_energy .= addsample.(avg_energy, [E^i for i in 1:ord])
 end
 
-println(avg_energy)
-all_data["stripe/energy"] = avg_energy
+for i in 1:ord
+    all_data["stripe/H$i"] = avg_energy[i]
+    println("H^$i: $(avg_energy[i])")
+end
 save("expectations.jld2", all_data)
