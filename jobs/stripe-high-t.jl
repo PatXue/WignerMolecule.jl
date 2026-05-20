@@ -27,8 +27,8 @@ Ls = [8]
 Ts = 1.0:1.0:20.0
 for (T,L) in Iterators.product(Ts, Ls)
     tm.Lx = tm.Ly = L
-    tm.sweeps = 50000 * div(L, 20)
-    tm.thermalization = 50000 * div(L, 20)
+    tm.sweeps = 10000
+    tm.thermalization = 10000
     tm.binsize = div(tm.sweeps, 100)
     tm.T = T
     spins_dir = "$jobname.data/$(current_task_name(tm))"
