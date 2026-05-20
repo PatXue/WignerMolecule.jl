@@ -16,7 +16,7 @@ norm_params = raw_params ./ norm(raw_params)
 wigparams = WignerParams(norm_params...)
 mc = WignerMC{:HighTemp, Nothing}(; Lx, Ly, wigparams, bias=nothing)
 
-ord = 4
+ord = 5
 all_data = load("expectations.jld2")
 avg_energy = [get(all_data, "stripe/H$i", Expectation(0,0,0)) for i in 1:ord]
 avg_sk = [get(all_data, "stripe/sH$i", Expectation(0,0,0)) for i in 0:(ord-1)]
