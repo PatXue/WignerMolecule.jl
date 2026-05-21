@@ -10,18 +10,29 @@ using WignerMolecule
 
 norm2(v) = sum(abs2.(v))
 
+const phases = Dict(
+    "stripe" => (45, 5, 20, 6),
+    "fm" => (45, 5, 20, 9),
+    "afm_fe" => (45, 11, 20, 10),
+    "afm_afe" => (45, 11, 20, 7)
+)
+name = ARGS[1]
+if name ∉ keys(phases)
+    error("Invalid phase name passed: $name")
+end
+
 Lx = Ly = L = 8
-raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
+raw_params = load_object("all_params.jld2")[phases[name]]
 norm_params = raw_params ./ norm(raw_params)
 wigparams = WignerParams(norm_params...)
 mc = WignerMC{:HighTemp, Nothing}(; Lx, Ly, wigparams, bias=nothing)
 
 ord = 5
 all_data = load("expectations.jld2")
-avg_energy = [get(all_data, "stripe/HH$i", Expectation(0,0,0)) for i in 0:ord]
-avg_sk = [get(all_data, "stripe/sH$i", Expectation(0,0,0)) for i in 0:ord]
-avg_ηk = [get(all_data, "stripe/ηH$i", Expectation(0,0,0)) for i in 0:ord]
-avg_ηz = [get(all_data, "stripe/ηzH$i", Expectation(0,0,0)) for i in 0:ord]
+avg_energy = [get(all_data, "$name/HH$i", Expectation(0,0,0)) for i in 0:ord]
+avg_sk = [get(all_data, "$name/sH$i", Expectation(0,0,0)) for i in 0:ord]
+avg_ηk = [get(all_data, "$name/ηH$i", Expectation(0,0,0)) for i in 0:ord]
+avg_ηz = [get(all_data, "$name/ηzH$i", Expectation(0,0,0)) for i in 0:ord]
 
 n = 10^6
 for _ in 1:n
@@ -40,10 +51,10 @@ for _ in 1:n
 end
 
 for i in 0:ord
-    all_data["stripe/HH$i"] = avg_energy[i+1]
-    all_data["stripe/sH$i"] = avg_sk[i+1]
-    all_data["stripe/ηH$i"] = avg_ηk[i+1]
-    all_data["stripe/ηzH$i"] = avg_ηz[i+1]
+    all_data["$name/HH$i"] = avg_energy[i+1]
+    all_data["$name/sH$i"] = avg_sk[i+1]
+    all_data["$name/ηH$i"] = avg_ηk[i+1]
+    all_data["$name/ηzH$i"] = avg_ηz[i+1]
     println("H^$(i+1): $(avg_energy[i+1])")
     println("sH^$i: $(avg_sk[i+1])")
     println("ηH^$i: $(avg_ηk[i+1])")
