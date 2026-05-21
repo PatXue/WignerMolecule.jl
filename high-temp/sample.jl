@@ -10,11 +10,24 @@ using WignerMolecule
 
 norm2(v) = sum(abs2.(v))
 
+const L = 8
 const phases = Dict(
     "stripe" => (45, 5, 20, 6),
     "fm" => (45, 5, 20, 9),
     "afm_fe" => (45, 11, 20, 10),
     "afm_afe" => (45, 11, 20, 7)
+)
+const spins = Dict(
+    "stripe" => (div(L,4)+1, 1),
+    "fm" => (1, 1),
+    "afm_fe" => (div(L,2)+1, 1),
+    "afm_afe" => (div(L,2)+1, div(L,4)+1)
+)
+const etas = Dict(
+    "stripe" => (div(L,2)+1, 1),
+    "fm" => (1, 1),
+    "afm_fe" => (1, 1),
+    "afm_afe" => (1, div(L,2)+1)
 )
 
 function sample(name, ord, n)
@@ -22,11 +35,10 @@ function sample(name, ord, n)
         error("Invalid phase name passed: $name")
     end
 
-    Lx = Ly = L = 8
     raw_params = load_object("all_params.jld2")[phases[name]]
     norm_params = raw_params ./ norm(raw_params)
     wigparams = WignerParams(norm_params...)
-    mc = WignerMC{:HighTemp, Nothing}(; Lx, Ly, wigparams, bias=nothing)
+    mc = WignerMC{:HighTemp, Nothing}(; Lx=L, Ly=L, wigparams, bias=nothing)
 
     all_data = load("expectations.jld2")
     avg_energy = [get(all_data, "$name/HH$i", Expectation(0,0,0)) for i in 0:ord]
@@ -37,9 +49,9 @@ function sample(name, ord, n)
     for _ in 1:n
         randomize!(mc)
         E = total_energy(mc)
-        sk = mc.spinks[div(L, 4)+1, 1, :]
+        sk = mc.spinks[spins[name]..., :]
         sk_corr = norm2(sk)
-        ηk = mc.ηks[div(Lx, 2)+1, 1, :]
+        ηk = mc.ηks[etas[name]..., :]
         ηk_corr = norm2(ηk[1:2])    # In-plane η correlation
         ηz_corr = abs2(ηk[3])       # ηz correlation
         energies = [E^i for i in 0:ord]
