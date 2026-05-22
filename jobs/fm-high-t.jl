@@ -5,6 +5,7 @@ using Carlo
 using Carlo.JobTools
 using JLD2
 using JSON
+using LinearAlgebra
 using WignerMolecule
 
 tm = TaskMaker()
