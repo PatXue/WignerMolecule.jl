@@ -1,4 +1,3 @@
-# All energy units are in units of meV
 struct WignerParams
     J_SS::Float64           # Spin-spin coupling
     J_EzEz_SS::Float64      # Spin-ηz coupling
