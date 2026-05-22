@@ -16,7 +16,7 @@ afm_bias(x, _) = [0, 0, (-1)^x]
 tm.bias = afm_bias
 bias_type = typeof(afm_bias)
 tm.B = 0.0
-tm.init_B = 1.0
+tm.init_B = 0.0
 JSON.lower(f::bias_type) = f(1, 1)
 
 raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
@@ -26,7 +26,7 @@ Ts = 0.05:0.05:0.6
 Ls = [20, 40, 80]
 for (T, L) in Iterators.product(Ts, Ls)
     tm.Lx = tm.Ly = L
-    tm.sweeps = 100000 * div(L, 20)
+    tm.sweeps = 50000 * div(L, 20)
     tm.thermalization = (T <= 0.4 ? 2 : 1) * 50000 * div(L, 20)
     tm.binsize = div(50000 * div(L,20), 100)
     tm.T = max(T, 0.01)
