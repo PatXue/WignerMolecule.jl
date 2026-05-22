@@ -20,7 +20,7 @@ tm.binsize = 100
 raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ts = 0.4:0.1:2.3
+Ts = 0.4:0.1:3.3
 Ls = [8]
 for (T, L) in Iterators.product(Ts, Ls)
     tm.Lx = tm.Ly = L
