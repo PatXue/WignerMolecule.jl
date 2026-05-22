@@ -10,13 +10,13 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "afm-fe-anneal"
-tm.init_type = :afm_fe_eta
+tm.init_type = :afm_fe_s
 
 afm_bias(x, _) = [0, 0, (-1)^x]
 tm.bias = afm_bias
 bias_type = typeof(afm_bias)
 tm.B = 0.0
-tm.init_B = 0.0
+tm.init_B = 5.0
 JSON.lower(f::bias_type) = f(1, 1)
 
 raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
