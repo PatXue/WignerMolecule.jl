@@ -24,4 +24,6 @@ include("energy.jl")
 include("common.jl")
 include("metropolis.jl")
 
+include("DimerMC/DimerMC.jl")
+
 end
