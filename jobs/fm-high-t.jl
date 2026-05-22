@@ -9,7 +9,7 @@ using LinearAlgebra
 using WignerMolecule
 
 tm = TaskMaker()
-jobname = "fm"
+jobname = "fm-high-t"
 
 tm.sweeps = 20000
 tm.thermalization = 20000
