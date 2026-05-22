@@ -30,7 +30,7 @@ const etas = Dict(
     "afm_afe" => (1, div(L,2)+1)
 )
 
-function sample(name, ord, n)
+function sample(name, ord, n; printfreq=100000)
     if name ∉ keys(phases)
         error("Invalid phase name passed: $name")
     end
@@ -46,7 +46,7 @@ function sample(name, ord, n)
     avg_ηk = [get(all_data, "$name/ηH$i", Expectation(0,0,0)) for i in 0:ord]
     avg_ηz = [get(all_data, "$name/ηzH$i", Expectation(0,0,0)) for i in 0:ord]
 
-    for _ in 1:n
+    for i in 1:n
         randomize!(mc)
         E = total_energy(mc)
         sk = mc.spinks[spins[name]..., :]
@@ -59,6 +59,9 @@ function sample(name, ord, n)
         avg_sk .= addsample.(avg_sk, sk_corr .* energies)
         avg_ηk .= addsample.(avg_ηk, ηk_corr .* energies)
         avg_ηz .= addsample.(avg_ηz, ηz_corr .* energies)
+        if i % printfreq == 0
+            println("Sample #$i completed")
+        end
     end
 
     for i in 0:ord
