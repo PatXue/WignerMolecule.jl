@@ -1,9 +1,12 @@
+# Direction of an entanglement at a site (a1 = xhat, proceeds counterclockwise)
+@enum Bond a1 a2 a3 a4 a5 a6
+
 struct DimerMC <: AbstractMC
     T::Float64          # Temperature
     init_T::Float64     # Initial temperature (for thermalization)
     params::WignerParams
 
-    spins::PeriodicMatrix{Tuple{Int, Int}}
+    spins::PeriodicMatrix{Bond}
     ηs::PeriodicMatrix{SpinVector}
 
     ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
@@ -13,7 +16,7 @@ struct DimerMC <: AbstractMC
 end
 
 function DimerMC(; T, init_T, wigparams, Lx, Ly, outdir="", savefreq=0)
-    init_ss = fill((0,0), (Lx, Ly))
+    init_ss = fill(a1, (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     return DimerMC(
         T, init_T, wigparams, init_ss, init_ηs,
