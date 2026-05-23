@@ -1,14 +1,6 @@
 function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     N = Lx * Ly
-    # Magnetization per lattice site
-    mag_v = sum(mc.spins) ./ N
-    mag = norm(mag_v)
-    measure!(ctx, :Mag, mag)
-    measure!(ctx, :Mag2, mag^2)
-    measure!(ctx, :Magx, mag_v[1])
-    measure!(ctx, :Magy, mag_v[2])
-    measure!(ctx, :Magz, mag_v[3])
 
     η = sum(mc.ηs) ./ N
     measure!(ctx, :ηx, η[1])
@@ -23,17 +15,10 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
 
     update_fourier!(mc)
     for f in (Γ, M, M2, M3, half_M, half_K)
-        s = f(mc.spinks)
         η = f(mc.ηks)
-        measure!(ctx, Symbol("sk_", f), s)
         measure!(ctx, Symbol("ηk_", f), η)
-        measure!(ctx, Symbol("sk_corr_", f), norm2(s))
         measure!(ctx, Symbol("ηk_corr_", f), η*η')
     end
-
-    Q = calc_Q(mc.spins) / N
-    measure!(ctx, :Q, Q)
-    measure!(ctx, :Q2, Q^2)
 
     if is_save_sweep(mc, ctx)
         save_spin(mc, ctx)
@@ -45,10 +30,6 @@ end
 function Carlo.register_evaluables(::Type{DimerMC}, eval::AbstractEvaluator, params::AbstractDict)
     T = params[:T]
     N = params[:Lx] * params[:Ly]
-    evaluate!(eval, :χ, (:Mag, :Mag2)) do mag, mag2
-        return N / T * (mag2 - mag^2)
-    end
-
     evaluate!(eval, :ChiEtaxy, (:ηk_corr_Γ, :ηk_Γ)) do eta2, eta
         return N * real(eta2[1,1] + eta2[2,2] - abs2(eta[1]) - abs2(eta[2])) / T
     end
@@ -58,10 +39,6 @@ function Carlo.register_evaluables(::Type{DimerMC}, eval::AbstractEvaluator, par
 
     evaluate!(eval, :HeatCap, (:Energy2, :Energy)) do E2, E
         return N * (E2 - E^2) / T^2
-    end
-
-    evaluate!(eval, :ChiQ, (:Q2, :Q)) do Q2, Q
-        return N * (Q2 - Q^2)
     end
 
     return nothing
