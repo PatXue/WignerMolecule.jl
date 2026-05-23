@@ -1,4 +1,4 @@
-function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
+function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     N = Lx * Ly
     # Magnetization per lattice site
@@ -42,8 +42,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     return nothing
 end
 
-function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::AbstractEvaluator,
-                                   params::AbstractDict) where {AlgType, BiasType}
+function Carlo.register_evaluables(::Type{DimerMC}, eval::AbstractEvaluator, params::AbstractDict)
     T = params[:T]
     N = params[:Lx] * params[:Ly]
     evaluate!(eval, :χ, (:Mag, :Mag2)) do mag, mag2
@@ -68,15 +67,14 @@ function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::Ab
     return nothing
 end
 
-function Carlo.write_checkpoint(mc::WignerMC, out::HDF5.Group)
-    out["spins"] = mc.spins
+function Carlo.write_checkpoint(mc::DimerMC, out::HDF5.Group)
+    out["spins"] = Int.(mc.spins)
     out["etas"] = mc.ηs
     return nothing
 end
-function Carlo.read_checkpoint!(mc::WignerMC, in::HDF5.Group)
-    raw_spins = read(in, "spins")
+function Carlo.read_checkpoint!(mc::DimerMC, in::HDF5.Group)
+    mc.spins .= Bond.(read(in, "spins"))
     raw_ηs = read(in, "etas")
-    mc.spins .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_spins)
     mc.ηs .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_ηs)
     return nothing
 end
