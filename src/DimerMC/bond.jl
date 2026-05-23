@@ -11,7 +11,4 @@ const bondtodisp = Dict(
 )
 
 # Get position index of (x,y)'s entanglement partner
-function getpartner(mc::DimerMC, (x, y))
-    b = mc.spins[x, y]
-    return (x, y) .+ bondtodisp[b]
-end
+getpartner(mc::DimerMC, (x, y)) = (x, y) .+ bondtodisp[mc.spins[x, y]]
