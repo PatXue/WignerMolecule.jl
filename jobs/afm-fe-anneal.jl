@@ -27,7 +27,7 @@ Ls = [20, 40, 80]
 for (T, L) in Iterators.product(Ts, Ls)
     tm.Lx = tm.Ly = L
     tm.sweeps = 100000 * div(L, 20)
-    tm.thermalization = 100000 * div(L, 20)
+    tm.thermalization = 100000 * div(L, 20) * (L == 80 ? 2 : 1)
     tm.binsize = div(50000 * div(L,20), 100)
     tm.T = max(T, 0.01)
     task(tm)
