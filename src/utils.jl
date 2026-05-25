@@ -28,7 +28,7 @@ function save_spin(mc::WignerMC, ctx::Carlo.MCContext)
 end
 
 # Calculate temperature during thermalization
-function calc_temp(mc::WignerMC, ctx::Carlo.MCContext)
+function calc_temp(mc, ctx::Carlo.MCContext)
     if is_thermalized(ctx)
         return mc.T
     else
