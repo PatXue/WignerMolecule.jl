@@ -32,7 +32,7 @@ function bond_energy(mc::WignerMC, s::SpinVector, η::SpinVector,
     E_spin += J_SS
     E_spin += 2*J_EAM_SS * (η_m/ν + ηj_p*ν)
 
-    return real(E_spin * (s⋅sj) + E_η)
+    return real(E_spin * (s⋅sj)/4 + E_η)
 end
 
 # Calculate the energy at a lattice site (x, y) if it had spin s and
