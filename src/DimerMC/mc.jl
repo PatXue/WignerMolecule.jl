@@ -1,5 +1,5 @@
 # Direction of an entanglement at a site (a1 = xhat, proceeds counterclockwise)
-@enum Bond a1=1 a2=2 a3=3 a4=4 a5=5 a6=6
+@enum Bond a1=0 a2=1 a3=2 a4=3 a5=4 a6=5
 
 struct DimerMC <: AbstractMC
     T::Float64          # Temperature
