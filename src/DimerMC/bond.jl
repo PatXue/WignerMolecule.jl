@@ -1,10 +1,8 @@
 # Helper functions for handling Bonds
 
 struct Dimer
-    x::Int,
-    y::Int,
-    xj::Int,
-    yj::Int
+    pos::Tuple{Int, Int}
+    posj::Tuple{Int, Int}
 end
 
 # Bond type to index displacement
@@ -25,4 +23,4 @@ rotate(b::Bond, r::Bond) = Bond((Int(b) + Int(r)) % 6)
 function rotate((x, y), r::Bond)
     x .* bondtodisp[r] .+ y .* bondtodisp[rotate(a2, r)]
 end
-rotate(d::Dimer, r::Bond) = Dimer(rotate((d.x,d.y), r)..., rotate((d.xj,d.yj), r)...)
+rotate(d::Dimer, r::Bond) = Dimer(rotate(d.pos, r), rotate(d.posj, r))
