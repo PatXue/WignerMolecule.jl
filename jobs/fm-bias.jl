@@ -5,6 +5,7 @@ using Carlo
 using Carlo.JobTools
 using JLD2
 using JSON
+using LinearAlgebra
 using WignerMolecule
 
 tm = TaskMaker()
@@ -17,11 +18,12 @@ bias_type = typeof(fm_bias)
 tm.init_B = 10.0
 JSON.lower(f::bias_type) = f(1, 1)
 
-tm.wigparams = WignerParams(load_object("all_params.jld2")[(45, 5, 20, 9)]...)
-tm.Lx = tm.Ly = 20
-Ls = [20, 40, 80]
-Ts = [4.5, 5.5, 6.5]
-Bs = 0.0:1.0:10.0
+raw_params = load_object("all_params.jld2")[(45, 5, 20, 9)]
+norm_params = raw_params ./ norm(raw_params)
+tm.wigparams = WignerParams(norm_params...)
+Ls = [20]
+Ts = [0.3, 0.4, 0.5]
+Bs = 0.0:0.1:1.0
 for L in Ls
     tm.Lx = tm.Ly = L
     tm.sweeps = 50000 * div(L, 20)
