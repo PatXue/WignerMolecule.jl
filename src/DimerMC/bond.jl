@@ -20,12 +20,12 @@ getpartner(mc::DimerMC, v) = v .+ bondtodisp[mc.spins[v[1], v[2]]]
 
 # Bond type to rotation matrix
 const bondtorot = Dict(
-    a1 => @SMatrix [1 0; 0 1],
-    a2 => @SMatrix [0 1; -1 1],
-    a3 => @SMatrix [-1 1; -1 0],
-    a4 => @SMatrix [-1 0; 0 -1],
-    a5 => @SMatrix [0 -1; 1 -1],
-    a6 => @SMatrix [1 -1; 1 0]
+    a1 => SMatrix{2,2}(1, 0, 0, 1),
+    a2 => SMatrix{2,2}(0, 1, -1, 1),
+    a3 => SMatrix{2,2}(-1, 1, -1, 0),
+    a4 => SMatrix{2,2}(-1, 0, 0, -1),
+    a5 => SMatrix{2,2}(0, -1, 1, -1),
+    a6 => SMatrix{2,2}(1, -1, 1, 0)
 )
 
 # Perform a rotation of x hat to lie along given bond r
