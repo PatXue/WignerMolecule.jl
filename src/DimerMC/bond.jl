@@ -18,6 +18,12 @@ const bondtodisp = Dict(
 # Get position index of v = (x,y)'s entanglement partner in mc
 getpartner(mc::DimerMC, v) = v .+ bondtodisp[mc.spins[v[1], v[2]]]
 
+# Reflect position across x-axis
+reflect1(v) = SMatrix{2,2}(1, 0, 1, -1) * v
+reflect1(b::Bond) = Bond((6 - Int(b)) % 6)
+# Reflect position across line 30 deg above x-axis
+reflect2(v) = SMatrix{2,2}(0, 1, 1, 0) * v
+
 # Bond type to rotation matrix
 const bondtorot = Dict(
     a1 => SMatrix{2,2}(1, 0, 0, 1),
@@ -32,11 +38,6 @@ const bondtorot = Dict(
 rotate(b::Bond, r::Bond) = Bond((Int(b) + Int(r)) % 6)
 rotate(v, r::Bond) = bondtorot[r] * v
 rotate(d::Dimer, r::Bond) = Dimer(rotate(d.pos, r), rotate(d.posj, r))
-
-# Reflect position across x-axis
-reflect1((x, y),) = x .* (1,0) .+ y .* (1,-1)
-# Reflect position across line 30 deg above x-axis
-reflect2((x, y),) = x .* (0,1) .+ y .* (1,0)
 
 # Return dimers that d conflicts with in mc
 function collisions(mc::DimerMC, d::Dimer)
