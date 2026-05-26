@@ -1,6 +1,6 @@
 # Helper functions for calculating system energy
 
-function bond_energy(mc::DimerMC, posi, posj, η, ν)
+function bond_energy(mc::DimerMC, pos, posj, η, ηj, ν)
     # Couplings
     J_SS = mc.params.J_SS
     J_EzEz_SS = mc.params.J_EzEz_SS
@@ -10,8 +10,6 @@ function bond_energy(mc::DimerMC, posi, posj, η, ν)
     J_EMEM_SS = mc.params.J_EMEM_SS
     J_EMEP = mc.params.J_EMEP
     J_EMEM = mc.params.J_EMEM
-
-    ηj = mc.ηs[posj...]
 
     # η raising and lowering operators
     η_m = η[1] + 1.0im*η[2]
@@ -27,7 +25,7 @@ function bond_energy(mc::DimerMC, posi, posj, η, ν)
     E_η += 2*J_EMEM * ν * η_m * ηj_m
 
     # η-S energy
-    if getpartner(mc, posi) == posj
+    if getpartner(mc, pos) == posj
         E_spin +=   J_EzEz_SS *     η[3] * ηj[3]
         E_spin += 2*J_EMEP_SS *     η_m * ηj_p
         E_spin += 2*J_EMEM_SS * ν * η_m * ηj_m
@@ -39,5 +37,14 @@ function bond_energy(mc::DimerMC, posi, posj, η, ν)
     return real(E_spin + E_η)
 end
 
-function siteenergy(mc::DimerMC, η, x, y)
+function site_energy(mc::DimerMC, η, pos)
+    E = 0.0
+    for b in (a1, a3, a5)
+        ν = ω^(div(Int(b), 2))
+        posj = pos .+ bondtodisp[b]
+        ηj = mc.ηs[posj...]
+        E += bond_energy(mc, pos, posj, η, ηj, ν)
+        E += bond_energy(mc, posj, pos, ηj, η, ν)
+    end
+    return E
 end
