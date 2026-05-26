@@ -18,10 +18,10 @@ const bondtodisp = Dict(
 # Get position index of (x,y)'s entanglement partner
 getpartner(mc::DimerMC, (x, y)) = (x, y) .+ bondtodisp[mc.spins[x, y]]
 
-# Perform a rotation of x hat to lie along given bond r about (1,1)
+# Perform a rotation of x hat to lie along given bond r
 rotate(b::Bond, r::Bond) = Bond((Int(b) + Int(r)) % 6)
 function rotate((x, y), r::Bond)
-    (x-1) .* bondtodisp[r] .+ (y-1) .* bondtodisp[rotate(a2, r)]
+    x .* bondtodisp[r] .+ y .* bondtodisp[rotate(a2, r)]
 end
 rotate(d::Dimer, r::Bond) = Dimer(rotate(d.pos, r), rotate(d.posj, r))
 
