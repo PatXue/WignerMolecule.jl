@@ -25,6 +25,11 @@ function rotate((x, y), r::Bond)
 end
 rotate(d::Dimer, r::Bond) = Dimer(rotate(d.pos, r), rotate(d.posj, r))
 
+# Reflect position across x-axis
+reflect1((x, y),) = x .* (1,0) .+ y .* (1,-1)
+# Reflect position across line 30 deg above x-axis
+reflect2((x, y),) = x .* (0,1) .+ y .* (1,0)
+
 # Return dimers that d conflicts with in mc
 function collisions(mc::DimerMC, d::Dimer)
     res = []
