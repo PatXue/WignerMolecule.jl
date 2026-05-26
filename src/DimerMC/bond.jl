@@ -38,6 +38,7 @@ const bondtorot = Dict(
 rotate(b::Bond, r::Bond) = Bond((Int(b) + Int(r)) % 6)
 rotate(v, r::Bond) = bondtorot[r] * v
 rotate(d::Dimer, r::Bond) = Dimer(rotate(d.pos, r), rotate(d.posj, r))
+invrotate(x, r::Bond) = rotate(x, reflect1(r))
 
 # Return dimers that d conflicts with in mc
 function collisions(mc::DimerMC, d::Dimer)
