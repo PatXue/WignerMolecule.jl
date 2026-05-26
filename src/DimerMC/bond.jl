@@ -24,3 +24,18 @@ function rotate((x, y), r::Bond)
     x .* bondtodisp[r] .+ y .* bondtodisp[rotate(a2, r)]
 end
 rotate(d::Dimer, r::Bond) = Dimer(rotate(d.pos, r), rotate(d.posj, r))
+
+# Return dimers that d conflicts with in mc
+function collisions(mc::DimerMC, d::Dimer)
+    res = []
+    if getpartner(mc, d.pos) == d.posj
+        return res
+    end
+    if mc.spins[d.pos...] != none
+        push!(res, Dimer(d.pos, getpartner(mc, d.pos)))
+    end
+    if mc.spins[d.posj...] != none
+        push!(res, Dimer(d.posj, getpartner(mc, d.posj)))
+    end
+    return res
+end
