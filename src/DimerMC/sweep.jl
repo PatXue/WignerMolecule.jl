@@ -1,4 +1,5 @@
 function sweep_η!(mc::DimerMC, ctx::Carlo.MCContext)
+    Lx, Ly = size(mc.spins)
     rng = ctx.rng
     for _ in 1:length(mc.spins)
         # Select site for spin change
