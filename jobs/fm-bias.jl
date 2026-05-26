@@ -21,7 +21,7 @@ JSON.lower(f::bias_type) = f(1, 1)
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 9)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ls = [20]
+Ls = [20, 40]
 Ts = [0.1, 0.2, 0.3, 0.4, 0.5]
 Bs = 0.0:0.1:1.0
 for L in Ls
