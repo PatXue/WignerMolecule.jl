@@ -1,6 +1,6 @@
 # Helper functions for calculating system energy
 
-function bond_energy(mc::DimerMC, (xi, yi), (xj, yj), ν)
+function bond_energy(mc::DimerMC, (xi, yi), (xj, yj), η, ν)
     # Couplings
     J_SS = mc.params.J_SS
     J_EzEz_SS = mc.params.J_EzEz_SS
@@ -11,7 +11,6 @@ function bond_energy(mc::DimerMC, (xi, yi), (xj, yj), ν)
     J_EMEP = mc.params.J_EMEP
     J_EMEM = mc.params.J_EMEM
 
-    η = mc.ηs[xi, yi]
     ηj = mc.ηs[xj, yj]
 
     # η raising and lowering operators
@@ -40,3 +39,5 @@ function bond_energy(mc::DimerMC, (xi, yi), (xj, yj), ν)
     return real(E_spin + E_η)
 end
 
+function siteenergy(mc::DimerMC, η, x, y)
+end
