@@ -1,18 +1,18 @@
 # Helper functions for handling Bonds
 
 struct Dimer
-    pos::Tuple{Int, Int}
-    posj::Tuple{Int, Int}
+    pos::SVector{2, Int}
+    posj::SVector{2, Int}
 end
 
 # Bond type to index displacement
 const bondtodisp = Dict(
-    a1 => (1,0),
-    a2 => (0,1),
-    a3 => (-1,1),
-    a4 => (-1,0),
-    a5 => (0,-1),
-    a6 => (1,-1)
+    a1 => SVector(1,0),
+    a2 => SVector(0,1),
+    a3 => SVector(-1,1),
+    a4 => SVector(-1,0),
+    a5 => SVector(0,-1),
+    a6 => SVector(1,-1)
 )
 
 # Get position index of v = (x,y)'s entanglement partner in mc
