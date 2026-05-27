@@ -32,6 +32,12 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
 
     pocket::Vec{Dimer} = [Dimer(pos, getpartner(mc, pos))]
     while length(pocket) > 0
+        d = pop!(pocket)
+        d = shift(d, -offset)
+        d = invrotate(d, rotation)
+        d = reflect_type ? reflect1(d) : reflect2(d)
+        d = rotate(d, rotation)
+        d = shift(d, offset)
     end
 end
 
