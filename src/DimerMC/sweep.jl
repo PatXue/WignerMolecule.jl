@@ -18,5 +18,22 @@ function sweep_η!(mc::DimerMC, ctx::Carlo.MCContext)
     end
 end
 
+function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
+    Lx, Ly = size(mc.spins)
+    rng = ctx.rng
+
+    pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+    offset = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+    rotation = Bond(rand(rng, 0:5))
+    reflect_type = rand(rng, Bool)
+
+    mc.spins[pos...] = none
+    mc.spins[getpartner(mc, pos)...] = none
+
+    pocket::Vec{Dimer} = [Dimer(pos, getpartner(mc, pos))]
+    while length(pocket) > 0
+    end
+end
+
 function Carlo.sweep!(mc::DimerMC, ctx::Carlo.MCContext)
 end
