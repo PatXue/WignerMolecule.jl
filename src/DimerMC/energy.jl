@@ -51,7 +51,7 @@ end
 
 
 # Energy from spin-orbit coupling if d were entangled
-function bond_energy(mc::DimerMC, d::Dimer, ν)
+function bond_energy(mc::DimerMC, d::Dimer)
     # Couplings
     J_SS = mc.params.J_SS
     J_EzEz_SS = mc.params.J_EzEz_SS
@@ -59,8 +59,10 @@ function bond_energy(mc::DimerMC, d::Dimer, ν)
     J_EMEP_SS = mc.params.J_EMEP_SS
     J_EMEM_SS = mc.params.J_EMEM_SS
 
+    d = orientdimer(d)
     η = mc.ηs[d.pos...]
     ηj = mc.ηs[d.posj...]
+    ν = getν(d)
 
     # η raising and lowering operators
     η_m = η[1] + 1.0im*η[2]
