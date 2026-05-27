@@ -30,7 +30,8 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
     mc.spins[pos...] = none
     mc.spins[getpartner(mc, pos)...] = none
 
-    pocket::Vec{Dimer} = [Dimer(pos, getpartner(mc, pos))]
+    pocket::Vector{Dimer} = [Dimer(pos, getpartner(mc, pos))]
+    proposal::Vector{Dimer} = [] # Proposed new dimers
     while length(pocket) > 0
         d = pop!(pocket)
         d = shift(d, -offset)
@@ -39,6 +40,7 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
         d = rotate(d, rotation)
         d = shift(d, offset)
         d = Dimer(mod1.(d.pos, (Lx, Ly)), mod1.(d.posj, (Lx, Ly)))
+        push!(proposal, d)
     end
 end
 
