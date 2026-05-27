@@ -29,7 +29,7 @@ Ls = [20, 40, 80]
 Ts = 0.01:0.01:0.15
 for L in Ls
     tm.Lx = tm.Ly = L
-    tm.sweeps = 50000 * div(L, 20)
+    tm.sweeps = 100000 * div(L, 20)
     tm.thermalization = 100000 * div(L, 20)
     tm.binsize = div(tm.sweeps, 100)
     for T in Ts
