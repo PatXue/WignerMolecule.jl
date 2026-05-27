@@ -18,6 +18,9 @@ const bondtodisp = Dict(
 # Get position index of v = (x,y)'s entanglement partner in mc
 getpartner(mc::DimerMC, v) = v .+ bondtodisp[mc.spins[v[1], v[2]]]
 
+# Shift position by v
+shift(d::Dimer, v) = Dimer(d.pos .+ v, d.posj .+ v)
+
 # Reflect position across x-axis
 reflect1(v) = SMatrix{2,2}(1, 0, 1, -1) * v
 reflect1(b::Bond) = Bond((6 - Int(b)) % 6)
