@@ -12,6 +12,9 @@ function bond_energy(mc::WignerMC, s::SpinVector, η::SpinVector,
     J_EMEP = mc.params.J_EMEP
     J_EMEM = mc.params.J_EMEM
 
+    η /= 2
+    ηj /= 2
+
     # η raising and lowering operators
     η_m = η[1] + 1.0im*η[2]
     ηj_p = ηj[1] - 1.0im*ηj[2]

@@ -11,6 +11,9 @@ function bond_energy(mc::DimerMC, pos, posj, η, ηj, ν)
     J_EMEP = mc.params.J_EMEP
     J_EMEM = mc.params.J_EMEM
 
+    η /= 2
+    ηj /= 2
+
     # η raising and lowering operators
     η_m = η[1] + 1.0im*η[2]
     ηj_p = ηj[1] - 1.0im*ηj[2]
@@ -60,8 +63,8 @@ function bond_energy(mc::DimerMC, d::Dimer)
     J_EMEM_SS = mc.params.J_EMEM_SS
 
     d = orientdimer(d)
-    η = mc.ηs[d.pos...]
-    ηj = mc.ηs[d.posj...]
+    η = mc.ηs[d.pos...] / 2
+    ηj = mc.ηs[d.posj...] / 2
     ν = getν(d)
 
     # η raising and lowering operators
