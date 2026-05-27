@@ -38,6 +38,7 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
         d = reflect_type ? reflect1(d) : reflect2(d)
         d = rotate(d, rotation)
         d = shift(d, offset)
+        d = Dimer(mod1.(d.pos, (Lx, Ly)), mod1.(d.posj, (Lx, Ly)))
     end
 end
 
