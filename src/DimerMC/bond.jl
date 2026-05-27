@@ -23,9 +23,11 @@ shift(d::Dimer, v) = Dimer(d.pos .+ v, d.posj .+ v)
 
 # Reflect position across x-axis
 reflect1(v) = SMatrix{2,2}(1, 0, 1, -1) * v
+reflect1(d::Dimer) = Dimer(reflect1(d.pos), reflect1(d.posj))
 reflect1(b::Bond) = Bond((6 - Int(b)) % 6)
 # Reflect position across line 30 deg above x-axis
 reflect2(v) = SMatrix{2,2}(0, 1, 1, 0) * v
+reflect2(d::Dimer) = Dimer(reflect2(d.pos), reflect2(d.posj))
 
 # Bond type to rotation matrix
 const bondtorot = Dict(
