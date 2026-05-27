@@ -12,8 +12,8 @@ jobname = "afm-fe-eta"
 
 L = 20
 tm.Lx = tm.Ly = L
-tm.sweeps = 30000
-tm.thermalization = 20000
+tm.sweeps = 50000
+tm.thermalization = 50000
 tm.binsize = 500
 tm.init_type = :afm_fe
 
