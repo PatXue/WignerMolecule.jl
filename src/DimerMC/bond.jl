@@ -14,6 +14,14 @@ const bondtodisp = Dict(
     a5 => SVector(0,-1),
     a6 => SVector(1,-1)
 )
+const disptobond = Dict(
+    SVector(1,0) => a1,
+    SVector(0,1) => a2,
+    SVector(-1,1) => a3,
+    SVector(-1,0) => a4,
+    SVector(0,-1) => a5,
+    SVector(1,-1) => a6
+)
 
 # Get position index of v = (x,y)'s entanglement partner in mc
 getpartner(mc::DimerMC, v) = v .+ bondtodisp[mc.spins[v[1], v[2]]]
@@ -58,4 +66,24 @@ function collisions(mc::DimerMC, d::Dimer)
         push!(res, Dimer(d.posj, getpartner(mc, d.posj)))
     end
     return res
+end
+
+# Check and flip dimer to lie along a1, a3, or a5
+function orientdimer(d::Dimer)
+    if disptobond[d.posj - d.pos] ∈ (a1, a3, a5)
+        return d
+    else
+        return Dimer(d.posj, d.pos)
+    end
+end
+# Get the ν coupling factor for a dimer
+function getν(d::Dimer)
+    bond = disptobond[d.posj - d.pos]
+    if bond ∈ (a1, a4)
+        return 1
+    elseif bond ∈ (a2, a5)
+        return ω
+    elseif bond ∈ (a3, a6)
+        return ω^2
+    end
 end
