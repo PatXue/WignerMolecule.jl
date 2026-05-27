@@ -15,12 +15,12 @@ tm.Lx = tm.Ly = L
 tm.sweeps = 30000
 tm.thermalization = 20000
 tm.binsize = 500
-tm.init_type = :afm_fe_s
+tm.init_type = :afm_fe
 
 raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ts = 0.1:0.1:1.0
+Ts = 0.01:0.01:0.2
 for T in Ts
     tm.T = T
     spins_dir = "$jobname.data/$(current_task_name(tm))"
