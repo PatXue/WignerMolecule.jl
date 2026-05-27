@@ -48,3 +48,32 @@ function site_energy(mc::DimerMC, η, pos)
     end
     return E
 end
+
+
+# Energy from spin-orbit coupling if d were entangled
+function bond_energy(mc::DimerMC, d::Dimer, ν)
+    # Couplings
+    J_SS = mc.params.J_SS
+    J_EzEz_SS = mc.params.J_EzEz_SS
+    J_EAM_SS = mc.params.J_EAM_SS
+    J_EMEP_SS = mc.params.J_EMEP_SS
+    J_EMEM_SS = mc.params.J_EMEM_SS
+
+    η = mc.ηs[d.pos...]
+    ηj = mc.ηs[d.posj...]
+
+    # η raising and lowering operators
+    η_m = η[1] + 1.0im*η[2]
+    ηj_p = ηj[1] - 1.0im*ηj[2]
+    ηj_m = ηj[1] + 1.0im*ηj[2]
+
+    E = 0.0 + 0.0im
+    E +=   J_EzEz_SS *     η[3] * ηj[3]
+    E += 2*J_EMEP_SS *     η_m * ηj_p
+    E += 2*J_EMEM_SS * ν * η_m * ηj_m
+    E += J_SS
+    E += 2*J_EAM_SS * (η_m/ν + ηj_p*ν)
+    E *= -3/4
+
+    return real(E)
+end
