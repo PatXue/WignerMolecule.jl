@@ -24,7 +24,7 @@ raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
 Ls = [8]
-Ts = Iterators.flatten((0.5:0.1:0.9, 1.0:1.0:20.0))
+Ts = Iterators.flatten(0.15:0.05:1.1)
 for (T,L) in Iterators.product(Ts, Ls)
     tm.Lx = tm.Ly = L
     tm.sweeps = 20000
