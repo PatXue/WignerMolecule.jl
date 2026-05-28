@@ -53,3 +53,16 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
     return nothing
 end
 
+function Carlo.register_evaluables(::Type{EtaMC{AlgType, BiasType}}, eval::AbstractEvaluator,
+                                   params::AbstractDict) where {AlgType, BiasType}
+    T = params[:T]
+    N = params[:Lx] * params[:Ly]
+    evaluate!(eval, :HeatCap, (:Energy2, :Energy)) do E2, E
+        return N * (E2 - E^2) / T^2
+    end
+    evaluate!(eval, :ChiQ, (:Q2, :Q)) do Q2, Q
+        return N * (Q2 - Q^2)
+    end
+    return nothing
+end
+
