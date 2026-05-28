@@ -25,5 +25,6 @@ include("common.jl")
 include("metropolis.jl")
 
 include("DimerMC/DimerMC.jl")
+include("EtaMC/EtaMC.jl")
 
 end
