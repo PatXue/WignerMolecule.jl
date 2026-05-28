@@ -1,6 +1,8 @@
 import Pkg
 Pkg.activate("..")
 
+using Carlo
+using Carlo.JobTools
 using WignerMolecule
 
 tm = TaskMaker()
