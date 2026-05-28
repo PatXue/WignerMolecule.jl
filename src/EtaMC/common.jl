@@ -18,3 +18,7 @@ function Carlo.init!(mc::EtaMC, ctx::Carlo.MCContext, params::AbstractDict)
         end
     end
 
+    update_fourier!(mc)
+    return nothing
+end
+
