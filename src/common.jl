@@ -62,10 +62,6 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         measure!(ctx, Symbol("ηk_corr_", f), η*η')
     end
 
-    Q = calc_Q(mc.spins) / N
-    measure!(ctx, :Q, Q)
-    measure!(ctx, :Q2, Q^2)
-
     if is_save_sweep(mc, ctx)
         save_spin(mc, ctx)
     end

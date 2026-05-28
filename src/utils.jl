@@ -69,8 +69,8 @@ function half_K(corrs)
     return corrs[2n+1,n+1,:]
 end
 
-# Calculate skyrmion number
-function calc_Q(spins)
+# Calculate sum of chirality for each triangular plaquette
+function chirality(spins)
     Q = 0.0
     for I in eachindex(spins)
         x, y = Tuple(I)
@@ -78,7 +78,7 @@ function calc_Q(spins)
         Q += s ⋅ (spins[x+1,y] × spins[x,y+1])
         Q += s ⋅ (spins[x+1,y-1] × spins[x+1,y])
     end
-    return Q / (4π)
+    return Q
 end
 
 norm2(v) = sum(abs2.(v))
