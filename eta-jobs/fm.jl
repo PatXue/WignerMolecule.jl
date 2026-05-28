@@ -14,3 +14,10 @@ for (T, L) in Iterators.product(Ts, Ls)
     tm.Lx = tm.Ly = L
     task(tm)
 end
+
+job = JobInfo("$jobname", EtaMC;
+    run_time = "24:00:00",
+    checkpoint_time = "30:00",
+    tasks = make_tasks(tm),
+)
+start(job, ARGS)
