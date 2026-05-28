@@ -35,7 +35,7 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
     measure!(ctx, :Magz, mag_v[3])
 
     # Energy per lattice site
-    E = total_energy(mc, mc.B) / N
+    E = total_energy(mc) / N
     measure!(ctx, :Energy, E)
     measure!(ctx, :Energy2, E^2)
 
@@ -53,8 +53,8 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
     return nothing
 end
 
-function Carlo.register_evaluables(::Type{EtaMC{AlgType, BiasType}}, eval::AbstractEvaluator,
-                                   params::AbstractDict) where {AlgType, BiasType}
+function Carlo.register_evaluables(::Type{EtaMC}, eval::AbstractEvaluator,
+                                   params::AbstractDict)
     T = params[:T]
     N = params[:Lx] * params[:Ly]
     evaluate!(eval, :HeatCap, (:Energy2, :Energy)) do E2, E
