@@ -2,9 +2,9 @@
 # matrices, as well as calculating momentum-space correlations
 function update_fourier!(mc::EtaMC)
     for i in 1:3
-        mc.ηks[:, :, i] .= getindex.(mc.ηs, i)
+        mc.spinks[:, :, i] .= getindex.(mc.spins, i)
     end
-    fft!(mc.ηks, (1, 2))
-    mc.ηks ./= length(mc.ηs)
+    fft!(mc.spinks, (1, 2))
+    mc.spinks ./= length(mc.spins)
     return nothing
 end

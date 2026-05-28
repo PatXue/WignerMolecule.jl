@@ -5,11 +5,11 @@ struct EtaParams
 end
 
 struct EtaMC <: AbstractMC
-    T::Float64          # Temperature
+    T::Float64
     wigparams::EtaParams
 
-    Ss::PeriodicMatrix{SpinVector}  # Spins
-    Sks::Array{ComplexF64, 3}       # Fourier transformed spins
+    spins::PeriodicMatrix{SpinVector}
+    spinks::Array{ComplexF64, 3}        # Fourier transformed spins
 end
 
 function EtaMC(; T=1.0, wigparams, Lx=20, Ly=20)
