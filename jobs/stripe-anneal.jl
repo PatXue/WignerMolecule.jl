@@ -11,8 +11,6 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "stripe-anneal"
 
-L = 20
-tm.Lx = tm.Ly = L
 tm.init_type = :stripe
 
 stripe_bias(x, _) = [0, 0, (-1)^(div(x, 2))]
@@ -25,12 +23,12 @@ JSON.lower(f::bias_type) = f(1, 1)
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ls = [20, 40]
+Ls = [20, 40, 80]
 Ts = 0.01:0.01:0.15
 for L in Ls
     tm.Lx = tm.Ly = L
-    tm.sweeps = 100000 * div(L, 20)
-    tm.thermalization = 100000 * div(L, 20)
+    tm.sweeps = 50000 * div(L, 20)
+    tm.thermalization = 50000 * div(L, 20)
     tm.binsize = 100 * div(L, 20)
     for T in Ts
         tm.T = T
