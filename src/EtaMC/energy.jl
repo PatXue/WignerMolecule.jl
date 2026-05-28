@@ -19,3 +19,51 @@ function bond_energy(mc::EtaMC, s::SpinVector, sj::SpinVector, ν)
     return -E
 end
 
+# Calculate the energy at a lattice site (x, y) if it had spin s
+function energy(mc::EtaMC, s::SpinVector, x, y)
+    E = 0.0
+    # Nearest neighbor lattice positions along a1,a2,a3
+    nns = ((x+1, y), (x-1, y+1), (x, y-1))
+    for j in eachindex(nns)
+        ν = ω^(j-1)
+        nn = nns[j]
+        sj = mc.spins[nn...]
+        E += bond_energy(mc, s, sj, ν)
+    end
+
+    # Nearest neighbor lattice positions along -a1,-a2,-a3
+    nns = ((x-1, y), (x+1, y-1), (x, y+1))
+    for j in eachindex(nns)
+        ν = ω^(j-1)
+        nn = nns[j]
+        sj = mc.spins[nn...]
+        E += bond_energy(mc, sj, s, ν)
+    end
+    return E
+end
+
+# Calculate the energy contribution of a site (x, y), considering only half of
+# its bonds (avoids double counting when calculating total energy)
+function half_energy(mc::EtaMC, x, y)
+    # Nearest neighbor lattice positions
+    nns = ((x+1, y), (x-1, y+1), (x, y-1))
+    E = 0.0
+    s = mc.spins[x, y]
+    for j in eachindex(nns)
+        ν = ω^(j-1)
+        nn = nns[j]
+        sj = mc.spins[nn...]
+        E += bond_energy(mc, s, sj, ν)
+    end
+    return E
+end
+
+# Calculate the total energy of MC
+function total_energy(mc::EtaMC)
+    tot_energy = 0.0
+    for I in eachindex(mc.spins)
+        x, y = Tuple(I)
+        tot_energy += half_energy(mc, x, y)
+    end
+    return tot_energy
+end
