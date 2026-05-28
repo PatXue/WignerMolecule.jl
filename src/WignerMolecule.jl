@@ -4,6 +4,8 @@ export WignerMC, WignerParams
 export total_energy, init_skyrm!
 export randomize!
 
+export EtaParams, EtaMC
+
 import Random.AbstractRNG
 import Random.default_rng
 
