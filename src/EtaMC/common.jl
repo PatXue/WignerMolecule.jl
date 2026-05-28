@@ -66,3 +66,12 @@ function Carlo.register_evaluables(::Type{EtaMC{AlgType, BiasType}}, eval::Abstr
     return nothing
 end
 
+function Carlo.write_checkpoint(mc::EtaMC, out::HDF5.Group)
+    out["spins"] = mc.spins
+    return nothing
+end
+function Carlo.read_checkpoint!(mc::EtaMC, in::HDF5.Group)
+    raw_spins = read(in, "spins")
+    mc.spins .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_spins)
+    return nothing
+end
