@@ -10,6 +10,9 @@ tm.wigparams = EtaParams(1.5, 0.5)
 Ls = [20]
 Ts = 0.1:0.1:1.0
 for (T, L) in Iterators.product(Ts, Ls)
+    tm.sweeps = 20000
+    tm.thermalization = 20000
+    tm.binsize = 100
     tm.T = T
     tm.Lx = tm.Ly = L
     task(tm)
