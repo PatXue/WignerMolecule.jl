@@ -6,8 +6,7 @@ end
 
 struct EtaMC <: AbstractMC
     T::Float64
-    wigparams::EtaParams
-
+    params::EtaParams
     spins::PeriodicMatrix{SpinVector}
     spinks::Array{ComplexF64, 3}        # Fourier transformed spins
 end
