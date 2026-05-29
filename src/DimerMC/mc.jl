@@ -7,6 +7,7 @@ struct DimerMC <: AbstractMC
     params::WignerParams
 
     spins::PeriodicMatrix{Bond}
+    visited::PeriodicMatrix{Bool}
     ηs::PeriodicMatrix{SpinVector}
 
     ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
@@ -19,8 +20,9 @@ function DimerMC(; T, init_T, wigparams, Lx, Ly, outdir="", savefreq=0)
     init_ss = fill(none, (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     return DimerMC(
-        T, init_T, wigparams, init_ss, init_ηs,
-        Array{ComplexF64}(undef, (Lx, Ly, 3)),
+        T, init_T, wigparams,
+        init_ss, Matrix(false, Lx, Ly),
+        init_ηs, Array{ComplexF64}(undef, (Lx, Ly, 3)),
         outdir, savefreq
     )
 end
