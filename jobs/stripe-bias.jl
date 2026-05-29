@@ -21,9 +21,9 @@ raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
 tm.init_B = 5.0
-Ts = [0.5, 0.6, 0.7]
+Ts = [0.06, 0.08, 0.1]
 Bs = 0.0:0.05:0.5
-Ls = [20, 40, 80]
+Ls = [20, 40]
 for (B, T, L) in Iterators.product(Bs, Ts, Ls)
     tm.Lx = tm.Ly = L
     tm.sweeps = 50000 * div(L, 20)
