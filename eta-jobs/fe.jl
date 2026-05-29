@@ -10,7 +10,7 @@ jobname = "fe"
 tm.wigparams = EtaParams(0.5, 0.5)
 
 Ls = [20]
-Ts = 0.1:0.1:1.0
+Ts = 0.05:0.05:0.5
 for (T, L) in Iterators.product(Ts, Ls)
     tm.sweeps = 20000
     tm.thermalization = 20000
