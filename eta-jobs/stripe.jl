@@ -8,6 +8,7 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "stripe"
 tm.wigparams = EtaParams(0.5, 2)
+tm.init_type = :stripe
 
 Ls = [20]
 Ts = 0.1:0.1:1.0
