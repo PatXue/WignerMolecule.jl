@@ -23,7 +23,7 @@ tm.wigparams = WignerParams(norm_params...)
 tm.init_B = 5.0
 Ts = [0.08, 0.09, 0.1]
 Bs = 0.0:0.005:0.045
-Ls = [20, 40]
+Ls = [20, 40, 80]
 for (B, T, L) in Iterators.product(Bs, Ts, Ls)
     tm.Lx = tm.Ly = L
     tm.sweeps = 50000 * div(L, 20)
