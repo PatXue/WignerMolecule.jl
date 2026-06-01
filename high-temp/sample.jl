@@ -77,4 +77,9 @@ function sample(name, ord, n; printfreq=100000)
     save("expectations.jld2", all_data)
 end
 
+if "-r" ∈ ARGS
+    all_data = load("expectations.jld2")
+    d = filter(p->!startswith(p.first, ARGS[1]), all_data)
+    save("expectations.jld2", d)
+end
 sample(ARGS[1], parse(Int, ARGS[2]), parse(Int, ARGS[3]))
