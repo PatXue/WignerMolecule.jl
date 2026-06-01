@@ -5,6 +5,13 @@ struct Dimer
     posj::SVector{2, Int}
 end
 
+# Apply periodic boundaries to positions
+Base.mod1(pos::SVector{2,Int}, mc::DimerMC) = mod1.(pos, size(mc.spins))
+function Base.mod1(d::Dimer, mc::DimerMC)
+    dims = size(mc.spins)
+    return Dimer(mod1.(d.pos, dims), mod1.(d.posj, dims))
+end
+
 # Shift position by v
 shift(d::Dimer, v) = Dimer(d.pos .+ v, d.posj .+ v)
 
