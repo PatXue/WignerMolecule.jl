@@ -5,51 +5,21 @@ struct Dimer
     posj::SVector{2, Int}
 end
 
-# Bond type to index displacement
-const bondtodisp = Dict(
-    a1 => SVector(1,0),
-    a2 => SVector(0,1),
-    a3 => SVector(-1,1),
-    a4 => SVector(-1,0),
-    a5 => SVector(0,-1),
-    a6 => SVector(1,-1)
-)
-const disptobond = Dict(
-    SVector(1,0) => a1,
-    SVector(0,1) => a2,
-    SVector(-1,1) => a3,
-    SVector(-1,0) => a4,
-    SVector(0,-1) => a5,
-    SVector(1,-1) => a6
-)
-
-# Get position index of v = (x,y)'s entanglement partner in mc
-getpartner(mc::DimerMC, v) = v .+ bondtodisp[mc.spins[v[1], v[2]]]
-
 # Shift position by v
 shift(d::Dimer, v) = Dimer(d.pos .+ v, d.posj .+ v)
 
 # Reflect position across x-axis
-reflect1(v) = SMatrix{2,2}(1, 0, 1, -1) * v
-reflect1(d::Dimer) = Dimer(reflect1(d.pos), reflect1(d.posj))
-reflect1(b::Bond) = Bond((6 - Int(b)) % 6)
+const reflect1_mat = SMatrix{2,2}(1, 0, 1, -1)
+reflect1(d::Dimer) = Dimer(reflect1_mat * d.pos, reflect1_mat * d.posj)
 # Reflect position across line 30 deg above x-axis
-reflect2(v) = SMatrix{2,2}(0, 1, 1, 0) * v
-reflect2(d::Dimer) = Dimer(reflect2(d.pos), reflect2(d.posj))
+const reflect2_mat = SMatrix{2,2}(0, 1, 1, 0)
+reflect2(d::Dimer) = Dimer(reflect2_mat * d.pos, reflect2_mat * d.posj)
 
-# Bond type to rotation matrix
-const bondtorot = Dict(
-    a1 => SMatrix{2,2}(1, 0, 0, 1),
-    a2 => SMatrix{2,2}(0, 1, -1, 1),
-    a3 => SMatrix{2,2}(-1, 1, -1, 0),
-    a4 => SMatrix{2,2}(-1, 0, 0, -1),
-    a5 => SMatrix{2,2}(0, -1, 1, -1),
-    a6 => SMatrix{2,2}(1, -1, 1, 0)
-)
+# Rotation matrices in increments of 60 degrees
+const rotmats = @SVector [SMatrix{2,2}(0, 1, -1, 1)^i for i in 0:5]
 
-# Perform a rotation of x hat to lie along given bond r
-rotate(b::Bond, r::Bond) = Bond((Int(b) + Int(r)) % 6)
-rotate(v, r::Bond) = bondtorot[r] * v
+# Rotate around (0,0) by r*60 degrees
+rotate(v, r) = rotmats[r+1] * v
 rotate(d::Dimer, r::Bond) = Dimer(rotate(d.pos, r), rotate(d.posj, r))
 invrotate(x, r::Bond) = rotate(x, reflect1(r))
 
