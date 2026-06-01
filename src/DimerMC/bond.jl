@@ -33,14 +33,14 @@ invrotate(x, r::Bond) = rotate(x, reflect1(r))
 # Return dimers that d conflicts with in mc
 function collisions(mc::DimerMC, d::Dimer)
     res = []
-    if getpartner(mc, d.pos) == d.posj
+    if mc.spins[d.pos...] == mod1(d.posj, mc)
         return res
     end
-    if mc.spins[d.pos...] != none
-        push!(res, Dimer(d.pos, getpartner(mc, d.pos)))
+    if !mc.visited[d.pos...]
+        push!(res, Dimer(d.pos, mc.spins[d.pos...]))
     end
-    if mc.spins[d.posj...] != none
-        push!(res, Dimer(d.posj, getpartner(mc, d.posj)))
+    if !mc.visited[d.posj...]
+        push!(res, Dimer(d.posj, mc.spins[d.posj...]))
     end
     return res
 end
