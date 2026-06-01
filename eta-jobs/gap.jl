@@ -7,11 +7,11 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "gap"
-tm.wigparams = EtaParams(0.5, 0.5)
+tm.init_type = :fm
 
 Ls = [20]
 Ts = [0.1]
-Jzs = 0.0:0.1:2
+Jzs = 0.0:0.2:2
 for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
     tm.sweeps = 20000
     tm.thermalization = 20000
