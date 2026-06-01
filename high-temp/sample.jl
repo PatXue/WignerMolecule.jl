@@ -10,7 +10,7 @@ using WignerMolecule
 
 norm2(v) = sum(abs2.(v))
 
-const L = 8
+const L = 12
 const phases = Dict(
     "stripe" => (45, 5, 20, 6),
     "fm" => (45, 5, 20, 9),
