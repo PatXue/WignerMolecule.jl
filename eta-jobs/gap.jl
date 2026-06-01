@@ -19,6 +19,7 @@ for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
     tm.wigparams = EtaParams(Jz, 1.0)
     tm.T = T
     tm.Lx = tm.Ly = L
+    tm.Jz = Jz
     task(tm)
 end
 
