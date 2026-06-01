@@ -22,7 +22,7 @@ norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
 tm.init_B = 5.0
 Ts = [0.08, 0.09, 0.1]
-Bs = 0.0:0.01:0.09
+Bs = 0.0:0.005:0.045
 Ls = [20, 40]
 for (B, T, L) in Iterators.product(Bs, Ts, Ls)
     tm.Lx = tm.Ly = L
