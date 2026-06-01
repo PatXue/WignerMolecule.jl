@@ -3,7 +3,7 @@ struct DimerMC <: AbstractMC
     init_T::Float64     # Initial temperature (for thermalization)
     params::WignerParams
 
-    spins::PeriodicMatrix{SVector{Int,2}}  # Matrix holding position (x,y) of entangled partner
+    spins::PeriodicMatrix{SVector{2,Int}}  # Matrix holding position (x,y) of entangled partner
     visited::PeriodicMatrix{Bool}
     ηs::PeriodicMatrix{SpinVector}
 
