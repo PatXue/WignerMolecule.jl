@@ -14,11 +14,11 @@ struct DimerMC <: AbstractMC
 end
 
 function DimerMC(; T, init_T, wigparams, Lx, Ly, outdir="", savefreq=0)
-    init_ss = fill(zeros(SVector{Int, 2}), (Lx, Ly))
+    init_ss = fill(zeros(SVector{2,Int}), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     return DimerMC(
         T, init_T, wigparams,
-        init_ss, Matrix(false, Lx, Ly),
+        init_ss, fill(false, Lx, Ly),
         init_ηs, Array{ComplexF64}(undef, (Lx, Ly, 3)),
         outdir, savefreq
     )
