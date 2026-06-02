@@ -24,7 +24,7 @@ const reflect2_mat = SMatrix{2,2}(0, 1, 1, 0)
 reflect2(d::Dimer) = Dimer(reflect2_mat * d.pos, reflect2_mat * d.posj)
 
 # Rotation matrices in increments of 60 degrees
-const rotmats = @SVector [SMatrix{2,2}(0, 1, -1, 1)^i for i in 0:5]
+const rotmats = Tuple(SMatrix{2,2}(0, 1, -1, 1)^i for i in 0:5)
 
 # Rotate around (0,0) by r*60 degrees
 rotate(v, r) = rotmats[r+1] * v
@@ -34,7 +34,7 @@ invrotate(x, r::Bond) = rotate(x, reflect1(r))
 # Return dimers that d conflicts with in mc
 function collisions(mc::DimerMC, d::Dimer)
     res = []
-    if mc.spins[d.pos...] == mod1(d.posj, mc)
+    if mod_equiv(mc.spins[d.pos...], d.posj, mc)
         return res
     end
     if !mc.visited[d.pos...]
@@ -47,10 +47,11 @@ function collisions(mc::DimerMC, d::Dimer)
 end
 
 # Check and flip dimer to lie along a1, a2, or a3
+const oriented = (SVector(1,0), SVector(-1,1), SVector(0,-1))
 function orientdimer(mc::DimerMC, d::Dimer)
     Lx, Ly == size(mc.spins)
     disp = mod1(d.posj - d.pos, mc)
-    if disp ∈ [SVector(1,0), SVector(Lx-1,1), SVector(0,Ly-1)]
+    if any([mod_equiv(disp, a, mc) for a in oriented])
         return d
     else
         return Dimer(d.posj, d.pos)
@@ -60,11 +61,11 @@ end
 function getν(mc::DimerMC, d::Dimer)
     Lx, Ly == size(mc.spins)
     disp = mod1(d.posj - d.pos, mc)
-    if disp == SVector(1,0)
+    if mod_equiv(disp, (1,0), mc)
         return 1
-    elseif disp == SVector(Lx-1,1)
+    elseif mod_equiv(disp, (-1,1), mc)
         return ω
-    elseif disp == SVector(0,Ly-1)
+    elseif mod_equiv(disp, (0,-1), mc)
         return ω^2
     else
         throw(ArgumentError("Dimer $d not oriented correctly"))
