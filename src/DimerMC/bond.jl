@@ -55,7 +55,7 @@ function orientdimer(mc::DimerMC, d::Dimer)
         return Dimer(d.posj, d.pos)
     end
 end
-# Get the ν coupling factor for a dimer
+# Get the ν coupling factor for a dimer (assuming dimer oriented)
 function getν(mc::DimerMC, d::Dimer)
     Lx, Ly == size(mc.spins)
     disp = mod1(d.posj - d.pos, mc)
@@ -65,5 +65,7 @@ function getν(mc::DimerMC, d::Dimer)
         return ω
     elseif disp == SVector(0,Ly-1)
         return ω^2
+    else
+        throw(ArgumentError("Dimer $d not oriented correctly"))
     end
 end
