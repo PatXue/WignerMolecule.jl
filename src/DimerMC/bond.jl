@@ -28,8 +28,8 @@ const rotmats = Tuple(SMatrix{2,2}(0, 1, -1, 1)^i for i in 0:5)
 
 # Rotate around (0,0) by r*60 degrees
 rotate(v, r) = rotmats[r+1] * v
-rotate(d::Dimer, r::Bond) = Dimer(rotate(d.pos, r), rotate(d.posj, r))
-invrotate(v, r) = rotmats[mod1(6-r+1, 6)] * v
+rotate(d::Dimer, r) = Dimer(rotate(d.pos, r), rotate(d.posj, r))
+invrotate(x, r) = rotate(x, mod(6-r, 6))
 
 # Return dimers that d conflicts with in mc
 function collisions(mc::DimerMC, d::Dimer)
