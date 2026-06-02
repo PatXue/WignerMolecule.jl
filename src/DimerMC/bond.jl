@@ -45,22 +45,25 @@ function collisions(mc::DimerMC, d::Dimer)
     return res
 end
 
-# Check and flip dimer to lie along a1, a3, or a5
-function orientdimer(d::Dimer)
-    if disptobond[d.posj - d.pos] ∈ (a1, a3, a5)
+# Check and flip dimer to lie along a1, a2, or a3
+function orientdimer(mc::DimerMC, d::Dimer)
+    Lx, Ly == size(mc.spins)
+    disp = mod1(d.posj - d.pos, mc)
+    if disp ∈ [SVector(1,0), SVector(Lx-1,1), SVector(0,Ly-1)]
         return d
     else
         return Dimer(d.posj, d.pos)
     end
 end
 # Get the ν coupling factor for a dimer
-function getν(d::Dimer)
-    bond = disptobond[d.posj - d.pos]
-    if bond ∈ (a1, a4)
+function getν(mc::DimerMC, d::Dimer)
+    Lx, Ly == size(mc.spins)
+    disp = mod1(d.posj - d.pos, mc)
+    if disp == SVector(1,0)
         return 1
-    elseif bond ∈ (a2, a5)
+    elseif disp == SVector(Lx-1,1)
         return ω
-    elseif bond ∈ (a3, a6)
+    elseif disp == SVector(0,Ly-1)
         return ω^2
     end
 end
