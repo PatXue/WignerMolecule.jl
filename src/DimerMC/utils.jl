@@ -7,3 +7,10 @@ function update_fourier!(mc::DimerMC)
     mc.ηks ./= length(mc.ηs)
     return nothing
 end
+
+function validate_mc(mc::DimerMC)
+    for I in eachindex(mc.spins)
+        x,y = Tuple(I)
+        @assert mod_equiv(mc.spins[mc.spins[x,y]...], (x,y), mc)
+    end
+end
