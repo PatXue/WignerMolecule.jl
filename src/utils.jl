@@ -80,6 +80,10 @@ function chirality(spins)
     end
     return Q
 end
+# Calculate chirality for a single site
+function chirality(spins, x, y)
+    return spins[x,y] ⋅ (spins[x+1,y] × spins[x,y+1])
+end
 
 norm2(v) = sum(abs2.(v))
 

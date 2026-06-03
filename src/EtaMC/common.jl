@@ -49,6 +49,9 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
     Q = chirality(mc.spins) / N
     measure!(ctx, :Q, Q)
     measure!(ctx, :Q2, Q^2)
+    single_Q = chirality(mc.spins, 1, 1)
+    measure!(ctx, :single_Q, single_Q)
+    measure!(ctx, :single_Q2, single_Q^2)
 
     return nothing
 end
