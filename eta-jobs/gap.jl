@@ -9,7 +9,7 @@ tm = TaskMaker()
 jobname = "gap"
 tm.init_type = :rand
 
-Ls = [20]
+Ls = [20, 40, 80]
 Ts = [0.1, 0.2, 0.3]
 Jzs = 0.0:0.2:2
 for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
