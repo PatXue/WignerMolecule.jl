@@ -11,7 +11,7 @@ function sweep_η!(mc::DimerMC, ctx::Carlo.MCContext)
         ΔE = new_E - old_E
 
         # Probability of accepting spin flip (for ΔE ≤ 0 always accept)
-        prob = exp(-ΔE / T)
+        prob = exp(-ΔE / mc.T)
         if prob >= 1.0 || rand(rng) < prob
             mc.ηs[x, y] = new_η
         end
@@ -46,6 +46,14 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
         push!(proposal, d)
         new_E += bond_energy(mc, d)
         append!(pocket, collisions(mc, d))
+    end
+
+    ΔE = new_E - old_E
+    if ΔE < 0 || rand(rng) < exp(-ΔE / mc.T)
+        for d in proposal
+            mc.spins[d.pos...] = d.posj
+            mc.spins[d.posj...] = d.pos
+        end
     end
 end
 
