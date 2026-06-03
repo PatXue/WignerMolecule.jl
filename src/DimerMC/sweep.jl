@@ -11,7 +11,7 @@ function sweep_η!(mc::DimerMC, ctx::Carlo.MCContext)
         ΔE = new_E - old_E
 
         # Probability of accepting spin flip (for ΔE ≤ 0 always accept)
-        prob = exp(-ΔE / T)
+        prob = exp(-ΔE / mc.T)
         if prob >= 1.0 || rand(rng) < prob
             mc.ηs[x, y] = new_η
         end
@@ -21,28 +21,43 @@ end
 function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     rng = ctx.rng
+    fill!(mc.visited, false)
 
     pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
     offset = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
-    rotation = Bond(rand(rng, 0:5))
+    rotation = rand(rng, 0:5)
     reflect_type = rand(rng, Bool)
 
-    mc.spins[pos...] = none
-    mc.spins[getpartner(mc, pos)...] = none
-
+    old_E = new_E = 0.0
     pocket::Vector{Dimer} = [Dimer(pos, getpartner(mc, pos))]
     proposal::Vector{Dimer} = [] # Proposed new dimers
     while length(pocket) > 0
         d = pop!(pocket)
+        mc.visited[d.pos...] = true
+        mc.visited[d.posj...] = true
+        old_E += bond_energy(mc, d)
+
         d = shift(d, -offset)
         d = invrotate(d, rotation)
         d = reflect_type ? reflect1(d) : reflect2(d)
         d = rotate(d, rotation)
         d = shift(d, offset)
-        d = Dimer(mod1.(d.pos, (Lx, Ly)), mod1.(d.posj, (Lx, Ly)))
+        d = mod1(d, mc)
         push!(proposal, d)
+        new_E += bond_energy(mc, d)
+        append!(pocket, collisions(mc, d))
+    end
+
+    ΔE = new_E - old_E
+    if ΔE < 0 || rand(rng) < exp(-ΔE / mc.T)
+        for d in proposal
+            mc.spins[d.pos...] = d.posj
+            mc.spins[d.posj...] = d.pos
+        end
     end
 end
 
 function Carlo.sweep!(mc::DimerMC, ctx::Carlo.MCContext)
+    sweep_s!(mc, ctx)
+    sweep_η!(mc, ctx)
 end

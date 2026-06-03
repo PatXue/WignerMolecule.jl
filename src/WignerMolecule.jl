@@ -6,6 +6,8 @@ export randomize!
 
 export EtaParams, EtaMC
 
+export DimerMC
+
 import Random.AbstractRNG
 import Random.default_rng
 
