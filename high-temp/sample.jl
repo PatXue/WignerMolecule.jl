@@ -42,9 +42,9 @@ function sample(name, ord, n; printfreq=100000)
 
     all_data = load("expectations.jld2")
     avg_energy = [get(all_data, "$name/HH$i", Expectation(0,0,0)) for i in 0:ord]
-    avg_sk = [get(all_data, "$name/sH$i", Expectation(0,0,0)) for i in 0:ord]
-    avg_ηk = [get(all_data, "$name/ηH$i", Expectation(0,0,0)) for i in 0:ord]
-    avg_ηz = [get(all_data, "$name/ηzH$i", Expectation(0,0,0)) for i in 0:ord]
+    avg_scorr = [get(all_data, "$name/sH$i", Expectation(0,0,0)) for i in 0:ord]
+    avg_ηcorr = [get(all_data, "$name/ηH$i", Expectation(0,0,0)) for i in 0:ord]
+    avg_ηzcorr = [get(all_data, "$name/ηzH$i", Expectation(0,0,0)) for i in 0:ord]
 
     for i in 1:n
         randomize!(mc)
@@ -56,9 +56,9 @@ function sample(name, ord, n; printfreq=100000)
         ηz_corr = abs2(ηk[3])       # ηz correlation
         energies = [E^i for i in 0:ord]
         avg_energy .= addsample.(avg_energy, E .* energies)
-        avg_sk .= addsample.(avg_sk, sk_corr .* energies)
-        avg_ηk .= addsample.(avg_ηk, ηk_corr .* energies)
-        avg_ηz .= addsample.(avg_ηz, ηz_corr .* energies)
+        avg_scorr .= addsample.(avg_scorr, sk_corr .* energies)
+        avg_ηcorr .= addsample.(avg_ηcorr, ηk_corr .* energies)
+        avg_ηzcorr .= addsample.(avg_ηzcorr, ηz_corr .* energies)
         if i % printfreq == 0
             println("Sample #$i completed")
         end
@@ -66,13 +66,13 @@ function sample(name, ord, n; printfreq=100000)
 
     for i in 0:ord
         all_data["$name/HH$i"] = avg_energy[i+1]
-        all_data["$name/sH$i"] = avg_sk[i+1]
-        all_data["$name/ηH$i"] = avg_ηk[i+1]
-        all_data["$name/ηzH$i"] = avg_ηz[i+1]
+        all_data["$name/sH$i"] = avg_scorr[i+1]
+        all_data["$name/ηH$i"] = avg_ηcorr[i+1]
+        all_data["$name/ηzH$i"] = avg_ηzcorr[i+1]
         println("H^$(i+1): $(avg_energy[i+1])")
-        println("sH^$i: $(avg_sk[i+1])")
-        println("ηH^$i: $(avg_ηk[i+1])")
-        println("ηzH^$i: $(avg_ηz[i+1])")
+        println("sH^$i: $(avg_scorr[i+1])")
+        println("ηH^$i: $(avg_ηcorr[i+1])")
+        println("ηzH^$i: $(avg_ηzcorr[i+1])")
     end
     save("expectations.jld2", all_data)
 end
