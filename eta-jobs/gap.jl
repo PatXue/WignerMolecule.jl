@@ -7,6 +7,7 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "gap"
+tm.B = 0.01
 tm.init_type = :rand
 
 Ls = [20]
