@@ -7,20 +7,19 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "jz_cut"
-tm.B = 0.01
-tm.init_type = :rand
+tm.init_type = :fm
 
 Ls = [20]
-Ts = [0.1, 0.2, 0.3]
-Jzs = 0.0:0.2:2
-for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
+Ts = [0.1]
+Jps = 0.5:0.1:1.5
+for (Jp, T, L) in Iterators.product(Jps, Ts, Ls)
     tm.sweeps = 20000
     tm.thermalization = 20000
     tm.binsize = 100
-    tm.wigparams = EtaParams(Jz, 1.0)
+    tm.wigparams = EtaParams(0.4, Jp)
     tm.T = T
     tm.Lx = tm.Ly = L
-    tm.Jz = Jz
+    tm.Jp = Jp
     task(tm)
 end
 
