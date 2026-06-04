@@ -7,7 +7,7 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "jz_cut"
-tm.init_type = :fm
+tm.init_type = :rand
 
 Ls = [20]
 Ts = [0.1]
