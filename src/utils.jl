@@ -76,7 +76,6 @@ function chirality(spins)
         x, y = Tuple(I)
         s = spins[I]
         Q += s ⋅ (spins[x+1,y] × spins[x,y+1])
-        Q += s ⋅ (spins[x+1,y-1] × spins[x+1,y])
     end
     return Q
 end
