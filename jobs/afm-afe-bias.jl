@@ -21,17 +21,17 @@ JSON.lower(f::bias_type) = f(1, 1)
 raw_params = load_object("all_params.jld2")[(45, 11, 20, 7)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ts = 0.0025:0.0025:0.05
+Bs = 0.0:0.05:0.5
+Ts = [0.035, 0.04, 0.045]
 Ls = [20, 40, 80]
-for (T, L) in Iterators.product(Ts, Ls)
-    tm.Lx = tm.Ly = L
+for (B, T, L) in Iterators.product(Bs, Ts, Ls)
     tm.sweeps = 50000 * div(L, 20)
     tm.thermalization = tm.sweeps
     tm.binsize = div(tm.sweeps, 100)
-    for T in Ts
-        tm.T = max(T, 0.01)
-        task(tm)
-    end
+    tm.Lx = tm.Ly = L
+    tm.T = T
+    tm.B = B
+    task(tm)
 end
 
 job = JobInfo("$jobname", WignerMC{:Metropolis, bias_type};
