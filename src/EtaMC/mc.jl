@@ -7,18 +7,20 @@ end
 struct EtaMC <: AbstractMC
     T::Float64
     params::EtaParams
+    B::Float64
     spins::PeriodicMatrix{SpinVector}
     spinks::Array{ComplexF64, 3}        # Fourier transformed spins
 end
 
-function EtaMC(; T=1.0, wigparams, Lx=20, Ly=20)
+function EtaMC(; T=1.0, B=0.0, wigparams=EtaParams(0.0,0.0), Lx=20, Ly=20)
     init = fill(zeros(SpinVector), (Lx, Ly))
-    return EtaMC(T, wigparams, init, Array{ComplexF64, 3}(undef, (Lx, Ly, 3)))
+    return EtaMC(T, wigparams, B, init, Array{ComplexF64, 3}(undef, (Lx, Ly, 3)))
 end
 
 function EtaMC(params::AbstractDict)
     Lx, Ly = params[:Lx], params[:Ly]
     T = params[:T]
     wigparams = params[:wigparams]
-    return EtaMC(; T, Lx, Ly, wigparams)
+    B = get(params, :B, 0.0)
+    return EtaMC(; T, B, Lx, Ly, wigparams)
 end
