@@ -15,6 +15,7 @@ end
 
 function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
     init_vbs_s!(mc)
+    rand!(mc.ηs)
     update_fourier!(mc)
     return nothing
 end
