@@ -23,7 +23,7 @@ norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
 Bs = 0.0:0.005:0.05
 Ts = [0.04, 0.045, 0.05]
-Ls = [20]
+Ls = [20, 40, 80]
 for (B, T, L) in Iterators.product(Bs, Ts, Ls)
     tm.sweeps = 50000 * div(L, 20)
     tm.thermalization = tm.sweeps
