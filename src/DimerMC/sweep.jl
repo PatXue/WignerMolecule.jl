@@ -29,7 +29,7 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
     reflect_type = rand(rng, Bool)
 
     old_E = new_E = 0.0
-    pocket::Vector{Dimer} = [Dimer(pos, getpartner(mc, pos))]
+    pocket::Vector{Dimer} = [Dimer(pos, mc.spins[pos...])]
     proposal::Vector{Dimer} = [] # Proposed new dimers
     while length(pocket) > 0
         d = pop!(pocket)
