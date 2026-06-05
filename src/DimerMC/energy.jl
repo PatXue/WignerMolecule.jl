@@ -89,3 +89,27 @@ function bond_energy(mc::DimerMC, d::Dimer)
 
     return real(E)
 end
+
+
+# Energy from half the bonds of pos
+function half_energy(mc::DimerMC, pos)
+    E = 0.0
+    η = mc.ηs[pos...]
+    for j in 1:3
+        ν = ω^(j-1)
+        disp = oriented_disps[j]
+        posj = pos .+ disp
+        ηj = mc.ηs[posj...]
+        paired = mod_equiv(mc.spins[pos...], posj, mc)
+        E += bond_energy(mc, paired, η, ηj, ν)
+    end
+    return E
+end
+
+function total_energy(mc::DimerMC)
+    E = 0.0
+    for I in eachindex(IndexCartesian(), mc.spins)
+        E += half_energy(mc, Tuple(I))
+    end
+    return E
+end
