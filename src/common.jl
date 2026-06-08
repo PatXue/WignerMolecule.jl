@@ -77,11 +77,19 @@ function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::Ab
         return N / T * (mag2 - mag^2)
     end
 
-    evaluate!(eval, :ChiEtaxy, (:ηk_corr_Γ, :ηk_Γ)) do eta2, eta
-        return N * real(eta2[1,1] + eta2[2,2] - abs2(eta[1]) - abs2(eta[2])) / T
-    end
-    evaluate!(eval, :ChiEtaz, (:ηk_corr_Γ, :ηk_Γ)) do eta2, eta
-        return N * real(eta2[3,3] - abs2(eta[3])) / T
+    for f in (Γ, M, M2, M3, half_M, half_K)
+        evaluate!(eval, Symbol("χs_", f), (Symbol("sk_", f), Symbol("sk_corr_", f))) do sk, sk2
+            N / T * (sk2 - sum(abs2.(sk)))
+        end
+        evaluate!(eval, Symbol("χηx_", f), (Symbol("ηk_", f), Symbol("ηk_corr_", f))) do ηk, ηk2
+            N / T * real(ηk2[1,1] - abs2(ηk[1]))
+        end
+        evaluate!(eval, Symbol("χηy_", f), (Symbol("ηk_", f), Symbol("ηk_corr_", f))) do ηk, ηk2
+            N / T * real(ηk2[2,2] - abs2(ηk[2]))
+        end
+        evaluate!(eval, Symbol("χηz_", f), (Symbol("ηk_", f), Symbol("ηk_corr_", f))) do ηk, ηk2
+            N / T * real(ηk2[3,3] - abs2(ηk[3]))
+        end
     end
 
     evaluate!(eval, :HeatCap, (:Energy2, :Energy)) do E2, E
