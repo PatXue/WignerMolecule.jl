@@ -53,7 +53,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     measure!(ctx, :Energy2, E^2)
 
     update_fourier!(mc)
-    for f in (Γ, M, M2, M3, half_M, half_K)
+    for f in corr_posns
         s = f(mc.spinks)
         η = f(mc.ηks)
         measure!(ctx, Symbol("sk_", f), s)
@@ -77,7 +77,7 @@ function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::Ab
         return N / T * (mag2 - mag^2)
     end
 
-    for f in (Γ, M, M2, M3, half_M, half_K)
+    for f in corr_posns
         evaluate!(eval, Symbol("χs_", f), (Symbol("sk_", f), Symbol("sk_corr_", f))) do sk, sk2
             N / T * (sk2 - sum(abs2.(sk)))
         end
