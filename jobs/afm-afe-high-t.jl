@@ -16,15 +16,16 @@ tm.bias = nothing
 raw_params = load_object("all_params.jld2")[(45, 11, 20, 7)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ts = 0.3:0.1:2.2
+βs = 0.1:2:26.1
 Ls = [12]
 for L in Ls
     tm.Lx = tm.Ly = L
     tm.sweeps = 50000
     tm.thermalization = tm.sweeps
-    tm.binsize = 100
-    for T in Ts
-        tm.T = max(T, 0.01)
+    tm.binsize = 250
+    for β in βs
+        tm.β = β
+        tm.T = 1/β
         task(tm)
     end
 end
