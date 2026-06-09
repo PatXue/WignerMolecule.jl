@@ -11,7 +11,7 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "stripe-rand"
 tm.init_type = :rand
-tm.init_T = 1.0
+tm.init_T = 2.0
 tm.bias = nothing
 bias_type = Nothing
 
