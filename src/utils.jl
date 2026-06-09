@@ -68,7 +68,7 @@ function half_M2(corrs)
     return corrs[1, div(Ly, 4)+1, :]
 end
 function half_M3(corrs)
-    Lx, _ = size(corrs)
+    Lx, Ly = size(corrs)
     return corrs[div(Lx, 4)+1, div(Ly, 4)+1, :]
 end
 function half_K(corrs)
