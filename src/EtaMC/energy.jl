@@ -39,7 +39,7 @@ function energy(mc::EtaMC, s::SpinVector, x, y)
         sj = mc.spins[nn...]
         E += bond_energy(mc, sj, s, ν)
     end
-    return E - mc.B * s[3]
+    return E - mc.B * (s ⋅ (mc.spins[x+1,y] × mc.spins[x,y+1]))
 end
 
 # Calculate the energy contribution of a site (x, y), considering only half of
@@ -55,7 +55,7 @@ function half_energy(mc::EtaMC, x, y)
         sj = mc.spins[nn...]
         E += bond_energy(mc, s, sj, ν)
     end
-    return E - mc.B * s[3]
+    return E - mc.B * (s ⋅ (mc.spins[x+1,y] × mc.spins[x,y+1]))
 end
 
 # Calculate the total energy of MC
