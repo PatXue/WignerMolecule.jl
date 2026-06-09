@@ -13,9 +13,9 @@ jobname = "afm-fe-high-t"
 tm.init_type = :afm_fe
 tm.bias = nothing
 
-tm.sweeps = 20000
-tm.thermalization = 20000
-tm.binsize = 100
+tm.sweeps = 40000
+tm.thermalization = 40000
+tm.binsize = 200
 
 raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
 norm_params = raw_params ./ norm(raw_params)
