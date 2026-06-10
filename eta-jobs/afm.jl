@@ -7,8 +7,8 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "afm"
-tm.init_type = :rand
-tm.wigparams = EtaParams(-2, 0.5)
+tm.init_type = :afm
+tm.wigparams = EtaParams(-2,0)
 
 Ls = [20]
 Ts = 0.05:0.05:0.5
