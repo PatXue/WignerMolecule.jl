@@ -49,7 +49,6 @@ end
 # Check and flip dimer to lie along a1, a2, or a3
 const oriented_disps = (SVector(1,0), SVector(-1,1), SVector(0,-1))
 function orientdimer(d::Dimer, mc::DimerMC)
-    Lx, Ly == size(mc.spins)
     disp = mod1(d.posj - d.pos, mc)
     if any([mod_equiv(disp, a, mc) for a in oriented_disps])
         return d
