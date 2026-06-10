@@ -16,6 +16,8 @@ function Carlo.init!(mc::EtaMC, ctx::Carlo.MCContext, params::AbstractDict)
             _, y = Tuple(I)
             mc.spins[I] = SpinVector((-1)^y, 0, 0)
         end
+    elseif init_type == :afm
+        init_afm_afe_s!(mc.spins)
     end
 
     update_fourier!(mc)
