@@ -1,0 +1,29 @@
+import Pkg
+Pkg.activate("..")
+
+using Carlo
+using Carlo.JobTools
+using WignerMolecule
+
+tm = TaskMaker()
+jobname = "afm"
+tm.init_type = :rand
+tm.wigparams = EtaParams(-2, 0.5)
+
+Ls = [20]
+Ts = 0.05:0.05:0.5
+for (T, L) in Iterators.product(Ts, Ls)
+    tm.sweeps = 20000
+    tm.thermalization = 20000
+    tm.binsize = 100
+    tm.T = T
+    tm.Lx = tm.Ly = L
+    task(tm)
+end
+
+job = JobInfo("$jobname", EtaMC;
+    run_time = "24:00:00",
+    checkpoint_time = "30:00",
+    tasks = make_tasks(tm),
+)
+start(job, ARGS)
