@@ -12,6 +12,7 @@ tm = TaskMaker()
 jobname = "afm-fe-rand"
 tm.init_type = :rand
 tm.bias = nothing
+tm.init_T = 1.0
 bias_type = Nothing
 
 raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
