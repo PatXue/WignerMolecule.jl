@@ -13,7 +13,7 @@ function sweep_η!(mc::DimerMC, ctx::Carlo.MCContext)
         # Probability of accepting spin flip (for ΔE ≤ 0 always accept)
         prob = exp(-ΔE / mc.T)
         if prob >= 1.0 || rand(rng) < prob
-            mc.ηs[x, y] = new_η
+            mc.ηs[pos...] = new_η
         end
     end
 end
