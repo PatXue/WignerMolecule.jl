@@ -26,7 +26,7 @@ for L in Ls
     tm.thermalization = tm.sweeps
     tm.binsize = div(tm.sweeps, 100)
     for T in Ts
-        tm.T = max(T, 0.01)
+        tm.T = T
         task(tm)
     end
 end
