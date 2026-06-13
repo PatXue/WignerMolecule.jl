@@ -7,11 +7,11 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "afm"
-tm.init_type = :rand
-tm.wigparams = EtaParams(-5,0)
+tm.init_type = :afm
+tm.wigparams = EtaParams(-10,0)
 
-Ls = [20]
-Ts = 1:10
+Ls = [24]
+Ts = 0.2:0.2:2.0
 for (T, L) in Iterators.product(Ts, Ls)
     tm.sweeps = 50000
     tm.thermalization = 50000
