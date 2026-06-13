@@ -14,7 +14,7 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
     measure!(ctx, :Energy2, E^2)
 
     update_fourier!(mc)
-    for f in (Γ, M, M2, M3, half_M, half_K)
+    for f in corr_posns
         η = f(mc.ηks)
         measure!(ctx, Symbol("ηk_", f), η)
         measure!(ctx, Symbol("ηk_corr_", f), η*η')
