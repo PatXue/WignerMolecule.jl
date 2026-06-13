@@ -71,6 +71,11 @@ function half_M3(corrs)
     Lx, Ly = size(corrs)
     return corrs[div(Lx, 4)+1, div(Ly, 4)+1, :]
 end
+function K(corrs)
+    Lx, _ = size(corrs)
+    n = div(Lx, 3)
+    return corrs[2n+1,n+1,:]
+end
 function part_K(corrs) # 3/4 of the K point, not sure why
     Lx, _ = size(corrs)
     n = div(Lx, 4)
@@ -86,7 +91,7 @@ function part_K3(corrs)
     n = div(Lx, 4)
     return corrs[3n+1,2n+1,:]
 end
-const corr_posns = (Γ, M, M2, M3, half_M, half_M2, half_M3, part_K, part_K2, part_K3)
+const corr_posns = (Γ, M, M2, M3, half_M, half_M2, half_M3, K, part_K, part_K2, part_K3)
 
 # Calculate sum of chirality for each triangular plaquette
 function chirality(spins)
