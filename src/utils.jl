@@ -107,6 +107,16 @@ end
 function chirality(spins, x, y)
     return spins[x,y] ⋅ (spins[x+1,y] × spins[x,y+1])
 end
+# Calculate sum of chirality squared
+function chirality2(spins)
+    Q = 0.0
+    for I in eachindex(spins)
+        x, y = Tuple(I)
+        s = spins[I]
+        Q += (s ⋅ (spins[x+1,y] × spins[x,y+1]))^2
+    end
+    return Q / length(spins)
+end
 
 norm2(v) = sum(abs2.(v))
 
