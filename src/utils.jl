@@ -101,7 +101,7 @@ function chirality(spins)
         s = spins[I]
         Q += s ⋅ (spins[x+1,y] × spins[x,y+1])
     end
-    return Q
+    return Q / length(spins)
 end
 # Calculate chirality for a single site
 function chirality(spins, x, y)
