@@ -54,8 +54,9 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
 
     update_fourier!(mc)
     for f in corr_posns
-        s = f(mc.spinks)
-        η = f(mc.ηks)
+        pos = f(Lx, Ly)
+        s = mc.spinks[pos..., :]
+        η = mc.ηks[pos..., :]
         measure!(ctx, Symbol("sk_", f), s)
         measure!(ctx, Symbol("ηk_", f), η)
         measure!(ctx, Symbol("sk_corr_", f), norm2(s))

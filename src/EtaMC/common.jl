@@ -46,7 +46,7 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
 
     update_fourier!(mc)
     for f in corr_posns
-        s = f(mc.spinks)
+        s = mc.spinks[f(Lx,Ly)..., :]
         measure!(ctx, Symbol("sk_", f), s)
         measure!(ctx, Symbol("sk_corr_", f), s*s')
     end

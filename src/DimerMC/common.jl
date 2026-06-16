@@ -15,7 +15,11 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
 
     update_fourier!(mc)
     for f in corr_posns
-        η = f(mc.ηks)
+        pos = f(Lx,Ly)
+        s = mc.sks[pos...]
+        η = mc.ηks[pos..., :]
+        measure!(ctx, Symbol("sk_", f), s)
+        measure!(ctx, Symbol("sk_corr_", f), abs2(s))
         measure!(ctx, Symbol("ηk_", f), η)
         measure!(ctx, Symbol("ηk_corr_", f), η*η')
     end

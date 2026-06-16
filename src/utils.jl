@@ -46,51 +46,18 @@ function calc_B(mc::WignerMC, ctx::Carlo.MCContext)
 end
 
 # Indexing functions for Γ and M point correlators
-Γ(corrs) = corrs[1,1,:]
-function M(corrs)
-    Lx, _ = size(corrs)
-    return corrs[div(Lx, 2)+1, 1, :]
-end
-function M2(corrs)
-    _, Ly = size(corrs)
-    return corrs[1, div(Ly,2)+1, :]
-end
-function M3(corrs)
-    Lx, Ly = size(corrs)
-    return corrs[div(Lx,2)+1, div(Ly,2)+1, :]
-end
-function half_M(corrs)
-    Lx, _ = size(corrs)
-    return corrs[div(Lx, 4)+1, 1, :]
-end
-function half_M2(corrs)
-    _, Ly = size(corrs)
-    return corrs[1, div(Ly, 4)+1, :]
-end
-function half_M3(corrs)
-    Lx, Ly = size(corrs)
-    return corrs[div(Lx, 4)+1, div(Ly, 4)+1, :]
-end
-function K(corrs)
-    Lx, _ = size(corrs)
-    n = div(Lx, 3)
-    return corrs[2n+1,n+1,:]
-end
-function part_K(corrs) # 3/4 of the K point, not sure why
-    Lx, _ = size(corrs)
-    n = div(Lx, 4)
-    return corrs[2n+1,n+1,:]
-end
-function part_K2(corrs)
-    Lx, _ = size(corrs)
-    n = div(Lx, 4)
-    return corrs[3n+1,n+1,:]
-end
-function part_K3(corrs)
-    Lx, _ = size(corrs)
-    n = div(Lx, 4)
-    return corrs[3n+1,2n+1,:]
-end
+Γ(_, _) = (1, 1)
+M(Lx, _) = (div(Lx, 2)+1, 1)
+M2(_, Ly) = (1, div(Ly,2)+1)
+M3(Lx, Ly) = corrs[div(Lx,2)+1, div(Ly,2)+1, :]
+half_M(Lx, _) = (div(Lx, 4)+1, 1)
+half_M2(_, Ly) = (1, div(Ly, 4)+1)
+half_M3(Lx, Ly) = (3*div(Lx, 4)+1, 3*div(Ly, 4)+1)
+K(Lx, Ly) = (2*div(Lx, 3)+1, div(Ly,3)+1)
+# 3/4 of the K point
+part_K(Lx, Ly)  = (div(Lx, 2)+1, div(Ly, 4)+1)
+part_K2(Lx, Ly) = (3*div(Lx, 4)+1, div(Ly, 4)+1)
+part_K3(Lx, Ly) = (3*div(Lx, 4)+1, div(Ly, 2)+1)
 const corr_posns = (Γ, M, M2, M3, half_M, half_M2, half_M3, K, part_K, part_K2, part_K3)
 
 # Calculate sum of chirality for each triangular plaquette
