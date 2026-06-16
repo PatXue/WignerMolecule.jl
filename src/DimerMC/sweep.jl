@@ -21,38 +21,40 @@ end
 function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     rng = ctx.rng
-    fill!(mc.visited, false)
 
-    pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
-    offset = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
-    rotation = rand(rng, 0:5)
-    reflect_type = rand(rng, Bool)
+    for _ in 1:max(Lx, Ly)
+        fill!(mc.visited, false)
+        pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+        offset = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+        rotation = rand(rng, 0:5)
+        reflect_type = rand(rng, Bool)
 
-    old_E = new_E = 0.0
-    pocket::Vector{Dimer} = [Dimer(pos, mc.spins[pos...])]
-    proposal::Vector{Dimer} = [] # Proposed new dimers
-    while length(pocket) > 0
-        d = pop!(pocket)
-        mc.visited[d.pos...] = true
-        mc.visited[d.posj...] = true
-        old_E += bond_energy(mc, d)
+        old_E = new_E = 0.0
+        pocket::Vector{Dimer} = [Dimer(pos, mc.spins[pos...])]
+        proposal::Vector{Dimer} = [] # Proposed new dimers
+        while length(pocket) > 0
+            d = pop!(pocket)
+            mc.visited[d.pos...] = true
+            mc.visited[d.posj...] = true
+            old_E += bond_energy(mc, d)
 
-        d = shift(d, -offset)
-        d = invrotate(d, rotation)
-        d = reflect_type ? reflect1(d) : reflect2(d)
-        d = rotate(d, rotation)
-        d = shift(d, offset)
-        d = mod1(d, mc)
-        push!(proposal, d)
-        new_E += bond_energy(mc, d)
-        append!(pocket, collisions(mc, d))
-    end
+            d = shift(d, -offset)
+            d = invrotate(d, rotation)
+            d = reflect_type ? reflect1(d) : reflect2(d)
+            d = rotate(d, rotation)
+            d = shift(d, offset)
+            d = mod1(d, mc)
+            push!(proposal, d)
+            new_E += bond_energy(mc, d)
+            append!(pocket, collisions(mc, d))
+        end
 
-    ΔE = new_E - old_E
-    if ΔE < 0 || rand(rng) < exp(-ΔE / mc.T)
-        for d in proposal
-            mc.spins[d.pos...] = d.posj
-            mc.spins[d.posj...] = d.pos
+        ΔE = new_E - old_E
+        if ΔE < 0 || rand(rng) < exp(-ΔE / mc.T)
+            for d in proposal
+                mc.spins[d.pos...] = d.posj
+                mc.spins[d.posj...] = d.pos
+            end
         end
     end
 end
