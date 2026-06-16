@@ -7,6 +7,7 @@ struct DimerMC <: AbstractMC
     visited::PeriodicMatrix{Bool}
     ηs::PeriodicMatrix{SpinVector}
 
+    sks::Matrix{ComplexF64}
     ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
 
     outdir::String # Output directory for spin plots
@@ -20,6 +21,7 @@ function DimerMC(; T, init_T, wigparams, Lx, Ly, outdir="", savefreq=0)
         T, init_T, wigparams,
         init_ss, fill(false, Lx, Ly),
         init_ηs, Array{ComplexF64}(undef, (Lx, Ly, 3)),
+        Matrix{ComplexF64}(undef, (Lx, Ly)),
         outdir, savefreq
     )
 end
