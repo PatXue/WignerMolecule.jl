@@ -20,8 +20,8 @@ function DimerMC(; T, init_T, wigparams, Lx, Ly, outdir="", savefreq=0)
     return DimerMC(
         T, init_T, wigparams,
         init_ss, fill(false, Lx, Ly),
-        init_ηs, Array{ComplexF64}(undef, (Lx, Ly, 3)),
-        Matrix{ComplexF64}(undef, (Lx, Ly)),
+        init_ηs, Matrix{ComplexF64}(undef, Lx, Ly),
+        Array{ComplexF64}(undef, (Lx, Ly, 3)),
         outdir, savefreq
     )
 end
