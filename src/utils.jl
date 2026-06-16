@@ -49,7 +49,7 @@ end
 Γ(_, _) = (1, 1)
 M(Lx, _) = (div(Lx, 2)+1, 1)
 M2(_, Ly) = (1, div(Ly,2)+1)
-M3(Lx, Ly) = corrs[div(Lx,2)+1, div(Ly,2)+1, :]
+M3(Lx, Ly) = (div(Lx,2)+1, div(Ly,2)+1)
 half_M(Lx, _) = (div(Lx, 4)+1, 1)
 half_M2(_, Ly) = (1, div(Ly, 4)+1)
 half_M3(Lx, Ly) = (3*div(Lx, 4)+1, 3*div(Ly, 4)+1)
@@ -60,7 +60,7 @@ part_K2(Lx, Ly) = (3*div(Lx, 4)+1, div(Ly, 4)+1)
 part_K3(Lx, Ly) = (3*div(Lx, 4)+1, div(Ly, 2)+1)
 const corr_posns = (Γ, M, M2, M3, half_M, half_M2, half_M3, K, part_K, part_K2, part_K3)
 
-# Calculate sum of chirality for each triangular plaquette
+# Calculate sum of chirality for each upwards triangular plaquette
 function chirality(spins)
     Q = 0.0
     for I in eachindex(spins)
