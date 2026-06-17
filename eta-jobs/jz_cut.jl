@@ -9,8 +9,8 @@ tm = TaskMaker()
 jobname = "jz_cut"
 tm.init_type = :rand
 
-Ls = [20]
-Ts = [0.1, 0.2, 0.3, 0.4]
+Ls = [24]
+Ts = [0.1, 0.2, 0.4]
 Jps = 0.5:0.1:1.5
 for (Jp, T, L) in Iterators.product(Jps, Ts, Ls)
     tm.sweeps = 20000
