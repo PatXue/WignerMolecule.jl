@@ -8,6 +8,7 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "jz_cut"
 tm.init_type = :fm
+tm.B = 0.01
 
 Ls = [24]
 Ts = [0.1, 0.2, 0.4]
