@@ -37,9 +37,9 @@ end
 
 function Carlo.write_checkpoint(mc::DimerMC, out::HDF5.Group)
     out["spins"] = mc.spins
-    out["spinks"] = mc.spinks
+    out["spinks"] = mc.sks
     out["etas"] = mc.ηs
-    out["etaks"] = mc.spinks
+    out["etaks"] = mc.ηks
     return nothing
 end
 function Carlo.read_checkpoint!(mc::DimerMC, in::HDF5.Group)
