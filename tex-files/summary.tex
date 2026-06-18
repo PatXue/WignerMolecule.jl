@@ -1,5 +1,6 @@
 \documentclass{article}
 
+\usepackage{amsmath}
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
 
@@ -43,6 +44,16 @@ so energies and temperatures will be plotted in the normalized units below.
     \hline
 \end{tabular}
 \end{center}
+
+\subsection{Order Parameters}
+As order parameters, the correlations of $\vec{S}$ and $\vec{\eta}$ were taken
+at points in Fourier space, taking form:
+\begin{align*}
+    C_{\mathbf{k}}^{\alpha\beta} &\equiv \langle S_{-\mathbf{k}}^\alpha S_{\mathbf{k}}^\beta \rangle\\
+    D_{\mathbf{k}}^{\alpha\beta} &\equiv \langle \eta_{-\mathbf{k}}^\alpha \eta_{\mathbf{k}}^\beta\rangle
+\end{align*}
+Due to $SU_s(2)$ symmetry, the spin correlation should be diagonal and isotropic, so only its trace
+$C_{\mathbf{k}}\equiv C_{\mathbf{k}}^{\alpha\beta}\delta_{\alpha\beta}$ was used.
 
 \newpage
 \section{Ferromagnet}
