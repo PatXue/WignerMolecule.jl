@@ -8,6 +8,7 @@
 \begin{document}
 
 \section{Summary}
+\subsection{Couplings}
 Representative $(a_M, \varepsilon_r)$ points were chosen for each phase, with values
 and couplings shown below (units of meV).
 \begin{center}
@@ -25,7 +26,25 @@ and couplings shown below (units of meV).
     \hline
 \end{tabular}
 \end{center}
+These couplings were then normalized by their L2 norm so that they would be of order 1, for better numerics,
+so energies and temperatures will be plotted in the normalized units below.
+\begin{center}
+\begin{tabular}{|c|c|}
+    \hline
+    Phase & Norm (meV)\\
+    \hline
+    FM & 9.856\\
+    \hline
+    Stripe & 37.56\\
+    \hline
+    AFM-FE & 32.99\\
+    \hline
+    AFM-AFE & 47.32\\
+    \hline
+\end{tabular}
+\end{center}
 
+\newpage
 \section{Ferromagnet}
 For the ferromagnet, temperature and energy are in units of meV, and order
 parameters are the spin expectation (magnetization) and $\eta_z$ expectation.
