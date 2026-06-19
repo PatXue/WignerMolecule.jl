@@ -10,11 +10,16 @@ struct EtaMC <: AbstractMC
     B::Float64
     spins::PeriodicMatrix{SpinVector}
     spinks::Array{ComplexF64, 3}        # Fourier transformed spins
+    chis::Matrix{ComplexF64}
 end
 
-function EtaMC(; T=1.0, B=0.0, wigparams=EtaParams(0.0,0.0), Lx=20, Ly=20)
+function EtaMC(; T=1.0, B=0.0, wigparams=EtaParams(0.0,0.0), Lx=24, Ly=24)
     init = fill(zeros(SpinVector), (Lx, Ly))
-    return EtaMC(T, wigparams, B, init, Array{ComplexF64, 3}(undef, (Lx, Ly, 3)))
+    return EtaMC(
+        T, wigparams, B, init,
+        Array{ComplexF64, 3}(undef, (Lx, Ly, 3)),
+        Matrix{ComplexF64}(undef, Lx, Ly)
+    )
 end
 
 function EtaMC(params::AbstractDict)
