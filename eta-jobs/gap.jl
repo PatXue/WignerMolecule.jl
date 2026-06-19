@@ -8,10 +8,10 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "gap"
 tm.B = 0.01
-tm.init_type = :rand
+tm.init_type = :fm
 
 Ls = [20]
-Ts = [0.1, 0.2, 0.3, 0.4, 0.5, 1.0]
+Ts = [0.1, 0.2, 0.3, 0.5, 1.0]
 Jzs = 0.0:0.2:2
 for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
     tm.sweeps = 20000
