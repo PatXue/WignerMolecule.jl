@@ -3,9 +3,6 @@ function bond_energy(mc::EtaMC, s::SpinVector, sj::SpinVector, ν)
     Jzz = mc.params.Jzz
     Jp = mc.params.Jp
 
-    s /= 2
-    sj /= 2
-
     # η raising and lowering operators
     s_p = s[1] + 1.0im*s[2]
     sj_m = sj[1] - 1.0im*sj[2]
