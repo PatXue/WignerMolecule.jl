@@ -1,5 +1,5 @@
 # Initialize the DimerMC spins/etas
-const unitcell = [(0,1) (0,-1); (1,-1) (-1,1)]
+const unitcellspins = [(0,1) (0,-1); (1,-1) (-1,1)]
 function init_vbs_s!(mc::DimerMC)
     for I in eachindex(IndexCartesian(), mc.spins)
         x, y = Tuple(I)
@@ -9,7 +9,21 @@ function init_vbs_s!(mc::DimerMC)
             y -= 2
         end
         x = mod1(x, 2)
-        mc.spins[I] = SVector((Tuple(I) .+ unitcell[x,y])...)
+        mc.spins[I] = SVector((Tuple(I) .+ unitcellspins[x,y])...)
+    end
+end
+
+const unitcelletas = [(√3/2,-1/2,0) (-1/2,-√3/2,0); (-1/2,√3/2,0) (√3/2,1/2,0)]
+function init_vbs_eta!(mc::DimerMC)
+    for I in eachindex(IndexCartesian(), mc.ηs)
+        x, y = Tuple(I)
+        # Shift x,y to be inside unit cell
+        while y > 2
+            x += 1
+            y -= 2
+        end
+        x = mod1(x, 2)
+        mc.ηs[I] = SVector(unitcelletas[x,y]...)
     end
 end
 
