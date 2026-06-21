@@ -23,6 +23,7 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
     rng = ctx.rng
 
     accepted = 0
+    changed = 0
     for _ in 1:max(Lx, Ly)
         fill!(mc.visited, false)
         pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
@@ -55,6 +56,7 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
             for d in proposal
                 mc.spins[d.pos...] = d.posj
                 mc.spins[d.posj...] = d.pos
+                changed += 1
             end
             accepted += 1
         end
@@ -62,6 +64,7 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
 
     if is_thermalized(ctx)
         measure!(ctx, :AcceptRateS, accepted / max(Lx, Ly))
+        measure!(ctx, :DimerChanges, changed)
     end
 end
 
