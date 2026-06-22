@@ -70,11 +70,14 @@ taken, resulting in 1 or 2 peaks, and correlations were measured at those points
     \hline
     AFM-AFE & $\mathbf{k}=\pm 3K/4$ & $\mathbf{k}=M'; \alpha,\beta=x,y$\\
     \hline
-\end{tabular}
-
+\end{tabular}\\
 \vspace{1ex}
 \fbox{\includegraphics[width=0.3\textwidth]{plots/fbz.png}}
 \end{center}
+For phases where $\eta$ ordering was in-plane,
+$D_{\mathbf{k}}^\parallel\equiv D_{\mathbf{k}}^{xx} + D_{\mathbf{k}}^{yy}$ was used
+as an order parameter.
+
 The Hamiltonian is $C_3$ symmetric, so $C_3$ rotated versions of the ground states above
 will also form in the Monte Carlo simulation. To reduce simulation time, the system was
 started with the system pinned to the ground states above with a strong bias field,
@@ -88,7 +91,8 @@ the system is not biased to a particular $C_3$ orientation of the ground state, 
 the $C_3$ invariant correlations below were used:
 \begin{align*}
     \tilde{C}_{\mathbf{k}} &\equiv C_{\mathbf{k}} + C_{C_3\mathbf{k}} + C_{C_3^2\mathbf{k}}\\
-    \tilde{D}_{\mathbf{k}}^{\alpha\beta} &\equiv D_{\mathbf{k}}^{\alpha\beta} + D_{C_3\mathbf{k}}^{\alpha\beta} + D_{C_3^2\mathbf{k}}^{\alpha\beta}
+    \tilde{D}_{\mathbf{k}}^{zz} &\equiv D_{\mathbf{k}}^{zz} + D_{C_3\mathbf{k}}^{zz} + D_{C_3^2\mathbf{k}}^{zz}\\
+    \tilde{D}_{\mathbf{k}}^{\parallel} &\equiv D_{\mathbf{k}}^{\parallel} + D_{C_3\mathbf{k}}^{\parallel} + D_{C_3^2\mathbf{k}}^{\parallel}
 \end{align*}
 
 \newpage
