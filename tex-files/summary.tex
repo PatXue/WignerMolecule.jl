@@ -55,6 +55,42 @@ at points in Fourier space, taking form:
 Due to $SU_s(2)$ symmetry, the spin correlation should be diagonal and isotropic, so only its trace
 $C_{\mathbf{k}}\equiv C_{\mathbf{k}}^{\alpha\beta}\delta_{\alpha\beta}$ was used.
 
+To decide on which $\mathbf{k}$ to measure at, the Fourier transform of the ground state was
+taken, resulting in 1 or 2 peaks, and correlations were measured at those points, shown below
+\begin{center}
+\begin{tabular}{|c|c|c|}
+    \hline
+    Phase & Relevant $C_{\mathbf{k}}$ & Relevant $D_{\mathbf{k}}^{\alpha\beta}$\\
+    \hline
+    FM & $\mathbf{k}=\Gamma$ & $\mathbf{k}=\Gamma; \alpha,\beta=z$\\
+    \hline
+    Stripe & $\mathbf{k}=\pm M/2$ & $\mathbf{k}=M; \alpha,\beta=x,y$\\
+    \hline
+    AFM-FE & $\mathbf{k}=M$ & $\mathbf{k}=\Gamma; \alpha,\beta=x,y$\\
+    \hline
+    AFM-AFE & $\mathbf{k}=\pm 3K/4$ & $\mathbf{k}=M'; \alpha,\beta=x,y$\\
+    \hline
+\end{tabular}
+
+\vspace{1ex}
+\fbox{\includegraphics[width=0.3\textwidth]{plots/fbz.png}}
+\end{center}
+The Hamiltonian is $C_3$ symmetric, so $C_3$ rotated versions of the ground states above
+will also form in the Monte Carlo simulation. To reduce simulation time, the system was
+started with the system pinned to the ground states above with a strong bias field,
+which was gradually turned off before measuring any observables. Since the system
+was biased to one of the ground state orientations above, only the correlations for
+that orientation were used.
+
+To have an unbiased initialization, the system was also started in a random, high-$T$
+state, and $T$ was gradually reduced to the target $T$ before measurements. In this case,
+the system is not biased to a particular $C_3$ orientation of the ground state, so
+the $C_3$ invariant correlations below were used:
+\begin{align*}
+    \tilde{C}_{\mathbf{k}} &\equiv C_{\mathbf{k}} + C_{C_3\mathbf{k}} + C_{C_3^2\mathbf{k}}\\
+    \tilde{D}_{\mathbf{k}}^{\alpha\beta} &\equiv D_{\mathbf{k}}^{\alpha\beta} + D_{C_3\mathbf{k}}^{\alpha\beta} + D_{C_3^2\mathbf{k}}^{\alpha\beta}
+\end{align*}
+
 \newpage
 \section{Ferromagnet}
 For the ferromagnet, temperature and energy are in units of meV, and order
