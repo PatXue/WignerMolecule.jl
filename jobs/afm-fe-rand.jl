@@ -12,19 +12,19 @@ tm = TaskMaker()
 jobname = "afm-fe-rand"
 tm.init_type = :rand
 tm.bias = nothing
-tm.init_T = 1.0
+tm.init_T = 0.5
 bias_type = Nothing
 
 raw_params = load_object("all_params.jld2")[(45, 11, 20, 10)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ts = 0.005:0.005:0.1
-Ls = [20, 40]
+Ts = 0.008:0.008:0.08
+Ls = [24, 48]
 for (T, L) in Iterators.product(Ts, Ls)
     tm.Lx = tm.Ly = L
-    tm.sweeps = 50000 * div(L, 20)
-    tm.thermalization = 50000 * div(L, 20)
-    tm.binsize = div(50000 * div(L,20), 100)
+    tm.sweeps = 50000 * div(L, 24)
+    tm.thermalization = Int(1.5 * tm.sweeps)
+    tm.binsize = div(tm.sweeps, 100)
     tm.T = T
     task(tm)
 end
