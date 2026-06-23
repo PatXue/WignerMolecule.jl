@@ -10,7 +10,7 @@ jobname = "neg_jp"
 tm.wigparams = EtaParams(0.5, -2)
 
 Ls = [20]
-Ts = 0.1:0.1:1.0
+Ts = 4 .* (0.1:0.1:1.0)
 for (T, L) in Iterators.product(Ts, Ls)
     tm.sweeps = 20000 * div(L, 20)
     tm.thermalization = 20000 * div(L, 20)
