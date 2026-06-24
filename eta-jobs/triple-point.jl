@@ -11,7 +11,7 @@ tm.init_type = :fm
 tm.wigparams = EtaParams(1.0, 1.0)
 
 Ls = [24, 48, 96]
-Ts = 0.1:0.1:1.0
+Ts = 0.1:0.1:1.5
 for (T, L) in Iterators.product(Ts, Ls)
     tm.sweeps = 20000
     tm.thermalization = 20000
