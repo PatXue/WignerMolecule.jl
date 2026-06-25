@@ -12,14 +12,14 @@ tm.etaonly = true
 
 tm.wigparams = WignerParams("all_params.jld2", 10, 6)
 
-Ts = 0.01:0.01:0.1
+Ts = 0.0:0.05:1.0
 Ls = [24]
 for (T, L) in Iterators.product(Ts, Ls)
-    tm.sweeps = 25000 * div(L, 24)
+    tm.sweeps = 10000 * div(L, 24)
     tm.thermalization = tm.sweeps
     tm.binsize = div(tm.sweeps, 100)
     tm.Lx = tm.Ly = L
-    tm.T = T
+    tm.T = max(T, 0.01)
     task(tm)
 end
 
