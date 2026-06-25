@@ -13,7 +13,7 @@ function init_vbs_s!(mc::DimerMC)
     end
 end
 
-const unitcelletas = [(√3/2,-1/2,0) (-1/2,-√3/2,0); (-1/2,√3/2,0) (√3/2,1/2,0)]
+const unitcelletas = [(-0.52,0.61,0) (-0.49,-0.61,0); (0.78,0.34,0) (0.81,-0.31,0)]
 function init_vbs_eta!(mc::DimerMC)
     for I in eachindex(IndexCartesian(), mc.ηs)
         x, y = Tuple(I)
@@ -23,12 +23,14 @@ function init_vbs_eta!(mc::DimerMC)
             y -= 2
         end
         x = mod1(x, 2)
-        mc.ηs[I] = SVector(unitcelletas[x,y]...)
+        eta = unitcelletas[x,y] ./ norm(unitcelletas[x,y])
+        mc.ηs[I] = SVector(eta...)
     end
 end
 
 function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
     init_vbs_s!(mc)
+    init_vbs_eta!(mc)
     rand!(mc.ηs)
     update_fourier!(mc)
     return nothing
