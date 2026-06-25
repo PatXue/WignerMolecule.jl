@@ -12,6 +12,6 @@ function update_fourier!(mc::EtaMC)
         mc.chis[I] = chirality(mc.spins, x, y)
     end
     fft!(mc.chis)
-    mc.chis ./= length(mc.spins)
+    mc.chis ./= sqrt(length(mc.spins))
     return nothing
 end
