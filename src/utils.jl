@@ -36,7 +36,7 @@ function calc_temp(mc, ctx::Carlo.MCContext)
     end
 end
 # Calculate bias field during thermalization
-function calc_B(mc::WignerMC, ctx::Carlo.MCContext)
+function calc_B(mc, ctx::Carlo.MCContext)
     if is_thermalized(ctx)
         return mc.B
     else
