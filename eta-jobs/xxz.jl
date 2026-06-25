@@ -9,7 +9,7 @@ tm = TaskMaker()
 jobname = "xxz"
 tm.init_type = :fm
 
-Ls = [24]
+Ls = [24, 48]
 Ts = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5]
 Jzs = 0.5:0.1:1.5
 for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
