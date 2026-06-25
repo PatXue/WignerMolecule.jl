@@ -69,6 +69,8 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
 end
 
 function Carlo.sweep!(mc::DimerMC, ctx::Carlo.MCContext)
-    sweep_s!(mc, ctx)
+    if !mc.etaonly
+        sweep_s!(mc, ctx)
+    end
     sweep_η!(mc, ctx)
 end

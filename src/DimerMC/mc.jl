@@ -10,11 +10,13 @@ struct DimerMC <: AbstractMC
     sks::Array{ComplexF64, 3}
     ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
 
+    etaonly::Bool
+
     outdir::String # Output directory for spin plots
     savefreq::Int  # No. of sweeps between saving spins
 end
 
-function DimerMC(; T, init_T, wigparams, Lx, Ly, outdir="", savefreq=0)
+function DimerMC(; T, init_T, wigparams, Lx, Ly, etaonly=false, outdir="", savefreq=0)
     init_ss = fill(zeros(SVector{2,Int}), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     return DimerMC(
@@ -22,7 +24,7 @@ function DimerMC(; T, init_T, wigparams, Lx, Ly, outdir="", savefreq=0)
         init_ss, fill(false, Lx, Ly),
         init_ηs, Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
-        outdir, savefreq
+        etaonly, outdir, savefreq
     )
 end
 
@@ -32,8 +34,9 @@ function DimerMC(params::AbstractDict)
     init_T = get(params, :init_T, T)
     wigparams = params[:wigparams]
 
+    etaonly = get(params, :etaonly, false)
     outdir = get(params, :outdir, ".")
     savefreq = get(params, :savefreq, 0)
 
-    return DimerMC(; T, init_T, wigparams, Lx, Ly, outdir, savefreq)
+    return DimerMC(; T, init_T, wigparams, Lx, Ly, etaonly, outdir, savefreq)
 end
