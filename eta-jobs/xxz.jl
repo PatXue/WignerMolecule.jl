@@ -7,11 +7,11 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "xxz"
-tm.init_type = :fm
+tm.init_type = :rand
 
 Ls = [24, 48]
-Ts = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5]
-Jzs = 0.5:0.1:1.5
+Ts = [0.25, 0.75, 1.0, 1.5]
+Jzs = 0.75:0.05:1.25
 for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
     tm.sweeps = 20000
     tm.thermalization = 20000
