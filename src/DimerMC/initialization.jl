@@ -13,7 +13,7 @@ function init_vbs_s!(mc::DimerMC)
     end
 end
 
-const unitcelletas = [(-0.52,0.61,0) (-0.49,-0.61,0); (0.78,0.34,0) (0.81,-0.31,0)]
+const unitcelletas = [(-0.81,0.31,0) (0.52,-0.61,0); (0.49,0.61,0) (-0.78,-0.34,0)]
 function init_vbs_eta!(mc::DimerMC)
     for I in eachindex(IndexCartesian(), mc.ηs)
         x, y = Tuple(I)
