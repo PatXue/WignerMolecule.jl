@@ -18,13 +18,13 @@ bias_type = Nothing
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-Ls = [20, 40]
+Ls = [24, 48]
 Ts = 0.01:0.01:0.15
 for L in Ls
     tm.Lx = tm.Ly = L
-    tm.sweeps = 50000 * div(L, 20)
-    tm.thermalization = 50000 * div(L, 20)
-    tm.binsize = 100 * div(L, 20)
+    tm.sweeps = 50000 * div(L, 24)
+    tm.thermalization = 75000 * div(L, 24)
+    tm.binsize = 500 * div(L, 24)
     for T in Ts
         tm.T = T
         spins_dir = "$jobname.data/$(current_task_name(tm))"
