@@ -1,8 +1,10 @@
 \documentclass{article}
 
 \usepackage{amsmath}
+\usepackage[style=nature, eprint=true, intitle=true, url=false]{biblatex}
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
+\addbibresource{library.bib}
 
 \title{Phases Progress Summary}
 
@@ -163,5 +165,16 @@ the $C_3$ invariant correlations below were used:
 \begin{center}
     \frame{\includegraphics[width=0.85\textwidth]{plots/afm_afe_rand.png}}
 \end{center}
+
+
+\newpage
+\section{Dimer Model}
+The current method of proposing changes to the dimer configuration produces
+energy changes that are too large, and so are often rejected. Currently working
+on adapting the algorithm in~\cite{PhysRevDirLoop,arXivDirLoop,ClassDirLoop}
+
+\newpage
+
+\printbibliography{}
 
 \end{document}

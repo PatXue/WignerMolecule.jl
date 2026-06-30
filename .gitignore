@@ -16,3 +16,5 @@ high-temp/expectations.jld2
 # Tex outputs
 *.pdf
 *synctex.gz
+*.bbl
+*.run.xml
