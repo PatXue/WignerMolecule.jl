@@ -7,8 +7,7 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "jp9"
-tm.init_type = :rand
-tm.init_T = 3.0
+tm.init_type = :fe
 tm.B = 0.01
 
 Ls = [24, 48, 96]
