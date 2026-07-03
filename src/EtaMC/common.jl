@@ -44,6 +44,11 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
     measure!(ctx, :Energy, E)
     measure!(ctx, :Energy2, E^2)
 
+    for I in eachindex(IndexCartesian(), mc.spins)
+        x, y = Tuple(I)
+        mc.chis[I] = chirality(mc.spins, x, y)
+    end
+    measure!(ctx, :chi2avg, sum(abs2, mc.chis) / N)
     update_fourier!(mc)
     for f in (Γ, M, M2, M3)
         pos = f(Lx, Ly)
