@@ -45,7 +45,7 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
     measure!(ctx, :Energy2, E^2)
 
     update_fourier!(mc)
-    for f in corr_posns
+    for f in (Γ, M, M2, M3)
         pos = f(Lx, Ly)
         s = mc.spinks[pos..., :]
         χ = mc.chis[pos...]
