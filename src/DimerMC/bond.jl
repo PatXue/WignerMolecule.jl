@@ -46,6 +46,7 @@ function collisions(mc::DimerMC, d::Dimer)
     return res
 end
 
+const disps = (SVector(1,0), SVector(-1,1), SVector(0,-1), SVector(-1,0), SVector(1,-1), SVector(0,1))
 # Check and flip dimer to lie along a1, a2, or a3
 const oriented_disps = (SVector(1,0), SVector(-1,1), SVector(0,-1))
 function orientdimer(d::Dimer, mc::DimerMC)
