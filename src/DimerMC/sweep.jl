@@ -1,6 +1,8 @@
 function sweep_η!(mc::DimerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
+    T = calc_temp(mc, ctx)
     rng = ctx.rng
+
     for _ in 1:length(mc.spins)
         # Select site for spin change
         pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
@@ -11,7 +13,7 @@ function sweep_η!(mc::DimerMC, ctx::Carlo.MCContext)
         ΔE = new_E - old_E
 
         # Probability of accepting spin flip (for ΔE ≤ 0 always accept)
-        prob = exp(-ΔE / mc.T)
+        prob = exp(-ΔE / T)
         if prob >= 1.0 || rand(rng) < prob
             mc.ηs[pos...] = new_η
         end
@@ -20,6 +22,7 @@ end
 
 function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
+    T = calc_temp(mc, ctx)
     rng = ctx.rng
 
     changed = 0
