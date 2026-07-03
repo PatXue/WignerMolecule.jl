@@ -26,9 +26,8 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
     rng = ctx.rng
 
     steps = 0
-    pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
-    final_pos = mc.spins[pos...]
-    while !mod_equiv(pos, final_pos, mc)
+    final_pos = pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+    while true
         Zs = [exp(-bond_energy(mc, Dimer(pos, pos+a)) / T) for a in disps]
         Z = sum(Zs)
         p = rand(rng)
@@ -42,6 +41,9 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
             end
         end
         steps += 1
+        if mod_equiv(final_pos, pos, mc)
+            break
+        end
     end
 
     if is_thermalized(ctx)
@@ -52,6 +54,9 @@ end
 function Carlo.sweep!(mc::DimerMC, ctx::Carlo.MCContext)
     if !mc.etaonly
         sweep_s!(mc, ctx)
+        if ctx.sweeps % 1000 == 0
+            println("Dimer sweep #$(ctx.sweeps) complete")
+        end
     end
     sweep_η!(mc, ctx)
 end
