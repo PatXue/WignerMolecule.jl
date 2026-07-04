@@ -11,9 +11,9 @@ tm.init_type = :stripe
 tm.B = 0.01
 
 Ls = [24, 48]
-Ts = [0.25, 0.5, 0.75, 1.1, 1.25, 1.5]
-Jzs = 0.5:0.1:1.5
-for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
+Jzs = [0.5, 1.0, 1.075, 1.125, 1.2, 1.3]
+Ts = 0.3:0.2:1.5
+for (T, Jz, L) in Iterators.product(Ts, Jzs, Ls)
     tm.sweeps = 20000
     tm.thermalization = 20000
     tm.binsize = 200
