@@ -54,15 +54,9 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
         pos = f(Lx, Ly)
         s = mc.spinks[pos..., :]
         χ = mc.chis[pos...]
-        measure!(ctx, Symbol("sk_", f), s)
         measure!(ctx, Symbol("sk_corr_", f), s*s')
-        measure!(ctx, Symbol("chik_", f), χ)
         measure!(ctx, Symbol("chik_corr_", f), abs2(χ))
     end
-
-    single_Q = chirality(mc.spins, 1, 1)
-    measure!(ctx, :single_Q, single_Q)
-    measure!(ctx, :single_Q2, single_Q^2)
 
     return nothing
 end
