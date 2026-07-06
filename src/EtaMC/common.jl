@@ -50,12 +50,18 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
     end
     measure!(ctx, :chi2avg, sum(abs2, mc.chis) / N)
     update_fourier!(mc)
+    mc.chis .= abs2.(mc.chis)
+
     for f in (Γ, M, M2, M3)
         pos = f(Lx, Ly)
         s = mc.spinks[pos..., :]
-        χ = mc.chis[pos...]
         measure!(ctx, Symbol("sk_corr_", f), s*s')
-        measure!(ctx, Symbol("chik_corr_", f), abs2(χ))
+        if !mc.allchis
+            measure!(ctx, Symbol("chik_corr_", f), mc.chis[pos...])
+        end
+    end
+    if mc.allchis
+        measure!(ctx, :chik_corrs, mc.chis)
     end
 
     return nothing
