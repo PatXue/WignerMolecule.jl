@@ -12,8 +12,8 @@ tm.init_T = 4.0
 tm.B = 0.01
 
 Ls = [24, 48]
-Jzs = [0.5, 0.9, 1.0, 1.125, 1.2, 1.5]
-Ts = 0.3:0.1:1.5
+Jzs = [0.5, 0.95, 1.0, 1.05, 1.125, 1.2]
+Ts = 0.3:0.05:1.0
 for (T, Jz, L) in Iterators.product(Ts, Jzs, Ls)
     tm.sweeps = 20000
     tm.thermalization = 40000
