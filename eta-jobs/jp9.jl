@@ -10,13 +10,13 @@ jobname = "jp9"
 tm.init_type = :fe
 tm.B = 0.01
 
-Ls = [24, 48, 96]
-Ts = [0.25, 0.5, 0.75, 1.1, 1.25, 1.5]
-Jzs = 0.5:0.1:1.5
-for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
-    tm.sweeps = 20000
-    tm.thermalization = 20000
-    tm.binsize = 200
+Ls = [24, 48]
+Jzs = [0.5, 0.75, 0.95, 1.05, 1.2, 1.5]
+Ts = 0.3:0.05:1.0
+for (T, Jz, L) in Iterators.product(Ts, Jzs, Ls)
+    tm.sweeps = 40000
+    tm.thermalization = 40000
+    tm.binsize = 400
     tm.wigparams = EtaParams(Jz, 0.9)
     tm.T = T
     tm.Lx = tm.Ly = L
