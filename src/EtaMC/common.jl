@@ -44,20 +44,25 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
     measure!(ctx, :Energy, E)
     measure!(ctx, :Energy2, E^2)
 
+    for I in eachindex(IndexCartesian(), mc.spins)
+        x, y = Tuple(I)
+        mc.chis[I] = chirality(mc.spins, x, y)
+    end
+    measure!(ctx, :chi2avg, sum(abs2, mc.chis) / N)
     update_fourier!(mc)
-    for f in corr_posns
+    mc.chis .= abs2.(mc.chis)
+
+    for f in (Γ, M, M2, M3)
         pos = f(Lx, Ly)
         s = mc.spinks[pos..., :]
-        χ = mc.chis[pos...]
-        measure!(ctx, Symbol("sk_", f), s)
         measure!(ctx, Symbol("sk_corr_", f), s*s')
-        measure!(ctx, Symbol("chik_", f), χ)
-        measure!(ctx, Symbol("chik_corr_", f), abs2(χ))
+        if !mc.allchis
+            measure!(ctx, Symbol("chik_corr_", f), mc.chis[pos...])
+        end
     end
-
-    single_Q = chirality(mc.spins, 1, 1)
-    measure!(ctx, :single_Q, single_Q)
-    measure!(ctx, :single_Q2, single_Q^2)
+    if mc.allchis
+        measure!(ctx, :chik_corrs, mc.chis)
+    end
 
     return nothing
 end

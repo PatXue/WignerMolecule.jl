@@ -7,10 +7,6 @@ function update_fourier!(mc::EtaMC)
     fft!(mc.spinks, (1, 2))
     mc.spinks ./= length(mc.spins)
 
-    for I in eachindex(IndexCartesian(), mc.spins)
-        x, y = Tuple(I)
-        mc.chis[I] = chirality(mc.spins, x, y)
-    end
     fft!(mc.chis)
     mc.chis ./= sqrt(length(mc.spins))
     return nothing
