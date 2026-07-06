@@ -12,12 +12,12 @@ tm.init_T = 3.0
 tm.B = 0.01
 
 Ls = [24, 48]
-Ts = [0.25, 0.5, 0.75, 1.1, 1.25, 1.5]
-Jzs = 0.5:0.1:1.5
-for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
-    tm.sweeps = 20000
-    tm.thermalization = 20000
-    tm.binsize = 200
+Jzs = [0.75, 0.9, 0.95, 1.05, 1.2, 1.5]
+Ts = 0.3:0.1:1.7
+for (T, Jz, L) in Iterators.product(Ts, Jzs, Ls)
+    tm.sweeps = 40000
+    tm.thermalization = 40000
+    tm.binsize = 400
     tm.wigparams = EtaParams(Jz, 0.5)
     tm.T = T
     tm.Lx = tm.Ly = L
