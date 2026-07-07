@@ -23,10 +23,12 @@ end
 function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     T = calc_temp(mc, ctx)
+    copy!(mc.spinscopy, mc.spins)
     rng = ctx.rng
 
     steps = 0
     changes = 0
+    retries = 0
     final_pos = pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
     while true
         Zs = [exp(-bond_energy(mc, Dimer(pos, pos+a)) / T) for a in disps]
@@ -47,21 +49,25 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
         steps += 1
         if mod_equiv(final_pos, pos, mc)
             break
+        elseif steps > 100 * Lx * Ly    # Retry after loop exceeds 100N
+            steps = 0
+            changes = 0
+            retries += 1
+            final_pos = pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+            copy!(mc.spins, mc.spinscopy)
         end
     end
 
     if is_thermalized(ctx)
         measure!(ctx, :dimersteps, steps)
         measure!(ctx, :dimerchanges, changes)
+        measure!(ctx, :dimerretries, retries)
     end
 end
 
 function Carlo.sweep!(mc::DimerMC, ctx::Carlo.MCContext)
     if !mc.etaonly
         sweep_s!(mc, ctx)
-        if ctx.sweeps % 1000 == 0
-            println("Dimer sweep #$(ctx.sweeps) complete")
-        end
     end
     sweep_η!(mc, ctx)
 end
