@@ -7,11 +7,11 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "jp15"
-tm.B = 0.01
+tm.B = 0.001
 
 Ls = [24]
 Jzs = [1.0, 1.45, 1.55, 2.0]
-Ts = 0.3:0.1:1.7
+Ts = 0.5:0.2:2.5
 for (T, Jz, L) in Iterators.product(Ts, Jzs, Ls)
     tm.sweeps = 40000
     tm.thermalization = 40000

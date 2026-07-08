@@ -8,7 +8,7 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "jp11"
 tm.init_type = :stripe
-tm.B = 0.01
+tm.B = 0.001
 tm.allchis = true
 
 Ls = [24]
