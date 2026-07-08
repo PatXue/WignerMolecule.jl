@@ -27,7 +27,6 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
     rng = ctx.rng
 
     steps = 0
-    changes = 0
     retries = 0
     final_pos = pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
     while true
@@ -39,19 +38,17 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
             if i == 6 || p < 0
                 posj = pos + disps[i]
                 if !mod_equiv(mc.spins[pos...], posj, mc)
-                    changes += 1
+                    steps += 1
                 end
                 mc.spins[pos...] = posj
                 pos, mc.spins[posj...] = mc.spins[posj...], pos
                 break
             end
         end
-        steps += 1
         if mod_equiv(final_pos, pos, mc)
             break
         elseif steps > 100 * Lx * Ly    # Retry after loop exceeds 100N
             steps = 0
-            changes = 0
             retries += 1
             final_pos = pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
             copy!(mc.spins, mc.spinscopy)
@@ -60,7 +57,6 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
 
     if is_thermalized(ctx)
         measure!(ctx, :dimersteps, steps)
-        measure!(ctx, :dimerchanges, changes)
         measure!(ctx, :dimerretries, retries)
     end
 end
