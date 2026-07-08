@@ -7,7 +7,6 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "jp15"
-tm.init_type = :stripe
 tm.B = 0.01
 
 Ls = [24]
@@ -17,6 +16,8 @@ for (T, Jz, L) in Iterators.product(Ts, Jzs, Ls)
     tm.sweeps = 40000
     tm.thermalization = 40000
     tm.binsize = 400
+    tm.init_type = (Jz > 1.5) ? :fm : :stripe
+
     tm.wigparams = EtaParams(Jz, 1.5)
     tm.T = T
     tm.Lx = tm.Ly = L
