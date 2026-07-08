@@ -9,7 +9,7 @@ tm = TaskMaker()
 jobname = "jp5"
 tm.init_type = :rand
 tm.init_T = 3.0
-tm.B = 0.01
+tm.B = 0.001
 
 Ls = [24, 48]
 Jzs = [0.75, 0.9, 0.95, 1.05, 1.2, 1.5]
