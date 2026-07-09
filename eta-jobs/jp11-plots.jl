@@ -13,7 +13,7 @@ tm.binsize = 500
 tm.B = 0.001
 
 Ls = [24]
-Jzs = [0.9, 1.0, 1.1]
+Jzs = [0.9, 1.05, 1.2]
 Ts = 0.1:0.1:2.0
 for (T, Jz, L) in Iterators.product(Ts, Jzs, Ls)
     tm.init_type = (Jz > 1.1) ? :fm : :stripe
