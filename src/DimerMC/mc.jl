@@ -4,7 +4,7 @@ struct DimerMC <: AbstractMC
     params::WignerParams
 
     spins::PeriodicMatrix{SVector{2,Int}}  # Matrix holding position (x,y) of entangled partner
-    monospins::PeriodicMatrix{SVector{3,Int}}
+    monospins::PeriodicMatrix{SpinVector}
     ηs::PeriodicMatrix{SpinVector}
 
     sks::Array{ComplexF64, 3}
@@ -18,7 +18,7 @@ end
 
 function DimerMC(; T, init_T, wigparams, Lx, Ly, etaonly=false, outdir="", savefreq=0)
     init_ss = fill(zeros(SVector{2,Int}), (Lx, Ly))
-    init_ssmono = fill(zeros(SVector{3,Int}), (Lx, Ly))
+    init_ssmono = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     return DimerMC(
         T, init_T, wigparams,
