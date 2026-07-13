@@ -65,10 +65,32 @@ function site_energy(mc::DimerMC, η, pos)
     return E
 end
 
+# Energy from half the bonds of pos
+function half_energy(mc::DimerMC, pos)
+    E = 0.0
+    η = mc.ηs[pos...]
+    for j in 1:3
+        ν = ω^(j-1)
+        disp = oriented_disps[j]
+        posj = pos .+ disp
+        ηj = mc.ηs[posj...]
+        E += bond_energy(mc, get_sdot(mc, pos, posj), η, ηj, ν)
+    end
+    return E
+end
 
+function total_energy(mc::DimerMC)
+    E = 0.0
+    for I in eachindex(IndexCartesian(), mc.spins)
+        E += half_energy(mc, Tuple(I))
+    end
+    return E
+end
+
+
+# Spin-related energy helpers
 # Energy from spin-orbit coupling if d were entangled
 function bond_energy(mc::DimerMC, d::Dimer)
-    # Couplings
     J_SS = mc.params.J_SS
     J_EzEz_SS = mc.params.J_EzEz_SS
     J_EAM_SS = mc.params.J_EAM_SS
@@ -96,25 +118,44 @@ function bond_energy(mc::DimerMC, d::Dimer)
     return real(E)
 end
 
+# Field on the monomer spin at pos due to posj
+function bond_sfield(mc::DimerMC, pos, posj, ν)
+    if !ismonomer(posj, mc)
+        return zeros(SpinVector)
+    end
+    J_SS = mc.params.J_SS
+    J_EzEz_SS = mc.params.J_EzEz_SS
+    J_EAM_SS = mc.params.J_EAM_SS
+    J_EMEP_SS = mc.params.J_EMEP_SS
+    J_EMEM_SS = mc.params.J_EMEM_SS
 
-# Energy from half the bonds of pos
-function half_energy(mc::DimerMC, pos)
-    E = 0.0
-    η = mc.ηs[pos...]
+    η = mc.ηs[pos...] / 2
+    ηj = mc.ηs[posj...] / 2
+    sj = mc.monospins[posj...] / 2
+
+    # η raising and lowering operators
+    η_m = η[1] + 1.0im*η[2]
+    ηj_p = ηj[1] - 1.0im*ηj[2]
+    ηj_m = ηj[1] + 1.0im*ηj[2]
+
+    B = 0.0 + 0.0im
+    B +=   J_EzEz_SS *     η[3] * ηj[3]
+    B += 2*J_EMEP_SS *     η_m * ηj_p
+    B += 2*J_EMEM_SS * ν * η_m * ηj_m
+    B += J_SS
+    B += 2*J_EAM_SS * (η_m/ν + ηj_p*ν)
+    return real(B) * sj
+end
+
+function get_sfield(mc::DimerMC, pos)
+    B = zeros(3)
     for j in 1:3
         ν = ω^(j-1)
         disp = oriented_disps[j]
         posj = pos .+ disp
-        ηj = mc.ηs[posj...]
-        E += bond_energy(mc, get_sdot(mc, pos, posj), η, ηj, ν)
-    end
-    return E
-end
-
-function total_energy(mc::DimerMC)
-    E = 0.0
-    for I in eachindex(IndexCartesian(), mc.spins)
-        E += half_energy(mc, Tuple(I))
+        B += bond_sfield(mc, pos, posj, ν)
+        posj = pos .- disp
+        B += bond_sfield(mc, posj, pos, ν)
     end
     return E
 end
