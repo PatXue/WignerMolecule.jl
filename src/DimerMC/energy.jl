@@ -106,8 +106,7 @@ function half_energy(mc::DimerMC, pos)
         disp = oriented_disps[j]
         posj = pos .+ disp
         ηj = mc.ηs[posj...]
-        paired = mod_equiv(mc.spins[pos...], posj, mc)
-        E += bond_energy(mc, paired, η, ηj, ν)
+        E += bond_energy(mc, get_sdot(mc, pos, posj), η, ηj, ν)
     end
     return E
 end
