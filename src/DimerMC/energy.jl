@@ -20,6 +20,13 @@ function ssfactor(mc::DimerMC, η, ηj, ν)
     E_spin += 2*J_EAM_SS * (η_m/ν + ηj_p*ν)
     return real(E_spin)
 end
+function ssfactor(mc::DimerMC, d::Dimer)
+    d = orientdimer(d, mc)
+    ν = getν(d, mc)
+    η = mc.ηs[d.pos...]
+    ηj = mc.ηs[d.posj...]
+    return ssfactor(mc, η, ηj, ν)
+end
 
 function bond_energy(mc::DimerMC, sdot, η, ηj, ν)
     # Couplings
@@ -102,43 +109,8 @@ end
 
 
 # Spin-related energy helpers
-# Energy from spin-orbit coupling if d were entangled
-function bond_energy(mc::DimerMC, d::Dimer)
-    d = orientdimer(d, mc)
-    η = mc.ηs[d.pos...] / 2
-    ηj = mc.ηs[d.posj...] / 2
-    ν = getν(d, mc)
-    return -3/4 * ssfactor(mc, η, ηj, ν)
-end
-
-# Field on the monomer spin at pos due to posj
-function bond_sfield(mc::DimerMC, pos, posj, ν)
-    if !ismonomer(posj, mc)
-        return zeros(SpinVector)
-    end
-    J_SS = mc.params.J_SS
-    J_EzEz_SS = mc.params.J_EzEz_SS
-    J_EAM_SS = mc.params.J_EAM_SS
-    J_EMEP_SS = mc.params.J_EMEP_SS
-    J_EMEM_SS = mc.params.J_EMEM_SS
-
-    η = mc.ηs[pos...] / 2
-    ηj = mc.ηs[posj...] / 2
-    sj = mc.monospins[posj...] / 2
-
-    # η raising and lowering operators
-    η_m = η[1] + 1.0im*η[2]
-    ηj_p = ηj[1] - 1.0im*ηj[2]
-    ηj_m = ηj[1] + 1.0im*ηj[2]
-
-    B = 0.0 + 0.0im
-    B +=   J_EzEz_SS *     η[3] * ηj[3]
-    B += 2*J_EMEP_SS *     η_m * ηj_p
-    B += 2*J_EMEM_SS * ν * η_m * ηj_m
-    B += J_SS
-    B += 2*J_EAM_SS * (η_m/ν + ηj_p*ν)
-    return real(B) * sj
-end
+# Energy from spin-orbit coupling within dimer with spins sdot
+bond_energy(mc::DimerMC, d::Dimer, sdot=-0.75) = sdot * ssfactor(mc, d)
 
 function get_sfield(mc::DimerMC, pos)
     B = zeros(3)
