@@ -1,5 +1,10 @@
 # Helper functions for calculating system energy
 
+"""
+    ssfactor(mc::DimerMC, η, ηj, ν)
+
+Calculate `s⋅sj` coefficient given `(η, ηj, ν)` in Hamiltonian. `η`s expected to be half-unit vectors.
+"""
 function ssfactor(mc::DimerMC, η, ηj, ν)
     J_SS = mc.params.J_SS
     J_EzEz_SS = mc.params.J_EzEz_SS
@@ -20,14 +25,24 @@ function ssfactor(mc::DimerMC, η, ηj, ν)
     E_spin += 2*J_EAM_SS * (η_m/ν + ηj_p*ν)
     return real(E_spin)
 end
+"""
+    ssfactor(mc::DimerMC, d::Dimer)
+
+Calculate `s⋅sj` coefficient for a bond given by `d`
+"""
 function ssfactor(mc::DimerMC, d::Dimer)
     d = orientdimer(d, mc)
     ν = getν(d, mc)
-    η = mc.ηs[d.pos...]
-    ηj = mc.ηs[d.posj...]
+    η = mc.ηs[d.pos...] / 2
+    ηj = mc.ηs[d.posj...] / 2
     return ssfactor(mc, η, ηj, ν)
 end
 
+"""
+    bond_energy(mc::DimerMC, sdot, η, ηj, ν)
+
+`η`s expected as unit vectors.
+"""
 function bond_energy(mc::DimerMC, sdot, η, ηj, ν)
     # Couplings
     J_EzEz = mc.params.J_EzEz
@@ -62,7 +77,7 @@ function get_sdot(mc::DimerMC, pos, posj)
     if mod_equiv(mc.spins[pos...], posj, mc)
         return -3/4
     elseif ismonomer(pos, mc) && ismonomer(posj, mc)
-        return mc.monospins[pos...] ⋅ mc.monospins[posj...]
+        return mc.monospins[pos...] ⋅ mc.monospins[posj...] / 4
     else
         return 0.0
     end
