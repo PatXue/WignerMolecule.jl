@@ -36,20 +36,24 @@ function ssfactor(mc::DimerMC, η, ηj, ν)
     return real(E_spin)
 end
 
-"""
-    bond_energy(mc::DimerMC, sdot, η, ηj, ν)
+function get_sdot(d::Dimer, mc::DimerMC)
+    if mod_equiv(mc.spins[d.pos...], d.posj, mc)
+        return -3/4
+    elseif ismonomer(d.pos, mc) && ismonomer(d.posj, mc)
+        return mc.monospins[d.pos...] ⋅ mc.monospins[d.posj...] / 4
+    else
+        return 0.0
+    end
+end
 
-`η`s expected as unit vectors.
-"""
-function bond_energy(mc::DimerMC, η, ηj)
+function bond_energy(mc::DimerMC, d::Dimer, η, ηj)
     # Couplings
     J_EzEz = mc.params.J_EzEz
     J_EMEP = mc.params.J_EMEP
     J_EMEM = mc.params.J_EMEM
 
-    η /= 2
-    ηj /= 2
-
+    ν = getν(d, mc)
+    sdot = get_sdot(d, mc)
     # η raising and lowering operators
     η_m = η[1] + 1.0im*η[2]
     ηj_p = ηj[1] - 1.0im*ηj[2]
@@ -69,16 +73,6 @@ function bond_energy(mc::DimerMC, η, ηj)
     end
 
     return E_spin + real(E_η)
-end
-
-function get_sdot(mc::DimerMC, pos, posj)
-    if mod_equiv(mc.spins[pos...], posj, mc)
-        return -3/4
-    elseif ismonomer(pos, mc) && ismonomer(posj, mc)
-        return mc.monospins[pos...] ⋅ mc.monospins[posj...] / 4
-    else
-        return 0.0
-    end
 end
 
 function site_energy(mc::DimerMC, η, pos)
