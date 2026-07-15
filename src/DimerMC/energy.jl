@@ -76,18 +76,16 @@ function bond_energy(mc::DimerMC, d::Dimer, η, ηj)
 end
 
 function site_energy(mc::DimerMC, η, pos)
+    η /= 2
     E = 0.0
     for j in 1:3
-        ν = ω^(j-1)
         disp = oriented_disps[j]
-
-        posj = pos .+ disp
-        ηj = mc.ηs[posj...]
-        E += bond_energy(mc, get_sdot(mc, pos, posj), η, ηj, ν)
-
-        posj = pos .- disp
-        ηj = mc.ηs[posj...]
-        E += bond_energy(mc, get_sdot(mc, pos, posj), ηj, η, ν)
+        posj = pos + disp
+        ηj = mc.ηs[posj...] / 2
+        E += bond_energy(mc, Dimer(pos, posj), η, ηj)
+        posj = pos - disp
+        ηj = mc.ηs[posj...] / 2
+        E += bond_energy(mc, Dimer(posj, pos), ηj, η)
     end
     return E
 end
