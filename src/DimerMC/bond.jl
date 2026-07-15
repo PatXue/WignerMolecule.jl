@@ -24,8 +24,7 @@ function orientdimer(d::Dimer, mc::DimerMC)
     end
 end
 # Get the ν coupling factor for a dimer (assuming dimer oriented)
-function getν(d::Dimer, mc::DimerMC)
-    disp = mod1(d.posj - d.pos, mc)
+function getν(disp, mc::DimerMC)
     if mod_equiv(disp, (1,0), mc)
         return 1
     elseif mod_equiv(disp, (-1,1), mc)
@@ -33,8 +32,12 @@ function getν(d::Dimer, mc::DimerMC)
     elseif mod_equiv(disp, (0,-1), mc)
         return ω^2
     else
-        throw(ArgumentError("Dimer $d not oriented correctly"))
+        throw(ArgumentError("Displacement $disp invalid"))
     end
+end
+function getν(d::Dimer, mc::DimerMC)
+    disp = mod1(d.posj - d.pos, mc)
+    getν(disp, mc)
 end
 
 ismonomer(pos, mc::DimerMC) = mod_equiv(mc.spins[pos...], pos, mc)
