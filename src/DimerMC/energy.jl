@@ -157,5 +157,5 @@ function get_sfield(mc::DimerMC, pos)
         posj = pos .- disp
         B += bond_sfield(mc, posj, pos, ν)
     end
-    return E
+    return B
 end
