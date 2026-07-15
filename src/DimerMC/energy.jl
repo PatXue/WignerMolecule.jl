@@ -1,4 +1,14 @@
-# Helper functions for calculating system energy
+#=
+Helper functions for calculating system energy
+Broken into sections for the η sweeps, s sweeps, and total energy calculations
+
+Functions for η sweeps take ηs as arguments and use the mc's current spin state
+Functions for s sweeps take the spin state as arguments and use mc's η state,
+    they also only calculate the spin-orbit coupling energy
+Functions for total energy are used for measurements, so only use the current mc state
+=#
+
+## η sweep functions ##
 
 """
     ssfactor(mc::DimerMC, η, ηj, ν)
@@ -25,25 +35,13 @@ function ssfactor(mc::DimerMC, η, ηj, ν)
     E_spin += 2*J_EAM_SS * (η_m/ν + ηj_p*ν)
     return real(E_spin)
 end
-"""
-    ssfactor(mc::DimerMC, d::Dimer)
-
-Calculate `s⋅sj` coefficient for a bond given by `d`
-"""
-function ssfactor(mc::DimerMC, d::Dimer)
-    d = orientdimer(d, mc)
-    ν = getν(d, mc)
-    η = mc.ηs[d.pos...] / 2
-    ηj = mc.ηs[d.posj...] / 2
-    return ssfactor(mc, η, ηj, ν)
-end
 
 """
     bond_energy(mc::DimerMC, sdot, η, ηj, ν)
 
 `η`s expected as unit vectors.
 """
-function bond_energy(mc::DimerMC, sdot, η, ηj, ν)
+function bond_energy(mc::DimerMC, η, ηj)
     # Couplings
     J_EzEz = mc.params.J_EzEz
     J_EMEP = mc.params.J_EMEP
@@ -100,6 +98,26 @@ function site_energy(mc::DimerMC, η, pos)
     return E
 end
 
+## Spin sweep functions ##
+
+"""
+    ssfactor(mc::DimerMC, d::Dimer)
+
+Calculate `s⋅sj` coefficient for a bond given by `d`
+"""
+function ssfactor(mc::DimerMC, d::Dimer)
+    d = orientdimer(d, mc)
+    ν = getν(d, mc)
+    η = mc.ηs[d.pos...] / 2
+    ηj = mc.ηs[d.posj...] / 2
+    return ssfactor(mc, η, ηj, ν)
+end
+
+# Energy from spin-orbit coupling within dimer with spins sdot
+bond_energy(mc::DimerMC, d::Dimer, sdot=-0.75) = sdot * ssfactor(mc, d)
+
+## Total energy functions ##
+
 # Energy from half the bonds of pos
 function half_energy(mc::DimerMC, pos)
     E = 0.0
@@ -122,20 +140,3 @@ function total_energy(mc::DimerMC)
     return E
 end
 
-
-# Spin-related energy helpers
-# Energy from spin-orbit coupling within dimer with spins sdot
-bond_energy(mc::DimerMC, d::Dimer, sdot=-0.75) = sdot * ssfactor(mc, d)
-
-function get_sfield(mc::DimerMC, pos)
-    B = zeros(3)
-    for j in 1:3
-        ν = ω^(j-1)
-        disp = oriented_disps[j]
-        posj = pos .+ disp
-        B += bond_sfield(mc, pos, posj, ν)
-        posj = pos .- disp
-        B += bond_sfield(mc, posj, pos, ν)
-    end
-    return B
-end
