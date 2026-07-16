@@ -75,7 +75,7 @@ function bond_energy(mc::DimerMC, d::Dimer, η, ηj)
     return E_spin + real(E_η)
 end
 
-function site_energy(mc::DimerMC, η, pos)
+function site_energy_eta(mc::DimerMC, pos, η)
     η /= 2
     E = 0.0
     for j in 1:3

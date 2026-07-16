@@ -7,9 +7,9 @@ function sweep_η!(mc::DimerMC, ctx::Carlo.MCContext)
         # Select site for spin change
         pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
 
-        old_E = site_energy(mc, mc.ηs[pos...], pos)
+        old_E = site_energy_eta(mc, pos, mc.ηs[pos...])
         new_η = rand(rng, SpinVector)
-        new_E = site_energy(mc, new_η, pos)
+        new_E = site_energy_eta(mc, pos, new_η)
         ΔE = new_E - old_E
 
         # Probability of accepting spin flip (for ΔE ≤ 0 always accept)
