@@ -1,6 +1,9 @@
+function metropolisacc(mc, ctx::Carlo.MCContext, ΔE)
+    return ΔE <= 0.0 || rand(ctx.rng) < exp(-ΔE / calc_temp(mc, ctx))
+end
+
 function sweep_η!(mc::DimerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
-    T = calc_temp(mc, ctx)
     rng = ctx.rng
 
     for _ in 1:length(mc.spins)
@@ -12,9 +15,7 @@ function sweep_η!(mc::DimerMC, ctx::Carlo.MCContext)
         new_E = site_energy_eta(mc, pos, new_η)
         ΔE = new_E - old_E
 
-        # Probability of accepting spin flip (for ΔE ≤ 0 always accept)
-        prob = exp(-ΔE / T)
-        if prob >= 1.0 || rand(rng) < prob
+        if metropolisacc(mc, ctx, ΔE)
             mc.ηs[pos...] = new_η
         end
     end
