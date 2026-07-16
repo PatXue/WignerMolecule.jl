@@ -41,3 +41,4 @@ function getν(disp, mc::DimerMC)
 end
 
 ismonomer(pos, mc::DimerMC) = mod_equiv(mc.spins[pos...], pos, mc)
+indimer(pos, d::Dimer, mc::DimerMC) = mod_equiv(pos, d.pos, mc) || mod_equiv(pos, d.posj, mc)
