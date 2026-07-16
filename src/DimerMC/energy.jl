@@ -110,16 +110,17 @@ bond_energy(mc::DimerMC, d::Dimer, sdot=-0.75) = sdot * ssfactor(mc, d)
 
 ## Total energy functions ##
 
+function bond_energy(mc::DimerMC, d::Dimer)
+    d = orientdimer(d, mc)
+    return bond_energy(mc, d, mc.ηs[d.pos...], mc.ηs[d.posj...])
+end
+
 # Energy from half the bonds of pos
 function half_energy(mc::DimerMC, pos)
     E = 0.0
-    η = mc.ηs[pos...]
-    for j in 1:3
-        ν = ω^(j-1)
-        disp = oriented_disps[j]
+    for disp in oriented_disps
         posj = pos .+ disp
-        ηj = mc.ηs[posj...]
-        E += bond_energy(mc, get_sdot(mc, pos, posj), η, ηj, ν)
+        E += bond_energy(mc, Dimer(pos, posj))
     end
     return E
 end
