@@ -105,8 +105,22 @@ function ssfactor(mc::DimerMC, d::Dimer)
     return ssfactor(mc, η, ηj, ν)
 end
 
-# Energy from spin-orbit coupling within dimer with spins sdot
-bond_energy(mc::DimerMC, d::Dimer, sdot=-0.75) = sdot * ssfactor(mc, d)
+# Energy from spin-orbit coupling on bond d with given sdot
+bond_energy_s(mc::DimerMC, d::Dimer, sdot) = sdot * ssfactor(mc, d)
+
+# Spin orbit energy of a single monomer (when shifting a monomer)
+function site_energy_s(mc::DimerMC, pos, s)
+    E = 0.0
+    for disp in disps
+        posj = pos + disp
+        E += bond_energy_s(mc, Dimer(pos, posj), sdot)
+    end
+    return E
+end
+
+# Spin-orbit energy of a pair of adjacent monomers (when dissolving/forming a dimer)
+function pair_energy_s(mc::DimerMC, d::Dimer, s, sj)
+end
 
 ## Total energy functions ##
 
