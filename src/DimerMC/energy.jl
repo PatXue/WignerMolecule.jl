@@ -68,7 +68,7 @@ function bond_energy(mc::DimerMC, d::Dimer, η, ηj)
     E_η += 2*J_EMEM * ν * η_m * ηj_m
 
     # η-S energy
-    if sdot != 0
+    if sdot != 0.0
         E_spin = sdot * ssfactor(mc, η, ηj, ν)
     end
 
@@ -108,11 +108,16 @@ end
 # Energy from spin-orbit coupling on bond d with given sdot
 bond_energy_s(mc::DimerMC, d::Dimer, sdot) = sdot * ssfactor(mc, d)
 
-# Spin orbit energy of a single monomer (when shifting a monomer)
-function site_energy_s(mc::DimerMC, pos, s)
-    E = 0.0
+# Spin orbit energy of a single monomer and entangled dimer (when shifting a monomer)
+function shift_energy_s(mc::DimerMC, d::Dimer, pos, s)
+    E = bond_energy_s(mc, d, -3/4)
     for disp in disps
         posj = pos + disp
+        if !ismonomer(posj, mc) || indimer(pos, d, mc)
+            continue
+        else
+            sdot = s ⋅ mc.monospins[posj...]
+        end
         E += bond_energy_s(mc, Dimer(pos, posj), sdot)
     end
     return E
