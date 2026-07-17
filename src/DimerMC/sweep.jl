@@ -69,13 +69,13 @@ function sweep_monomer!(mc::DimerMC, ctx::Carlo.MCContext)
     rng = ctx.rng
     pos = randmonomer(mc, rng)
 
-    old_E = site_energy_s(mc, pos, mc.spins[pos...])
+    old_E = site_energy_s(mc, pos, mc.monospins[pos...])
     new_s = rand(rng, SpinVector)
     new_E = site_energy_s(mc, pos, new_s)
     ΔE = new_E - old_E
 
     if metropolisacc(mc, ctx, ΔE)
-        mc.spins[pos...] = new_s
+        mc.monospins[pos...] = new_s
     end
 end
 
