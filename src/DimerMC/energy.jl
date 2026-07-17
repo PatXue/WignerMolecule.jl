@@ -115,7 +115,7 @@ function shift_energy_s(mc::DimerMC, d::Dimer, pos, s)
     E = dimer_energy_s(mc, d)
     for disp in disps
         posj = pos + disp
-        if !ismonomer(posj, mc) || indimer(pos, d, mc)
+        if !ismonomer(posj, mc) || indimer(posj, d, mc)
             continue
         else
             sdot = s ⋅ mc.monospins[posj...]
