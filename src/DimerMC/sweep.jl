@@ -34,19 +34,36 @@ function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
             sj = rand(SpinVector)
             old_E = dimer_energy_s(mc, Dimer(pos, posj))
             new_E = pair_energy_s(mc, pos, posj, s, sj)
+            if metropolisacc(mc, ctx, new_E - old_E)
+                mc.spins[pos...] = pos
+                mc.spins[posj...] = posj
+                mc.monospins[pos...] = s
+                mc.monospins[posj...] = sj
+            end
         elseif ismonomer(pos, mc) && ismonomer(posj, mc) # Dimer creation
-            s = mc.spins[pos...]
-            sj = mc.spins[posj...]
+            s = mc.monospins[pos...]
+            sj = mc.monospins[posj...]
             old_E = pair_energy_s(mc, pos, posj, s, sj)
             new_E = dimer_energy_s(mc, Dimer(pos, posj))
+            if metropolisacc(mc, ctx, new_E - old_E)
+                mc.spins[pos...] = posj
+                mc.spins[posj...] = pos
+            end
         elseif ismonomer(pos, mc) || ismonomer(posj, mc) # Monomer shift
             if ismonomer(posj, mc)
                 pos, posj = posj, pos
             end
-            s = rand(SpinVector)
+            s = mc.monospins[pos...]
+            sk = rand(SpinVector)
             posk = mc.spins[posj...]
-            old_E = shift_energy_s(mc, Dimer(posj, posk), pos, mc.spins[pos...])
-            new_E = shift_energy_s(mc, Dimer(pos, posj), posk, s)
+            old_E = shift_energy_s(mc, Dimer(posj, posk), pos, s)
+            new_E = shift_energy_s(mc, Dimer(pos, posj), posk, sk)
+            if metropolisacc(mc, ctx, new_E - old_E)
+                mc.spins[pos...] = posj
+                mc.spins[posj...] = pos
+                mc.spins[posk...] = posk
+                mc.monospins[posk...] = sk
+            end
         else                                             # Adjacent dimers
             continue
         end
