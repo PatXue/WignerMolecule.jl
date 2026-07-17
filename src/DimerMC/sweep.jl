@@ -66,9 +66,17 @@ function sweep_dimer!(mc::DimerMC, ctx::Carlo.MCContext)
 end
 
 function sweep_monomer!(mc::DimerMC, ctx::Carlo.MCContext)
-    Lx, Ly = size(mc.spins)
     rng = ctx.rng
-    pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+    pos = randmonomer(mc, rng)
+
+    old_E = site_energy_s(mc, pos, mc.spins[pos...])
+    new_s = rand(rng, SpinVector)
+    new_E = site_energy_s(mc, pos, new_s)
+    ΔE = new_E - old_E
+
+    if metropolisacc(mc, ctx, ΔE)
+        mc.spins[pos...] = new_s
+    end
 end
 
 function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)

@@ -60,5 +60,5 @@ end
 function randmonomer(mc::DimerMC, rng=default_rng())
     Lx = size(mc.spins, 1)
     n = rand(rng, mc.monomers)
-    return (div(n, Lx), n % Lx)
+    return SVector(div(n, Lx), n % Lx)
 end
