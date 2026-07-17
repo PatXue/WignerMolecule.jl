@@ -7,6 +7,7 @@ struct DimerMC <: AbstractMC
     spins::PeriodicMatrix{SVector{2,Int}}  # Matrix holding position (x,y) of entangled partner
     monospins::PeriodicMatrix{SpinVector}
     ηs::PeriodicMatrix{SpinVector}
+    monomers::BitSet
 
     sks::Array{ComplexF64, 3}
     ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
@@ -23,8 +24,8 @@ function DimerMC(; T, init_T, Q, wigparams, Lx, Ly, etaonly=false, outdir="", sa
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     return DimerMC(
         T, init_T, wigparams, Q,
-        init_ss, init_ssmono,
-        init_ηs, Array{ComplexF64}(undef, (Lx, Ly, 3)),
+        init_ss, init_ssmono, init_ηs, BitSet(1:(Lx*Ly)),
+        Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         etaonly, outdir, savefreq
     )
