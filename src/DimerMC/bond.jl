@@ -43,6 +43,7 @@ end
 ismonomer(pos, mc::DimerMC) = mod_equiv(mc.spins[pos...], pos, mc)
 indimer(pos, d::Dimer, mc::DimerMC) = mod_equiv(pos, d.pos, mc) || mod_equiv(pos, d.posj, mc)
 
+# Monomer BitSet handling functions
 function addmonomer!(pos, s::SpinVector, mc::DimerMC)
     Lx = size(mc.spins, 1)
     pos = mod1.(pos, size(mc.spins))
@@ -54,4 +55,10 @@ function delmonomer!(pos, mc::DimerMC)
     Lx = size(mc.spins, 1)
     pos = mod1.(pos, size(mc.spins))
     pop!(mc.monomers, pos[1] + Lx * pos[2])
+end
+
+function randmonomer(mc::DimerMC, rng=default_rng())
+    Lx = size(mc.spins, 1)
+    n = rand(rng, mc.monomers)
+    return (div(n, Lx), n % Lx)
 end
