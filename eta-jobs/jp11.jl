@@ -10,13 +10,13 @@ jobname = "jp11"
 tm.B = 0.001
 tm.allchis = true
 
-Ls = [24, 48]
+Ls = [24]
 Jzs = [0.5, 0.95, 1.0, 1.05, 1.125, 1.2]
 Ts = 0.3:0.1:1.7
 for (T, Jz, L) in Iterators.product(Ts, Jzs, Ls)
-    tm.sweeps = 40000
-    tm.thermalization = 40000
-    tm.binsize = 400
+    tm.sweeps = 100000
+    tm.thermalization = 50000
+    tm.binsize = 1000
     tm.init_type = (Jz > 1.1) ? :fm : :stripe
 
     tm.wigparams = EtaParams(Jz, 1.1)
