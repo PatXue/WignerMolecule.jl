@@ -81,10 +81,10 @@ end
 
 function sweep_s!(mc::DimerMC, ctx::Carlo.MCContext)
     for _ in 1:length(mc.spins)
-        if rand(ctx.rng) < mc.Q
-            sweep_dimer!(mc, ctx)
-        else
+        if rand(ctx.rng) < mc.Q * length(mc.monomers) / length(mc.spins)
             sweep_monomer!(mc, ctx)
+        else
+            sweep_dimer!(mc, ctx)
         end
     end
 end

@@ -2,7 +2,7 @@ struct DimerMC <: AbstractMC
     T::Float64          # Temperature
     init_T::Float64     # Initial temperature (for thermalization)
     params::WignerParams
-    Q::Float64          # Dimer update probability
+    Q::Float64          # Monomer update probability (with 0 dimers)
 
     spins::PeriodicMatrix{SVector{2,Int}}  # Matrix holding position (x,y) of entangled partner
     monospins::PeriodicMatrix{SpinVector}
