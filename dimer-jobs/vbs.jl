@@ -8,7 +8,7 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "vbs"
-
+tm.Q = 0.5
 tm.wigparams = WignerParams("all_params.jld2", 10, 6)
 
 Ts = 0.01:0.01:0.1
