@@ -85,22 +85,6 @@ function Carlo.register_evaluables(::Type{EtaMC}, eval::AbstractEvaluator,
             end
             return avgcorrs / 6
         end
-
-        evaluate!(eval, :CorrLen, (:chik_corrs,)) do chiks
-            rcorrs = real.(ifft(chiks))
-            Lx, Ly = size(rcorrs)
-            avgcorrs = zeros(div(Lx, 2))
-            for a in ([1,0], [0,1], [-1,1], [-1,0], [0,-1], [1,-1])
-                avgcorrs += [rcorrs[mod1.([1,1] + i*a, [Lx,Ly])...] for i in 0:(div(Lx,2)-1)]
-            end
-            avgcorrs ./= 6
-            avgcorrs = log.(abs.(avgcorrs[4:end]))
-
-            X = ones(length(avgcorrs), 2)
-            X[:,1] = 1:length(avgcorrs)
-            β = (X' * X) \ (X' * avgcorrs)
-            return -1/β[1]
-        end
     end
     return nothing
 end
