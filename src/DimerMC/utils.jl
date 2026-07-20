@@ -21,7 +21,7 @@ function validate_mc(mc::DimerMC)
     for I in eachindex(mc.spins)
         x,y = Tuple(I)
         pos = SVector(x, y)
-        posj = mc.spins[mc.spins[x,y]...]
+        posj = mc.spins[pos...]
         @assert mod_equiv(pos, mc.spins[posj...], mc)
         if ismonomer(pos, mc)
             @assert mod_equiv(pos, posj, mc)
