@@ -17,8 +17,16 @@ function update_fourier!(mc::DimerMC)
 end
 
 function validate_mc(mc::DimerMC)
+    Lx, _ = size(mc.spins)
     for I in eachindex(mc.spins)
         x,y = Tuple(I)
-        @assert mod_equiv(mc.spins[mc.spins[x,y]...], (x,y), mc)
+        pos = SVector(x, y)
+        posj = mc.spins[mc.spins[x,y]...]
+        @assert mod_equiv(pos, mc.spins[posj...], mc)
+        if ismonomer(pos, mc)
+            @assert mod_equiv(pos, posj, mc)
+            @assert (x + Lx * y) in mc.monomers
+            @assert norm(mc.monospins[pos...]) ≈ 1.0
+        end
     end
 end
