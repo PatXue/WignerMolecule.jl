@@ -9,14 +9,14 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "vbs-anneal"
 tm.Q = 0.5
-tm.init_T = 1.0
+tm.init_T = 2.0
 tm.init_type = :rand
 tm.wigparams = WignerParams("all_params.jld2", 10, 6)
 
 Ts = 0.02:0.02:0.2
 Ls = [24]
 for (T, L) in Iterators.product(Ts, Ls)
-    tm.sweeps = 25000 * div(L, 24)
+    tm.sweeps = 50000 * div(L, 24)
     tm.thermalization = tm.sweeps
     tm.binsize = div(tm.sweeps, 100)
     tm.Lx = tm.Ly = L
