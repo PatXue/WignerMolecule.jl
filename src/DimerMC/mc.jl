@@ -36,7 +36,7 @@ function DimerMC(params::AbstractDict)
     T = params[:T]
     init_T = get(params, :init_T, T)
     wigparams = params[:wigparams]
-    Q = params[:Q]
+    Q = get(params, :Q, 0.5)
 
     etaonly = get(params, :etaonly, false)
     outdir = get(params, :outdir, ".")
