@@ -11,7 +11,7 @@ jobname = "vbs"
 tm.Q = 0.5
 tm.wigparams = WignerParams("all_params.jld2", 10, 6)
 
-Ts = 0.02:0.02:0.2
+Ts = 0.05:0.01:0.15
 Ls = [24]
 for (T, L) in Iterators.product(Ts, Ls)
     tm.sweeps = 50000 * div(L, 24)
