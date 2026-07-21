@@ -156,7 +156,7 @@ end
 
 function bond_energy(mc::DimerMC, d::Dimer)
     d = orientdimer(d, mc)
-    return bond_energy(mc, d, mc.ηs[d.pos...], mc.ηs[d.posj...])
+    return bond_energy(mc, d, mc.ηs[d.pos...]/2, mc.ηs[d.posj...]/2)
 end
 
 # Energy from half the bonds of pos
