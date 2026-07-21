@@ -29,4 +29,5 @@ function validate_mc(mc::DimerMC)
             @assert norm(mc.monospins[pos...]) ≈ 1.0
         end
     end
+    return true
 end
