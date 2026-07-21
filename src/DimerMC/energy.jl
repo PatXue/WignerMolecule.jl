@@ -114,7 +114,7 @@ function site_energy_s(mc::DimerMC, pos, s)
     for disp in disps
         posj = pos + disp
         if ismonomer(posj, mc)
-            sdot = s ⋅ mc.monospins[posj...]
+            sdot = s ⋅ mc.monospins[posj...] / 4
             E += bond_energy_s(mc, Dimer(pos, posj), sdot)
         end
     end
@@ -127,7 +127,7 @@ function shift_energy_s(mc::DimerMC, d::Dimer, pos, s)
     for disp in disps
         posj = pos + disp
         if ismonomer(posj, mc) && !indimer(posj, d, mc)
-            sdot = s ⋅ mc.monospins[posj...]
+            sdot = s ⋅ mc.monospins[posj...] / 4
             E += bond_energy_s(mc, Dimer(pos, posj), sdot)
         end
     end
