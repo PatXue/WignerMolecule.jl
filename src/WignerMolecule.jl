@@ -8,6 +8,7 @@ export EtaParams, EtaMC
 
 export DimerMC
 export addmonomer!, delmonomer!
+export validate_mc
 
 import Random.AbstractRNG
 import Random.default_rng
