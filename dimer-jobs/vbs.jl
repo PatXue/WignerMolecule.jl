@@ -11,12 +11,15 @@ jobname = "vbs"
 tm.Q = 0.5
 tm.wigparams = WignerParams("all_params.jld2", 10, 6)
 
+tm.sweeps = 50000
+tm.binsize = 250
 Ts = 0.05:0.01:0.15
 Ls = [24]
 for (T, L) in Iterators.product(Ts, Ls)
-    tm.sweeps = 50000 * div(L, 24)
-    tm.thermalization = tm.sweeps
-    tm.binsize = div(tm.sweeps, 100)
+    tm.thermalization = 50000 * div(L, 24)
+    if T ≈ 0.09
+        tm.thermalization *= 2
+    end
     tm.Lx = tm.Ly = L
     tm.T = T
     task(tm)
