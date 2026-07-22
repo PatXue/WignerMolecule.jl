@@ -116,3 +116,16 @@ function Carlo.read_checkpoint!(mc::WignerMC, in::HDF5.Group)
     mc.ηs .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_ηs)
     return nothing
 end
+
+function Carlo.parallel_tempering_log_weight_ratio(mc, param_name::Symbol, new_val)
+    if param_name != :T
+        throw(ArgumentError("Parallel tempering only supported for T"))
+    end
+    return -(1/new_val - 1/mc.T) * total_energy(mc)
+end
+function Carlo.parallel_tempering_change_parameter!(mc, param_name::Symbol, new_val)
+    if param_name != :T
+        throw(ArgumentError("Parallel tempering only supported for T"))
+    end
+    mc.T = new_val
+end
