@@ -16,10 +16,7 @@ tm.binsize = 250
 Ts = 0.05:0.01:0.15
 Ls = [24]
 for (T, L) in Iterators.product(Ts, Ls)
-    tm.thermalization = 50000 * div(L, 24)
-    if T ≈ 0.09
-        tm.thermalization *= 2
-    end
+    tm.thermalization = 100000
     tm.Lx = tm.Ly = L
     tm.T = T
     task(tm)
