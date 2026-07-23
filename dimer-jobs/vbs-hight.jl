@@ -7,29 +7,23 @@ using JLD2
 using WignerMolecule
 
 tm = TaskMaker()
-jobname = "vbs-parallel"
+jobname = "vbs-hight"
 tm.wigparams = WignerParams("all_params.jld2", 10, 6)
 
 tm.sweeps = 50000
 tm.binsize = 250
-Ts = 0.01:0.01:0.15
+Ts = 0.2:0.2:4.0
 Ls = [24]
-tm.parallel_tempering = (
-    mc = DimerMC,
-    parameter = :T,
-    values = Ts,
-    interval = 10
-)
-for L in Ls
-    tm.thermalization = 100000
+for (T, L) in Iterators.product(Ts, Ls)
+    tm.thermalization = 50000
     tm.Lx = tm.Ly = L
+    tm.T = T
     task(tm)
 end
 
-job = JobInfo("$jobname", ParallelTemperingMC;
+job = JobInfo("$jobname", DimerMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
-    ranks_per_run = length(Ts)
 )
 start(job, ARGS)
