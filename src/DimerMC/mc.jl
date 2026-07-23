@@ -25,7 +25,7 @@ function DimerMC(; T, init_T, Q, wigparams, Lx, Ly, etaonly=false, outdir="", sa
     return DimerMC(
         T, init_T, wigparams, Q,
         init_ss, init_ssmono, init_ηs, BitSet(1:(Lx*Ly)),
-        Array{ComplexF64}(undef, (Lx, Ly, 3)),
+        Array{ComplexF64}(undef, (Lx, Ly, 4)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         etaonly, outdir, savefreq
     )
