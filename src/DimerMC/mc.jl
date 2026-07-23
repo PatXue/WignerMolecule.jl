@@ -2,7 +2,6 @@ mutable struct DimerMC <: AbstractMC
     T::Float64          # Temperature
     init_T::Float64     # Initial temperature (for thermalization)
     params::WignerParams
-    Q::Float64          # Monomer update probability (with 0 dimers)
 
     spins::PeriodicMatrix{SVector{2,Int}}  # Matrix holding position (x,y) of entangled partner
     monospins::PeriodicMatrix{SpinVector}
@@ -23,7 +22,7 @@ function DimerMC(; T, init_T, Q, wigparams, Lx, Ly, etaonly=false, outdir="", sa
     init_ssmono = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     return DimerMC(
-        T, init_T, wigparams, Q,
+        T, init_T, wigparams,
         init_ss, init_ssmono, init_ηs, BitSet(1:(Lx*Ly)),
         Array{ComplexF64}(undef, (Lx, Ly, 4)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
