@@ -2,11 +2,13 @@ module WignerMolecule
 
 export WignerMC, WignerParams
 export total_energy, init_skyrm!
-export randomize!
+export SpinVector
 
 export EtaParams, EtaMC
 
 export DimerMC
+export addmonomer!, delmonomer!
+export validate_mc
 
 import Random.AbstractRNG
 import Random.default_rng
