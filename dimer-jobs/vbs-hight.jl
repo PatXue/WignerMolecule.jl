@@ -9,6 +9,7 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "vbs-hight"
 tm.wigparams = WignerParams("all_params.jld2", 10, 6)
+tm.init_type = :rand
 
 tm.sweeps = 50000
 tm.binsize = 250
