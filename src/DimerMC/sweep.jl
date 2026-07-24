@@ -28,8 +28,8 @@ function sweep_dimer!(mc::DimerMC, T, rng=default_rng())
         posj = pos + rand(rng, disps)
 
         if mod_equiv(mc.spins[pos...], posj, mc) # Dimer dissolution
-            s = rand(rng, SpinVector)
-            sj = rand(rng, SpinVector)
+            s = SpinVector(0,0,1)
+            sj = SpinVector(0,0,-1)
             old_E = dimer_energy_s(mc, Dimer(pos, posj))
             new_E = pair_energy_s(mc, pos, posj, s, sj)
             if metropolisacc(new_E - old_E, T, rng)
