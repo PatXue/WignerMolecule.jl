@@ -10,7 +10,7 @@ jobname = "jp11"
 tm.B = 0.001
 tm.allchis = true
 
-Ls = [24]
+Ls = [24, 48]
 Jzs = [0.5, 0.95, 1.0, 1.05, 1.125, 1.2]
 Ts = 0.3:0.1:1.7
 for (T, Jz, L) in Iterators.product(Ts, Jzs, Ls)
