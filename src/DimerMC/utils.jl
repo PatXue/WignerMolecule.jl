@@ -26,7 +26,6 @@ function validate_mc(mc::DimerMC)
         @assert mod_equiv(pos, mc.spins[posj...], mc)
         if ismonomer(pos, mc)
             @assert mod_equiv(pos, posj, mc)
-            @assert (x + Lx * y) in mc.monomers
             @assert norm(mc.monospins[pos...]) ≈ 1.0
         end
     end

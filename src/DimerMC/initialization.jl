@@ -33,13 +33,12 @@ function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
     if init_type == :vbs
         init_vbs_s!(mc)
         init_vbs_eta!(mc)
-        empty!(mc.monomers)
+        rand!(ctx.rng, mc.monospins)
     elseif init_type == :rand
-        empty!(mc.monomers)
         rand!(ctx.rng, mc.monospins)
         rand!(ctx.rng, mc.ηs)
         for I in eachindex(mc.spins)
-            addmonomer!(convert(SVector, I), mc.monospins[I], mc)
+            mc.spins[I] = I
         end
     end
     update_fourier!(mc)
