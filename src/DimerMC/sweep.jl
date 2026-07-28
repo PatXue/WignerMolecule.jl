@@ -66,8 +66,7 @@ function sweep_dimer!(mc::DimerMC, T, rng=default_rng())
 end
 
 function sweep_monomer!(mc::DimerMC, T, rng=default_rng())
-    Lx, Ly = size(mc.monospins)
-    for _ in 1:length(mc.monospins)
+    for _ in 1:length(mc.spins)
         pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
 
         old_E = site_energy_s(mc, pos, mc.monospins[pos...])
