@@ -6,6 +6,7 @@ mutable struct DimerMC <: AbstractMC
     spins::PeriodicMatrix{SVector{2,Int}}  # Matrix holding position (x,y) of entangled partner
     monospins::PeriodicMatrix{SpinVector}
     ηs::PeriodicMatrix{SpinVector}
+    monomers::BitSet
 
     sks::Array{ComplexF64, 3}
     ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
@@ -16,13 +17,13 @@ mutable struct DimerMC <: AbstractMC
     savefreq::Int  # No. of sweeps between saving spins
 end
 
-function DimerMC(; T, init_T, wigparams, Lx, Ly, etaonly=false, outdir="", savefreq=0)
+function DimerMC(; T, init_T, Q, wigparams, Lx, Ly, etaonly=false, outdir="", savefreq=0)
     init_ss = fill(zeros(SVector{2,Int}), (Lx, Ly))
     init_ssmono = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     return DimerMC(
         T, init_T, wigparams,
-        init_ss, init_ssmono, init_ηs,
+        init_ss, init_ssmono, init_ηs, BitSet(1:(Lx*Ly)),
         Array{ComplexF64}(undef, (Lx, Ly, 4)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         etaonly, outdir, savefreq
@@ -34,10 +35,11 @@ function DimerMC(params::AbstractDict)
     T = params[:T]
     init_T = get(params, :init_T, T)
     wigparams = params[:wigparams]
+    Q = get(params, :Q, 0.5)
 
     etaonly = get(params, :etaonly, false)
     outdir = get(params, :outdir, ".")
     savefreq = get(params, :savefreq, 0)
 
-    return DimerMC(; T, init_T, wigparams, Lx, Ly, etaonly, outdir, savefreq)
+    return DimerMC(; T, Q, init_T, wigparams, Lx, Ly, etaonly, outdir, savefreq)
 end
