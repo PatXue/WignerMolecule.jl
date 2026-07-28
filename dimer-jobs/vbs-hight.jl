@@ -13,8 +13,8 @@ tm.init_type = :rand
 
 tm.sweeps = 50000
 tm.binsize = 250
-Ts = 0.2:0.2:4.0
-Ls = [24]
+Ts = 0.5:0.5:5.0
+Ls = [24, 48, 96]
 for (T, L) in Iterators.product(Ts, Ls)
     tm.thermalization = 50000
     tm.Lx = tm.Ly = L
