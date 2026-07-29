@@ -40,5 +40,5 @@ function DimerMC(params::AbstractDict)
     outdir = get(params, :outdir, ".")
     savefreq = get(params, :savefreq, 0)
 
-    return DimerMC(; T, Q, init_T, wigparams, Lx, Ly, etaonly, outdir, savefreq)
+    return DimerMC(; T, init_T, wigparams, Lx, Ly, etaonly, outdir, savefreq)
 end
