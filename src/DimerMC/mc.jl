@@ -17,7 +17,7 @@ mutable struct DimerMC <: AbstractMC
     savefreq::Int  # No. of sweeps between saving spins
 end
 
-function DimerMC(; T, init_T, Q, wigparams, Lx, Ly, etaonly=false, outdir="", savefreq=0)
+function DimerMC(; T, init_T, wigparams, Lx, Ly, etaonly=false, outdir="", savefreq=0)
     init_ss = fill(zeros(SVector{2,Int}), (Lx, Ly))
     init_ssmono = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
@@ -35,7 +35,6 @@ function DimerMC(params::AbstractDict)
     T = params[:T]
     init_T = get(params, :init_T, T)
     wigparams = params[:wigparams]
-    Q = get(params, :Q, 0.5)
 
     etaonly = get(params, :etaonly, false)
     outdir = get(params, :outdir, ".")
