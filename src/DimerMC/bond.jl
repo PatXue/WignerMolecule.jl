@@ -55,6 +55,7 @@ function delmonomer!(pos, mc::DimerMC)
     Lx = size(mc.spins, 1)
     pos = mod1.(pos, size(mc.spins))
     pop!(mc.monomers, pos[1] + Lx * pos[2])
+    mc.monospins[pos...] = SVector(0,0,0)
 end
 
 function randmonomer(mc::DimerMC, rng=default_rng())
