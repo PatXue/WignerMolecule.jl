@@ -44,7 +44,7 @@ ismonomer(pos, mc::DimerMC) = mod_equiv(mc.spins[pos...], pos, mc)
 indimer(pos, d::Dimer, mc::DimerMC) = mod_equiv(pos, d.pos, mc) || mod_equiv(pos, d.posj, mc)
 
 # Monomer BitSet handling functions
-function addmonomer!(pos, s::SpinVector, mc::DimerMC)
+function addmonomer!(pos, s, mc::DimerMC)
     Lx = size(mc.spins, 1)
     pos = mod1.(pos, size(mc.spins))
     mc.spins[pos...] = pos
