@@ -8,10 +8,11 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "vbs-inf"
+tm.init_type = :rand
 tm.wigparams = WignerParams("all_params.jld2", 10, 6)
 
-tm.sweeps = 50000
-tm.thermalization = 50000
+tm.sweeps = 25000
+tm.thermalization = 25000
 tm.binsize = 250
 tm.T = Inf
 fugs = 0.1:0.1:1.0
