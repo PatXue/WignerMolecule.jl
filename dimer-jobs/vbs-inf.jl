@@ -15,7 +15,7 @@ tm.sweeps = 25000
 tm.thermalization = 25000
 tm.binsize = 250
 tm.T = Inf
-fugs = 0.1:0.1:1.0
+fugs = 0.0:0.1:1.9
 Ls = [24, 48]
 for (fug, L) in Iterators.product(fugs, Ls)
     tm.Lx = tm.Ly = L
