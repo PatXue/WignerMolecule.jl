@@ -61,7 +61,13 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
         end
     end
     if mc.allchis
-        measure!(ctx, :chik_corrs, mc.chis)
+        ifft!(mc.chis)
+        avgcorrs = zeros(div(Lx, 2))
+        for a in disps
+            avgcorrs += [mc.chis[mod1.([1,1] + i*a, (Lx, Ly))...] for i in 0:(div(Lx,2)-1)]
+        end
+        avgcorrs /= 6
+        measure!(ctx, :realcorrs, avgcorrs)
     end
 
     return nothing
@@ -73,18 +79,6 @@ function Carlo.register_evaluables(::Type{EtaMC}, eval::AbstractEvaluator,
     N = params[:Lx] * params[:Ly]
     evaluate!(eval, :HeatCap, (:Energy2, :Energy)) do E2, E
         return N * (E2 - E^2) / T^2
-    end
-
-    if get(params, :allchis, false)
-        evaluate!(eval, :avgcorrs, (:chik_corrs,)) do chiks
-            rcorrs = real.(ifft(chiks))
-            Lx, Ly = size(rcorrs)
-            avgcorrs = zeros(div(Lx, 2))
-            for a in ([1,0], [0,1], [-1,1], [-1,0], [0,-1], [1,-1])
-                avgcorrs += [rcorrs[mod1.([1,1] + i*a, [Lx,Ly])...] for i in 0:(div(Lx,2)-1)]
-            end
-            return avgcorrs / 6
-        end
     end
     return nothing
 end
