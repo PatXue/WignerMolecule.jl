@@ -56,9 +56,7 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
         pos = f(Lx, Ly)
         s = mc.spinks[pos..., :]
         measure!(ctx, Symbol("sk_corr_", f), s*s')
-        if !mc.allchis
-            measure!(ctx, Symbol("chik_corr_", f), mc.chis[pos...])
-        end
+        measure!(ctx, Symbol("chik_corr_", f), mc.chis[pos...])
     end
     if mc.allchis
         ifft!(mc.chis)
