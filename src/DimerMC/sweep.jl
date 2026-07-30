@@ -1,5 +1,6 @@
-function metropolisacc(ΔE, T, rng=default_rng())
-    return ΔE <= 0.0 || rand(rng) < exp(-ΔE/T)
+function metropolisacc(ΔE, T; rng=default_rng(), fug=1.0)
+    prob = fug * exp(-ΔE/T)
+    return prob >= 1.0 || rand(rng) <= prob
 end
 
 function sweep_η!(mc::DimerMC, T, rng=default_rng())
@@ -14,7 +15,7 @@ function sweep_η!(mc::DimerMC, T, rng=default_rng())
         new_E = site_energy_eta(mc, pos, new_η)
         ΔE = new_E - old_E
 
-        if metropolisacc(ΔE, T, rng)
+        if metropolisacc(ΔE, T; rng)
             mc.ηs[pos...] = new_η
         end
     end
@@ -32,7 +33,7 @@ function sweep_dimer!(mc::DimerMC, T, rng=default_rng())
             sj = rand(rng, SpinVector)
             old_E = dimer_energy_s(mc, Dimer(pos, posj))
             new_E = pair_energy_s(mc, pos, posj, s, sj)
-            if metropolisacc(new_E - old_E, T, rng)
+            if metropolisacc(new_E - old_E, T; rng, fug=1/mc.fug)
                 addmonomer!(pos, s, mc)
                 addmonomer!(posj, sj, mc)
             end
@@ -42,7 +43,7 @@ function sweep_dimer!(mc::DimerMC, T, rng=default_rng())
             sj = mc.monospins[posj...]
             old_E = pair_energy_s(mc, pos, posj, s, sj)
             new_E = dimer_energy_s(mc, Dimer(pos, posj))
-            if metropolisacc(new_E - old_E, T, rng)
+            if metropolisacc(new_E - old_E, T; rng, fug=mc.fug)
                 delmonomer!(pos, mc)
                 delmonomer!(posj, mc)
                 mc.spins[pos...] = posj
@@ -58,7 +59,7 @@ function sweep_dimer!(mc::DimerMC, T, rng=default_rng())
             posk = mc.spins[posj...]
             old_E = shift_energy_s(mc, Dimer(posj, posk), pos, s)
             new_E = shift_energy_s(mc, Dimer(pos, posj), posk, sk)
-            if metropolisacc(new_E - old_E, T, rng)
+            if metropolisacc(new_E - old_E, T; rng)
                 delmonomer!(pos, mc)
                 addmonomer!(posk, sk, mc)
                 mc.spins[pos...] = posj
@@ -76,7 +77,7 @@ function sweep_monomer!(mc::DimerMC, T, rng=default_rng())
         new_s = rand(rng, SpinVector)
         new_E = site_energy_s(mc, pos, new_s)
 
-        if metropolisacc(new_E - old_E, T, rng)
+        if metropolisacc(new_E - old_E, T; rng)
             mc.monospins[pos...] = new_s
         end
     end
