@@ -11,7 +11,7 @@ jobname = "stripe"
 tm.init_type = :stripe
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
 
-tm.sweeps = 50000
+tm.sweeps = 100000
 tm.thermalization = 50000
 tm.binsize = 250
 Ts = 0.01:0.01:0.2
