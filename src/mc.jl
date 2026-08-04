@@ -9,7 +9,7 @@ struct WignerParams
     J_EMEM::Float64         # η- coupling
 end
 
-function WignerParams(paramfile, e_r, a_M, ϕ=45, d_g=20; H0)
+function WignerParams(paramfile, e_r, a_M, ϕ=45, d_g=20; H0=nothing)
     raw_params = load_object(paramfile)[(ϕ, e_r, d_g, a_M)]
     params = [raw_params[i] for i in 1:8]
     for i in (1, 2, 3, 6, 8)
@@ -23,12 +23,9 @@ function WignerParams(paramfile, e_r, a_M, ϕ=45, d_g=20; H0)
             end
         end
     end
+    H0 = isnothing(H0) ? norm(params) : H0
     norm_params = params ./ H0
     return WignerParams(norm_params...)
-end
-function WignerParams(paramfile, e_r, a_M, ϕ=45, d_g=20)
-    raw_params = load_object(paramfile)[(ϕ, e_r, d_g, a_M)]
-    return WignerParams(paramfile, e_r, a_M, ϕ, d_g, H0=norm(raw_params))
 end
 
 # Default WignerParams values (for testing)
