@@ -28,7 +28,7 @@ include("initializers.jl")
 include("utils.jl")
 include("energy.jl")
 include("common.jl")
-include("metropolis.jl")
+include("sweep.jl")
 
 include("DimerMC/DimerMC.jl")
 include("EtaMC/EtaMC.jl")
