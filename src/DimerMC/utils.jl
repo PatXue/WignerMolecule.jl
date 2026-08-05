@@ -1,3 +1,27 @@
+ismonomer(pos, mc::DimerMC) = mod_equiv(mc.spins[pos...], pos, mc)
+indimer(pos, d::Dimer, mc::DimerMC) = mod_equiv(pos, d.pos, mc) || mod_equiv(pos, d.posj, mc)
+
+# Monomer BitSet handling functions
+function addmonomer!(pos, s, mc::DimerMC)
+    Lx = size(mc.spins, 1)
+    pos = mod1.(pos, size(mc.spins))
+    mc.spins[pos...] = pos
+    mc.monospins[pos...] = s
+    push!(mc.monomers, pos[1] + Lx * pos[2])
+end
+function delmonomer!(pos, mc::DimerMC)
+    Lx = size(mc.spins, 1)
+    pos = mod1.(pos, size(mc.spins))
+    pop!(mc.monomers, pos[1] + Lx * pos[2])
+    mc.monospins[pos...] = SVector(0,0,0)
+end
+
+function randmonomer(mc::DimerMC, rng=default_rng())
+    Lx = size(mc.spins, 1)
+    n = rand(rng, mc.monomers)
+    return SVector(div(n, Lx), n % Lx)
+end
+
 # Perform Fourier transform on MC, updating preallocated ηks matrix
 function update_fourier!(mc::DimerMC)
     Lx, Ly = size(mc.spins)
