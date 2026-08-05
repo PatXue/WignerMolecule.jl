@@ -26,6 +26,7 @@ using .PeriodicArrays
 include("mc.jl")
 include("initializers.jl")
 include("utils.jl")
+include("bond.jl")
 include("energy.jl")
 include("common.jl")
 include("sweep.jl")

@@ -1,5 +1,4 @@
 include("mc.jl")
-include("bond.jl")
 include("utils.jl")
 include("initialization.jl")
 include("energy.jl")
