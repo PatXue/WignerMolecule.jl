@@ -46,20 +46,16 @@ struct WignerMC{AlgType, BiasType} <: AbstractMC
 
     spinks::Array{ComplexF64, 3}    # Fourier transformed spins
     ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
-
-    outdir::String # Output directory for local spin current plots
-    savefreq::Int  # No. of sweeps between saving local spin current
 end
 
 function WignerMC{AlgType, BiasType}(; T=1.0, init_T=1.0, wigparams=default_params,
-    B=0.0, init_B=0.0, bias, Lx=40, Ly=40, outdir=".", savefreq=0) where {AlgType, BiasType}
+    B=0.0, init_B=0.0, bias, Lx=48, Ly=48) where {AlgType, BiasType}
     init_spins = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     return WignerMC{AlgType, BiasType}(
         T, init_T, wigparams, B, init_B, bias, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
-        Array{ComplexF64}(undef, (Lx, Ly, 3)),
-        outdir, savefreq
+        Array{ComplexF64}(undef, (Lx, Ly, 3))
     )
 end
 
@@ -73,9 +69,6 @@ function WignerMC{AlgType, BiasType}(params::AbstractDict) where {AlgType, BiasT
     init_B = get(params, :init_B, B)
     bias = get(params, :bias, nothing)
 
-    outdir = get(params, :outdir, ".")
-    savefreq = get(params, :savefreq, 0)
-
     return WignerMC{AlgType, BiasType}(;
-        T, init_T, wigparams, B, init_B, bias, Lx, Ly, outdir, savefreq)
+        T, init_T, wigparams, B, init_B, bias, Lx, Ly)
 end
