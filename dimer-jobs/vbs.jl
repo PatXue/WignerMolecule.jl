@@ -15,7 +15,7 @@ tm.thermalization = 100000
 tm.binsize = 250
 Ts = 0.01:0.01:0.15
 Ls = [48]
-fugs = [0.05, 0.15, 0.25, 0.5, 1.0]
+fugs = [0.01, 0.05, 0.15, 0.25, 0.5, 1.0]
 for (T, L, fug) in Iterators.product(Ts, Ls, fugs)
     tm.Lx = tm.Ly = L
     tm.T = T
