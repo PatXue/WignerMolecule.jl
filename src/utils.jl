@@ -5,9 +5,9 @@ function update_fourier!(mc::WignerMC)
         mc.spinks[:, :, i] .= getindex.(mc.spins, i)
         mc.ηks[:, :, i] .= getindex.(mc.ηs, i)
     end
-    fft!(mc.spinks, (1, 2))
+    fft!(mc.spinks.array, (1, 2))
     mc.spinks ./= length(mc.spins)
-    fft!(mc.ηks, (1, 2))
+    fft!(mc.ηks.array, (1, 2))
     mc.ηks ./= length(mc.ηs)
     return nothing
 end
