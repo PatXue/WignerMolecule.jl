@@ -64,11 +64,8 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         if mc.corr_rad != 0
             r = mc.corr_rad
             x, y = pos[1], pos[2]
-            scorr = sum(abs2.(mc.spinks[x-r:x+r, y-r:y+r, :]))
-            ηcorr = zeros(ComplexF64, 3, 3)
-            for ηk in eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2))
-                ηcorr += ηk*ηk'
-            end
+            scorr = sum(abs2, mc.spinks[x-r:x+r, y-r:y+r, :])
+            ηcorr = sum(ηk -> ηk*ηk', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
             measure!(ctx, Symbol("sk_corr_near_", f), scorr)
             measure!(ctx, Symbol("ηk_corr_near_", f), ηcorr)
         end
