@@ -49,11 +49,12 @@ struct WignerMC{AlgType, BiasType} <: AbstractMC
     corr_rad::Int                           # Radius around which to sum correlations
 end
 
-function WignerMC{AlgType, BiasType}(; T=1.0, init_T=1.0, wigparams=default_params,
-    B=0.0, init_B=0.0, bias, Lx=48, Ly=48, corr_rad=0) where {AlgType, BiasType}
+function WignerMC(; T=1.0, init_T=1.0, wigparams=default_params, B=0.0, init_B=0.0,
+    bias=nothing, Lx=48, Ly=48, corr_rad=0, algtype=:Metropolis)
+    biastype = typeof(bias)
     init_spins = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
-    return WignerMC{AlgType, BiasType}(
+    return WignerMC{algtype, biastype}(
         T, init_T, wigparams, B, init_B, bias, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
@@ -61,7 +62,8 @@ function WignerMC{AlgType, BiasType}(; T=1.0, init_T=1.0, wigparams=default_para
     )
 end
 
-function WignerMC{AlgType, BiasType}(params::AbstractDict) where {AlgType, BiasType}
+function WignerMC(params::AbstractDict)
+    algtype = get(params, :algtype, :Metropolis)
     Lx, Ly = params[:Lx], params[:Ly]
     T = params[:T]
     init_T = get(params, :init_T, T)
@@ -72,6 +74,5 @@ function WignerMC{AlgType, BiasType}(params::AbstractDict) where {AlgType, BiasT
     init_B = get(params, :init_B, B)
     bias = get(params, :bias, nothing)
 
-    return WignerMC{AlgType, BiasType}(;
-        T, init_T, wigparams, B, init_B, bias, Lx, Ly, corr_rad)
+    return WignerMC(; T, init_T, wigparams, B, init_B, bias, Lx, Ly, corr_rad, algtype)
 end
