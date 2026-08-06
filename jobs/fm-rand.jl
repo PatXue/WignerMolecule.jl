@@ -5,25 +5,22 @@ using Carlo
 using Carlo.JobTools
 using JLD2
 using JSON
-using LinearAlgebra
 using WignerMolecule
 
 tm = TaskMaker()
 jobname = "fm-rand"
 tm.init_type = :rand
 tm.init_T = 1.0
-tm.bias = nothing
+tm.sweeps = 50000
+tm.thermalization = 50000
+tm.binsize = 250
 
-raw_params = load_object("all_params.jld2")[(45, 5, 20, 9)]
-norm_params = raw_params ./ norm(raw_params)
-tm.wigparams = WignerParams(norm_params...)
+tm.wigparams = WignerParams("all_params.jld2", 5, 9)
 Ts = 0.01:0.01:0.2
-Ls = [20, 40, 80]
+Ls = [24, 48]
 for L in Ls
     tm.Lx = tm.Ly = L
-    tm.sweeps = 25000 * div(L, 20)
-    tm.thermalization = 50000 * div(L, 20)
-    tm.binsize = 100 * div(L, 20)
+    tm.corr_rad = div(L, 12)
     for T in Ts
         tm.T = T
         spins_dir = "$jobname.data/$(current_task_name(tm))"
