@@ -1,8 +1,3 @@
-function metropolisacc(ΔE, T; rng=default_rng(), fug=1.0)
-    prob = fug * exp(-ΔE/T)
-    return prob >= 1.0 || rand(rng) <= prob
-end
-
 function sweep_η!(mc::DimerMC, T, rng=default_rng())
     Lx, Ly = size(mc.spins)
 
