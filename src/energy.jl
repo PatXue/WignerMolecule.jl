@@ -1,19 +1,28 @@
+#=
+Helper functions for calculating system energy
+Broken into sections for the η sweeps, s sweeps, and total energy calculations
+
+Functions for η sweeps take ηs as arguments and use the mc's current spin state
+Functions for s sweeps take the spin state as arguments and use mc's η state,
+    they also only calculate the spin-orbit coupling energy
+Functions for total energy are used for measurements, so only use the current mc state
+=#
+
 const ω::ComplexF64 = exp(im * 2π/3)
 
-function bond_energy(mc::WignerMC, s::SpinVector, η::SpinVector,
-                     sj::SpinVector, ηj::SpinVector, ν)
-    # Coupling energies
+## η sweep functions ##
+
+"""
+    ssfactor(mc, η, ηj, ν)
+
+Calculate `s⋅sj` coefficient given `(η, ηj, ν)` in Hamiltonian. `η`s expected to be half-unit vectors.
+"""
+function ssfactor(mc, η, ηj, ν)
     J_SS = mc.params.J_SS
     J_EzEz_SS = mc.params.J_EzEz_SS
-    J_EzEz = mc.params.J_EzEz
     J_EAM_SS = mc.params.J_EAM_SS
     J_EMEP_SS = mc.params.J_EMEP_SS
     J_EMEM_SS = mc.params.J_EMEM_SS
-    J_EMEP = mc.params.J_EMEP
-    J_EMEM = mc.params.J_EMEM
-
-    η /= 2
-    ηj /= 2
 
     # η raising and lowering operators
     η_m = η[1] + 1.0im*η[2]
@@ -21,6 +30,30 @@ function bond_energy(mc::WignerMC, s::SpinVector, η::SpinVector,
     ηj_m = ηj[1] + 1.0im*ηj[2]
 
     E_spin = 0.0 + 0.0im
+    E_spin +=   J_EzEz_SS *     η[3] * ηj[3]
+    E_spin += 2*J_EMEP_SS *     η_m * ηj_p
+    E_spin += 2*J_EMEM_SS * ν * η_m * ηj_m
+    E_spin += J_SS
+    E_spin += 2*J_EAM_SS * (η_m/ν + ηj_p*ν)
+    return real(E_spin)
+end
+
+get_sdot(d::Dimer, mc::WignerMC) = mc.spins[d.pos...] ⋅ mc.spins[d.posj...] / 4
+
+function bond_energy(mc, d::Dimer, η, ηj)
+    # Couplings
+    J_EzEz = mc.params.J_EzEz
+    J_EMEP = mc.params.J_EMEP
+    J_EMEM = mc.params.J_EMEM
+
+    ν = getν(d, mc)
+    sdot = get_sdot(d, mc)
+    # η raising and lowering operators
+    η_m = η[1] + 1.0im*η[2]
+    ηj_p = ηj[1] - 1.0im*ηj[2]
+    ηj_m = ηj[1] + 1.0im*ηj[2]
+
+    E_spin = 0.0
     E_η = 0.0 + 0.0im
 
     # η-only energy
@@ -29,86 +62,71 @@ function bond_energy(mc::WignerMC, s::SpinVector, η::SpinVector,
     E_η += 2*J_EMEM * ν * η_m * ηj_m
 
     # η-S energy
-    E_spin +=   J_EzEz_SS *     η[3] * ηj[3]
-    E_spin += 2*J_EMEP_SS *     η_m * ηj_p
-    E_spin += 2*J_EMEM_SS * ν * η_m * ηj_m
-    E_spin += J_SS
-    E_spin += 2*J_EAM_SS * (η_m/ν + ηj_p*ν)
+    E_spin = sdot * ssfactor(mc, η, ηj, ν)
 
-    return real(E_spin * (s⋅sj)/4 + E_η)
+    return E_spin + real(E_η)
 end
 
-# Calculate the energy at a lattice site (x, y) if it had spin s and
-# pseudospin η, with no bias field
-function energy_nobias(mc::WignerMC, s::SpinVector, η::SpinVector, x, y)
+function site_energy_eta(mc, pos, η)
+    η /= 2
     E = 0.0
-    # Nearest neighbor lattice positions along a1,a2,a3
-    nns = ((x+1, y), (x-1, y+1), (x, y-1))
-    for j in eachindex(nns)
-        ν = ω^(j-1)
-        nn = nns[j]
-        sj = mc.spins[nn...]
-        ηj = mc.ηs[nn...]
-        E += bond_energy(mc, s, η, sj, ηj, ν)
-    end
-
-    # Nearest neighbor lattice positions along -a1,-a2,-a3
-    nns = ((x-1, y), (x+1, y-1), (x, y+1))
-    for j in eachindex(nns)
-        ν = ω^(j-1)
-        nn = nns[j]
-        sj = mc.spins[nn...]
-        ηj = mc.ηs[nn...]
-        E += bond_energy(mc, sj, ηj, s, η, ν)
+    for disp in oriented_disps
+        posj = pos + disp
+        ηj = mc.ηs[posj...] / 2
+        E += bond_energy(mc, Dimer(pos, posj), η, ηj)
+        posj = pos - disp
+        ηj = mc.ηs[posj...] / 2
+        E += bond_energy(mc, Dimer(posj, pos), ηj, η)
     end
     return E
 end
 
-function energy(mc::WignerMC{AlgType, Nothing}, s::SpinVector, η::SpinVector,
-    _, x, y) where {AlgType}
-    return energy_nobias(mc, s, η, x, y)
+## Spin sweep functions ##
+
+"""
+    ssfactor(mc, d::Dimer)
+
+Calculate `s⋅sj` coefficient for a bond given by `d`, which need not be oriented
+"""
+function ssfactor(mc, d::Dimer)
+    d = orientdimer(d, mc)
+    ν = getν(d, mc)
+    η = mc.ηs[d.pos...] / 2
+    ηj = mc.ηs[d.posj...] / 2
+    return ssfactor(mc, η, ηj, ν)
 end
 
-function energy(mc::WignerMC, s::SpinVector, η::SpinVector, B, x, y)
-    return energy_nobias(mc, s, η, x, y) - B * (s ⋅ mc.bias(x, y))
-end
+# Energy from spin-orbit coupling on bond d with given sdot
+bond_energy_s(mc, d::Dimer, sdot) = sdot * ssfactor(mc, d)
 
-function energy(mc::WignerMC, B, x, y)
-    return energy(mc, mc.spins[x,y], mc.ηs[x,y], B, x, y)
-end
-
-# Calculate the energy contribution of a site (x, y), considering only half of
-# its bonds (avoids double counting when calculating total energy)
-function half_energy_nobias(mc::WignerMC, x, y)
-    # Nearest neighbor lattice positions
-    nns = ((x+1, y), (x-1, y+1), (x, y-1))
+function site_energy_s(mc::WignerMC, pos, s)
     E = 0.0
-    s = mc.spins[x, y]
-    η = mc.ηs[x, y]
-    for j in eachindex(nns)
-        ν = ω^(j-1)
-        nn = nns[j]
-        sj = mc.spins[nn...]
-        ηj = mc.ηs[nn...]
-        E += bond_energy(mc, s, η, sj, ηj, ν)
+    for disp in disps
+        posj = pos + disp
+        sdot = s ⋅ mc.spins[posj...] / 4
+        E += bond_energy_s(mc, Dimer(pos, posj), sdot)
     end
     return E
 end
 
-function half_energy(mc::WignerMC{AlgType, Nothing}, _, x, y) where {AlgType}
-    return half_energy_nobias(mc, x, y)
-end
+## Total energy functions ##
 
-function half_energy(mc::WignerMC, B, x, y)
-    return half_energy_nobias(mc, x, y) - B * (mc.spins[x, y] ⋅ mc.bias(x, y))
-end
+bond_energy(mc, d::Dimer) = bond_energy(mc, d, mc.ηs[d.pos...]/2, mc.ηs[d.posj...]/2)
 
-# Calculate the total energy of MC
-function total_energy(mc::WignerMC, B=0.0)
-    tot_energy = 0.0
-    for I in eachindex(mc.spins)
-        x, y = Tuple(I)
-        tot_energy += half_energy(mc, B, x, y)
+# Energy from half the bonds of pos
+function half_energy(mc, pos)
+    E = 0.0
+    for disp in oriented_disps
+        posj = pos .+ disp
+        E += bond_energy(mc, Dimer(pos, posj))
     end
-    return tot_energy
+    return E
+end
+
+function total_energy(mc)
+    E = 0.0
+    for I in eachindex(IndexCartesian(), mc.spins)
+        E += half_energy(mc, Tuple(I))
+    end
+    return E
 end
