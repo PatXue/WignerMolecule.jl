@@ -89,14 +89,8 @@ function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::Ab
         evaluate!(eval, Symbol("χs_", f), (Symbol("sk_", f), Symbol("sk_corr_", f))) do sk, sk2
             N / T * (sk2 - sum(abs2.(sk)))
         end
-        evaluate!(eval, Symbol("χηx_", f), (Symbol("ηk_", f), Symbol("ηk_corr_", f))) do ηk, ηk2
-            N / T * real(ηk2[1,1] - abs2(ηk[1]))
-        end
-        evaluate!(eval, Symbol("χηy_", f), (Symbol("ηk_", f), Symbol("ηk_corr_", f))) do ηk, ηk2
-            N / T * real(ηk2[2,2] - abs2(ηk[2]))
-        end
-        evaluate!(eval, Symbol("χηz_", f), (Symbol("ηk_", f), Symbol("ηk_corr_", f))) do ηk, ηk2
-            N / T * real(ηk2[3,3] - abs2(ηk[3]))
+        evaluate!(eval, Symbol("χη_", f), (Symbol("ηk_", f), Symbol("ηk_corr_", f))) do ηk, ηk2
+            N / T * abs.(ηk2 - ηk*ηk')
         end
     end
 
