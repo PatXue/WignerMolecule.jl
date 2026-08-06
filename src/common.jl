@@ -77,8 +77,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     return nothing
 end
 
-function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::AbstractEvaluator,
-                                   params::AbstractDict) where {AlgType, BiasType}
+function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, params::AbstractDict)
     T = params[:T]
     N = params[:Lx] * params[:Ly]
     evaluate!(eval, :χ, (:Mag, :Mag2)) do mag, mag2
@@ -99,6 +98,10 @@ function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::Ab
     end
 
     return nothing
+end
+function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::AbstractEvaluator,
+                                   params::AbstractDict) where {AlgType, BiasType}
+    Carlo.register_evaluables(WignerMC, eval, params)
 end
 
 function Carlo.write_checkpoint(mc::WignerMC, out::HDF5.Group)
