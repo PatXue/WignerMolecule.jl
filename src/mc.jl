@@ -44,8 +44,8 @@ struct WignerMC{AlgType, BiasType} <: AbstractMC
     spins::PeriodicMatrix{SpinVector}
     ηs::PeriodicMatrix{SpinVector}
 
-    spinks::Array{ComplexF64, 3}    # Fourier transformed spins
-    ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
+    spinks::PeriodicArray{ComplexF64, 3}    # Fourier transformed spins
+    ηks::PeriodicArray{ComplexF64, 3}       # Fourier transformed ηs
 end
 
 function WignerMC{AlgType, BiasType}(; T=1.0, init_T=1.0, wigparams=default_params,
