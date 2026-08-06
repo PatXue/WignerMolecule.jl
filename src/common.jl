@@ -57,14 +57,8 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         pos = f(Lx, Ly)
         s = mc.spinks[pos..., :]
         η = mc.ηks[pos..., :]
-        measure!(ctx, Symbol("sk_", f), s)
-        measure!(ctx, Symbol("ηk_", f), η)
         measure!(ctx, Symbol("sk_corr_", f), norm2(s))
         measure!(ctx, Symbol("ηk_corr_", f), η*η')
-
-        measure!(ctx, Symbol("ηk_corr_", f, "_a1"), abs2(η[1]))
-        measure!(ctx, Symbol("ηk_corr_", f, "_a2"), abs2(-η[1]/2 + η[2]*√3/2))
-        measure!(ctx, Symbol("ηk_corr_", f, "_a3"), abs2(-η[1]/2 - η[2]*√3/2))
     end
 
     if is_save_sweep(mc, ctx)
