@@ -8,7 +8,7 @@ paramtable = Dict(
 )
 function init_dimermc(paramtype, η)
     wigparams = paramtable[paramtype]
-    mc = DimerMC(; T=1.0, init_T=1.0, Q=0.5, wigparams, Lx=2, Ly=2)
+    mc = DimerMC(; T=1.0, init_T=1.0, wigparams, Lx=2, Ly=2, fug=1.0)
     fill!(mc.ηs, η)
     mc.spins[1,2] = [2,1]
     mc.spins[2,1] = [1,2]
