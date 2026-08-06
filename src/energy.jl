@@ -109,18 +109,32 @@ function site_energy_s(mc::WignerMC, pos, s)
     return E
 end
 
+function site_energy_s(mc::WignerMC{AlgType, Nothing}, pos, s, _) where AlgType
+    return site_energy_s(mc, pos, s)
+end
+function site_energy_s(mc::WignerMC, pos, s, B)
+    return site_energy_s(mc, pos, s) - B * mc.bias(pos...) ⋅ s
+end
+
 ## Total energy functions ##
 
 bond_energy(mc, d::Dimer) = bond_energy(mc, d, mc.ηs[d.pos...]/2, mc.ηs[d.posj...]/2)
 
 # Energy from half the bonds of pos
-function half_energy(mc, pos)
+function half_energy_nobias(mc, pos)
     E = 0.0
     for disp in oriented_disps
         posj = pos .+ disp
         E += bond_energy(mc, Dimer(pos, posj))
     end
-    return E
+    return E - mc.B * mc.bias(pos...) ⋅ mc.spins[pos...]
+end
+half_energy(mc, pos) = half_energy_nobias(mc, pos)
+function half_energy(mc::WignerMC{AlgType, Nothing}, pos) where AlgType
+    half_energy_nobias(mc, pos)
+end
+function half_energy(mc::WignerMC, pos)
+    return half_energy_nobias(mc, pos) - mc.B * mc.bias(pos...) ⋅ mc.spins[pos...]
 end
 
 function total_energy(mc)
