@@ -35,7 +35,10 @@ end
         @test wm.pair_energy_s(mc, [1,1], [2,2], s, s) == siteE / 2
         @test wm.half_energy(mc, [1,1]) == siteE / 2
         @test wm.half_energy(mc, [1,2]) == dimerE
+
+        # Unintended, should be 0, pos wraps back to its partner, but can only happen on 2 by y or x by 2 grids
         @test wm.half_energy(mc, [2,1]) == dimerE
+
         @test wm.half_energy(mc, [2,2]) == siteE / 2
         @test total_energy(mc) == 2*dimerE + siteE
     end
