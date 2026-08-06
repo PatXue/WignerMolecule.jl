@@ -127,7 +127,7 @@ function half_energy_nobias(mc, pos)
         posj = pos .+ disp
         E += bond_energy(mc, Dimer(pos, posj))
     end
-    return E - mc.B * mc.bias(pos...) ⋅ mc.spins[pos...]
+    return E
 end
 half_energy(mc, pos) = half_energy_nobias(mc, pos)
 function half_energy(mc::WignerMC{AlgType, Nothing}, pos) where AlgType
