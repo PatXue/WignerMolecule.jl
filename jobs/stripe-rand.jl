@@ -20,11 +20,12 @@ norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
 Ls = [24, 48]
 Ts = 0.01:0.01:0.15
+tm.sweeps = 50000
+tm.thermalization = 75000
+tm.binsize = 500
 for L in Ls
     tm.Lx = tm.Ly = L
-    tm.sweeps = 50000 * div(L, 24)
-    tm.thermalization = 75000 * div(L, 24)
-    tm.binsize = 500 * div(L, 24)
+    tm.corr_rad = div(L, 12)
     for T in Ts
         tm.T = T
         spins_dir = "$jobname.data/$(current_task_name(tm))"
