@@ -90,10 +90,11 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
             N / T * abs.(ηk2 - ηk*ηk')
         end
         if f in (M, part_K, half_M)
-            corrnames = [Symbol("sk_corr_", f), Symbol("sk_corr_", f, "2"), Symbol("sk_corr_", f, "3")]
+            corrnames = (Symbol("sk_corr_", f), Symbol("sk_corr_", f, "2"), Symbol("sk_corr_", f, "3"))
             evaluate!(eval, Symbol("sk_corr_", f, "_c3"), corrnames) do sk1, sk2, sk3
                 sk1 + sk2 + sk3
             end
+            corrnames = (Symbol("ηk_corr_", f), Symbol("ηk_corr_", f, "2"), Symbol("ηk_corr_", f, "3"))
             evaluate!(eval, Symbol("ηk_corr_", f, "_c3"), corrnames) do ηk1, ηk2, ηk3
                 ηk1 + C3' * ηk2 * C3 + C3 * ηk3 * C3'
             end
