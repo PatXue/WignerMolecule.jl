@@ -108,12 +108,33 @@ function site_energy_s(mc::WignerMC, pos, s)
     end
     return E
 end
-
 function site_energy_s(mc::WignerMC{AlgType, Nothing}, pos, s, _) where AlgType
     return site_energy_s(mc, pos, s)
 end
 function site_energy_s(mc::WignerMC, pos, s, B)
     return site_energy_s(mc, pos, s) - B * mc.bias(pos...) ⋅ s
+end
+
+"""
+    bond_field_s(mc::WignerMC, pos, posj)
+
+Calculate spin field on `pos` due to `posj`
+"""
+bond_field_s(mc::WignerMC, pos, posj) = ssfactor(mc, Dimer(pos, posj)) * mc.spins[posj...] / 2
+
+function site_field_s(mc::WignerMC, pos)
+    B = [0,0,0]
+    for disp in disps
+        posj = pos + disp
+        B += bond_field_s(mc, pos, posj)
+    end
+    return B
+end
+function site_field_s(mc::WignerMC{AlgType, Nothing}, pos, _) where AlgType
+    return site_field_s(mc, pos)
+end
+function site_field_s(mc::WignerMC, pos, B)
+    return site_field_s(mc, pos) - B * mc.bias(pos...)
 end
 
 ## Total energy functions ##
