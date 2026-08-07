@@ -11,7 +11,7 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "stripe-high-t"
 tm.init_type = :stripe
-tm.bias = nothing
+tm.algtype = :Heatbath
 
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
@@ -30,7 +30,7 @@ for (β,L) in Iterators.product(βs, Ls)
     task(tm)
 end
 
-job = JobInfo("$jobname", WignerMC{:Metropolis, Nothing};
+job = JobInfo("$jobname", WignerMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
