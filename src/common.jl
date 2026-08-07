@@ -81,12 +81,22 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
         return N / T * (mag2 - mag^2)
     end
 
+    C3 = [-1/2 -√3/2 0; √3/2 1/2 0; 0 0 1]
     for f in corr_posns
         evaluate!(eval, Symbol("χs_", f), (Symbol("sk_", f), Symbol("sk_corr_", f))) do sk, sk2
             N / T * (sk2 - sum(abs2.(sk)))
         end
         evaluate!(eval, Symbol("χη_", f), (Symbol("ηk_", f), Symbol("ηk_corr_", f))) do ηk, ηk2
             N / T * abs.(ηk2 - ηk*ηk')
+        end
+        if f in (M, part_K, half_M)
+            corrnames = [Symbol("sk_corr_", f), Symbol("sk_corr_", f, "2"), Symbol("sk_corr_", f, "3")]
+            evaluate!(eval, Symbol("sk_corr_", f, "_c3"), corrnames) do sk1, sk2, sk3
+                sk1 + sk2 + sk3
+            end
+            evaluate!(eval, Symbol("ηk_corr_", f, "_c3"), corrnames) do ηk1, ηk2, ηk3
+                ηk1 + C3' * ηk2 + C3 * ηk3
+            end
         end
     end
 
