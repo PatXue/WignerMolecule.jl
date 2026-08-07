@@ -32,7 +32,8 @@ function calc_temp(mc, ctx::Carlo.MCContext)
     if is_thermalized(ctx)
         return mc.T
     else
-        return mc.init_T + (mc.T - mc.init_T) * ctx.sweeps/ctx.thermalization_sweeps
+        ΔT = (mc.T - mc.init_T) * ctx.sweeps/ctx.thermalization_sweeps * 2
+        return mc.init_T + sign(ΔT) * min(abs(ΔT), abs(mc.T - mc.init_T))
     end
 end
 # Calculate bias field during thermalization
