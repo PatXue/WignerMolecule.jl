@@ -148,7 +148,7 @@ function half_energy_nobias(mc, pos)
 end
 half_energy(mc, pos) = half_energy_nobias(mc, pos)
 function half_energy(mc::WignerMC, pos)
-    half_energy_nobias(mc, pos) - biasfield(mc, pos, mc.B) ⋅ mc.spins[pos...]
+    half_energy_nobias(mc, pos) - biasfield(mc, pos, mc.B) ⋅ mc.spins[pos...] / 2
 end
 
 function total_energy(mc)
