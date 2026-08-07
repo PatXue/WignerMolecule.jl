@@ -83,6 +83,11 @@ end
 
 ## Spin sweep functions ##
 
+function biasfield(_::WignerMC{AlgType, Nothing}, _, _) where AlgType
+    return [0,0,0]
+end
+biasfield(mc::WignerMC, pos, B) = B * mc.bias(pos...)
+
 """
     ssfactor(mc, d::Dimer)
 
@@ -99,20 +104,14 @@ end
 # Energy from spin-orbit coupling on bond d with given sdot
 bond_energy_s(mc, d::Dimer, sdot) = sdot * ssfactor(mc, d)
 
-function site_energy_s(mc::WignerMC, pos, s)
+function site_energy_s(mc::WignerMC, pos, s, B)
     E = 0.0
     for disp in disps
         posj = pos + disp
         sdot = s ⋅ mc.spins[posj...] / 4
         E += bond_energy_s(mc, Dimer(pos, posj), sdot)
     end
-    return E
-end
-function site_energy_s(mc::WignerMC{AlgType, Nothing}, pos, s, _) where AlgType
-    return site_energy_s(mc, pos, s)
-end
-function site_energy_s(mc::WignerMC, pos, s, B)
-    return site_energy_s(mc, pos, s) - B * mc.bias(pos...) ⋅ s
+    return E - biasfield(mc, pos, B) ⋅ s
 end
 
 """
@@ -130,11 +129,8 @@ function site_field_s(mc::WignerMC, pos)
     end
     return B
 end
-function site_field_s(mc::WignerMC{AlgType, Nothing}, pos, _) where AlgType
-    return site_field_s(mc, pos)
-end
 function site_field_s(mc::WignerMC, pos, B)
-    return site_field_s(mc, pos) - B * mc.bias(pos...)
+    return site_field_s(mc, pos) - biasfield(mc, pos, B)
 end
 
 ## Total energy functions ##
@@ -151,11 +147,8 @@ function half_energy_nobias(mc, pos)
     return E
 end
 half_energy(mc, pos) = half_energy_nobias(mc, pos)
-function half_energy(mc::WignerMC{AlgType, Nothing}, pos) where AlgType
-    half_energy_nobias(mc, pos)
-end
 function half_energy(mc::WignerMC, pos)
-    return half_energy_nobias(mc, pos) - mc.B * mc.bias(pos...) ⋅ mc.spins[pos...]
+    half_energy_nobias(mc, pos) - biasfield(mc, pos, mc.B) ⋅ mc.spins[pos...]
 end
 
 function total_energy(mc)
