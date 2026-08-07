@@ -14,12 +14,12 @@ tm.sweeps = 20000
 tm.thermalization = 20000
 tm.binsize = 200
 tm.init_type = :const
-tm.bias = nothing
+tm.algtype = :Heatbath
 
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 9)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
-βs = Iterators.flatten((0.25:0.25:0.75, 1:2:20))
+βs = Iterators.flatten((0.25:0.5:0.75, 1:2:20))
 Ls = [8]
 for L in Ls
     tm.Lx = tm.Ly = L
@@ -32,7 +32,7 @@ for L in Ls
     end
 end
 
-job = JobInfo("$jobname", WignerMC{:Metropolis, Nothing};
+job = JobInfo("$jobname", WignerMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
