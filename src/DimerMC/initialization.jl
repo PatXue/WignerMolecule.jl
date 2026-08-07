@@ -30,16 +30,15 @@ end
 
 function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
     init_type = get(params, :init_type, :vbs)
+    allmonomers = true
     empty!(mc.monomers)
     if init_type == :vbs
         init_vbs_s!(mc)
         init_vbs_eta!(mc)
+        allmonomers = false
     elseif init_type == :rand
         rand!(ctx.rng, mc.monospins)
         rand!(ctx.rng, mc.ηs)
-        for I in eachindex(mc.spins)
-            addmonomer!(convert(SVector, I), mc.monospins[I], mc)
-        end
     elseif init_type == :fm
         for I in eachindex(mc.spins)
             addmonomer!(convert(SVector, I), SVector(0,0,1), mc)
@@ -47,6 +46,13 @@ function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
         end
     elseif init_type == :stripe
         init_stripe!(mc.monospins, mc.ηs)
+    elseif init_type == :afm_fe
+        init_afm_fe!(mc.monospins, mc.ηs)
+    elseif init_type == :afm_afe
+        init_afm_afe!(mc.monospins, mc.ηs)
+    end
+
+    if allmonomers
         for I in eachindex(mc.spins)
             addmonomer!(convert(SVector, I), mc.monospins[I], mc)
         end
