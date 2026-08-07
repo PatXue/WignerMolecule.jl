@@ -34,7 +34,7 @@ function heatbath_spin(Bvec, T; rng)
     return s
 end
 
-function flip_eta!(mc::WignerMC{:Metropolis}, T, rng)
+function flip_eta!(mc::WignerMC, T, rng)
     Lx, Ly = size(mc.ηs)
     pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
 
@@ -48,7 +48,7 @@ function flip_eta!(mc::WignerMC{:Metropolis}, T, rng)
     end
 end
 
-function flip_spin!(mc::WignerMC{:Metropolis}, T, B, rng)
+function flip_spin!(mc::WignerMC, T, B, rng)
     Lx, Ly = size(mc.ηs)
     pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
 
@@ -60,6 +60,12 @@ function flip_spin!(mc::WignerMC{:Metropolis}, T, B, rng)
     if metropolisacc(ΔE, T; rng)
         mc.spins[pos...] = new_s
     end
+end
+
+function flip_spin!(mc::WignerMC{:Heatbath}, T, B, rng)
+    Lx, Ly = size(mc.ηs)
+    pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+    mc.spins[pos...] = heatbath_spin(site_field_s(mc, pos, B), T; rng)
 end
 
 function Carlo.sweep!(mc, ctx::Carlo.MCContext)
