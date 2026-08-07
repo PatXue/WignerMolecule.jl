@@ -95,7 +95,7 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
                 sk1 + sk2 + sk3
             end
             evaluate!(eval, Symbol("ηk_corr_", f, "_c3"), corrnames) do ηk1, ηk2, ηk3
-                ηk1 + C3' * ηk2 + C3 * ηk3
+                ηk1 + C3' * ηk2 * C3 + C3 * ηk3 * C3'
             end
         end
     end
