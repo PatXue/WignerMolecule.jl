@@ -1,18 +1,8 @@
 function sweep_η!(mc::DimerMC, T, rng=default_rng())
-    Lx, Ly = size(mc.spins)
-
-    for _ in 1:length(mc.spins)
-        # Select site for spin change
+    Lx, Ly = size(mc.ηs)
+    for _ in 1:length(mc.ηs)
         pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
-
-        old_E = site_energy_eta(mc, pos, mc.ηs[pos...])
-        new_η = rand(rng, SpinVector)
-        new_E = site_energy_eta(mc, pos, new_η)
-        ΔE = new_E - old_E
-
-        if metropolisacc(ΔE, T; rng)
-            mc.ηs[pos...] = new_η
-        end
+        mc.ηs[pos...] = heatbath_spin(site_field_eta(mc, pos), T; rng)
     end
 end
 
