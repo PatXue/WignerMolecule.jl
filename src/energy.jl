@@ -81,6 +81,53 @@ function site_energy_eta(mc, pos, η)
     return E
 end
 
+function bond_field_eta(mc, d::Dimer)
+    J_EzEz_SS = mc.params.J_EzEz_SS
+    J_EAM_SS = mc.params.J_EAM_SS
+    J_EMEP_SS = mc.params.J_EMEP_SS
+    J_EMEM_SS = mc.params.J_EMEM_SS
+    J_EzEz = mc.params.J_EzEz
+    J_EMEP = mc.params.J_EMEP
+    J_EMEM = mc.params.J_EMEM
+
+    # For the site the field is calculated at (d.pos) use dummy vectors (as though η=(1,1,1)).
+    # For misoriented d, swap η and ηj, so that energy formula is correct.
+    # To avoid type instability, in both cases variables have the same type (may not be important)
+    if isoriented(d, mc)
+        η_z = SVector(0.0,0,1)
+        η_m = SVector(1.0,im,0)
+        η_p = SVector(1.0,-im,0)
+        ηj = mc.ηs[d.posj...] / 2
+        ηj_z = SVector(0.0,0,ηj[3])
+        ηj_p = SVector(ηj[1] - 1.0im*ηj[2], ηj[1] - 1.0im*ηj[2], 0)
+        ηj_m = conj.(ηj_p)
+    else
+        ηj_z = SVector(0.0,0,1)
+        ηj_m = SVector(1.0,im,0)
+        ηj_p = SVector(1.0,-im,0)
+        η = mc.ηs[d.posj...] / 2
+        η_z = SVector(0.0,0,η[3])
+        η_p = SVector(η[1] - 1.0im*η[2], η[1] - 1.0im*η[2], 0)
+        η_m = conj.(η_p)
+    end
+    ν = getν(orientdimer(d, mc), mc)
+    sdot = get_sdot(d, mc)
+
+    B = zeros(ComplexF64, 3)
+    B_spin = zeros(ComplexF64, 3)
+
+    # η-only energy
+    B += J_EzEz   *     η_z .* ηj_z
+    B += 2*J_EMEP *     η_m .* ηj_p
+    B += 2*J_EMEM * ν * η_m .* ηj_m
+
+    B_spin += J_EzEz_SS   *     η_z .* ηj_z
+    B_spin += 2*J_EMEP_SS *     η_m .* ηj_p
+    B_spin += 2*J_EMEM_SS * ν * η_m .* ηj_m
+    B_spin += 2*J_EAM_SS  * (isoriented(d, mc) ? η_m/ν : ηj_p*ν)
+    return real.(B + B_spin * sdot)
+end
+
 ## Spin sweep functions ##
 
 function biasfield(_::WignerMC{AlgType, Nothing}, _, _) where AlgType
