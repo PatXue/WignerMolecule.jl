@@ -15,10 +15,12 @@ tm.sweeps = 50000
 tm.thermalization = 100000
 tm.binsize = 500
 Ts = 0.02:0.02:0.2
-Ls = [24, 48]
-for (T, L) in Iterators.product(Ts, Ls)
+Ls = [48]
+fugs = [0.01, 0.05, 0.15, 0.25, 0.5, 0.75]
+for (T, L, fug) in Iterators.product(Ts, Ls, fugs)
     tm.Lx = tm.Ly = L
     tm.T = T
+    tm.fug = fug
     task(tm)
 end
 
