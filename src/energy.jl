@@ -128,6 +128,15 @@ function bond_field_eta(mc, d::Dimer)
     return real.(B + B_spin * sdot)
 end
 
+function site_field_eta(mc, pos)
+    B = zeros(3)
+    for disp in disps
+        posj = pos .+ disp
+        B += bond_field_eta(mc, Dimer(pos, posj))
+    end
+    return B
+end
+
 ## Spin sweep functions ##
 
 function biasfield(_::WignerMC{AlgType, Nothing}, _, _) where AlgType

@@ -48,6 +48,12 @@ function flip_eta!(mc::WignerMC, T, rng)
     end
 end
 
+function flip_eta!(mc::WignerMC{:Heatbath}, T, rng)
+    Lx, Ly = size(mc.ηs)
+    pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+    mc.ηs[pos...] = heatbath_spin(site_field_eta(mc, pos), T; rng)
+end
+
 function flip_spin!(mc::WignerMC, T, B, rng)
     Lx, Ly = size(mc.ηs)
     pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
@@ -63,7 +69,7 @@ function flip_spin!(mc::WignerMC, T, B, rng)
 end
 
 function flip_spin!(mc::WignerMC{:Heatbath}, T, B, rng)
-    Lx, Ly = size(mc.ηs)
+    Lx, Ly = size(mc.spins)
     pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
     mc.spins[pos...] = heatbath_spin(site_field_s(mc, pos, B), T; rng)
 end
