@@ -9,15 +9,15 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "am6"
-tm.bias = nothing
-tm.sweeps = 100000
-tm.thermalization = 100000
-tm.binsize = 1000
+tm.algtype = :Heatbath
+tm.sweeps = 50000
+tm.thermalization = 50000
+tm.binsize = 500
 
 inits = [:stripe, :afm_afe]
 Ls = [48]
 ers = 5:11
-Ts = 0.3:0.3:4.5
+Ts = 0.2:0.2:3.0
 for (T, er, L, init) in Iterators.product(Ts, ers, Ls, inits)
     tm.init_type = init
     tm.Lx = tm.Ly = L
@@ -27,7 +27,7 @@ for (T, er, L, init) in Iterators.product(Ts, ers, Ls, inits)
     task(tm)
 end
 
-job = JobInfo("$jobname", WignerMC{:Metropolis, Nothing};
+job = JobInfo("$jobname", WignerMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
