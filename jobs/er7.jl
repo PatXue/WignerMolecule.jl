@@ -10,7 +10,7 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "er7"
 tm.algtype = :Heatbath
-tm.sweeps = 100000
+tm.sweeps = 200000
 tm.thermalization = 100000
 tm.binsize = 1000
 
