@@ -37,13 +37,9 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     mag = norm(mag_v)
     measure!(ctx, :Mag, mag)
     measure!(ctx, :Mag2, mag^2)
-    measure!(ctx, :Magx, mag_v[1])
-    measure!(ctx, :Magy, mag_v[2])
-    measure!(ctx, :Magz, mag_v[3])
+    measure!(ctx, :Mag4, mag^4)
 
     η = sum(mc.ηs) ./ N
-    measure!(ctx, :ηx, η[1])
-    measure!(ctx, :ηy, η[2])
     measure!(ctx, :ηz, abs(η[3]))
     measure!(ctx, :ηxy, sqrt(η[1]^2 + η[2]^2))
 
@@ -79,6 +75,9 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
     N = params[:Lx] * params[:Ly]
     evaluate!(eval, :χ, (:Mag, :Mag2)) do mag, mag2
         return N / T * (mag2 - mag^2)
+    end
+    evaluate!(eval, :BinderRatio, (:Mag2, :Mag4)) do mag2, mag4
+        1 - (mag4/3/mag2^2)
     end
 
     C3 = [-1/2 -√3/2 0; √3/2 1/2 0; 0 0 1]
