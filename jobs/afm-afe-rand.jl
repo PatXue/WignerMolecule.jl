@@ -10,28 +10,24 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "afm-afe-rand"
+tm.algtype = :Heatbath
 tm.init_type = :rand
 tm.init_T = 0.5
-tm.bias = nothing
-bias_type = Nothing
 
-raw_params = load_object("all_params.jld2")[(45, 11, 20, 7)]
-norm_params = raw_params ./ norm(raw_params)
-tm.wigparams = WignerParams(norm_params...)
+tm.wigparams = WignerParams("all_params.jld2", 11, 7)
 Ts = 0.0025:0.0025:0.05
-Ls = [24, 48]
-for L in Ls
+Ls = [24, 48, 96]
+tm.sweeps = 100000
+tm.thermalization = 100000
+tm.binsize = 1000
+for (T, L) in Iterators.product(Ts, Ls)
     tm.Lx = tm.Ly = L
-    tm.sweeps = 50000 * div(L, 24)
-    tm.thermalization = tm.sweeps
-    tm.binsize = div(tm.sweeps, 100)
-    for T in Ts
-        tm.T = T
-        task(tm)
-    end
+    tm.corr_rad = div(L, 12)
+    tm.T = T
+    task(tm)
 end
 
-job = JobInfo("$jobname", WignerMC{:Metropolis, bias_type};
+job = JobInfo("$jobname", WignerMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
