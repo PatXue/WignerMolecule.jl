@@ -42,6 +42,8 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     η = sum(mc.ηs) ./ N
     measure!(ctx, :ηz, abs(η[3]))
     measure!(ctx, :ηxy, sqrt(η[1]^2 + η[2]^2))
+    measure!(ctx, :Eta2, sum(abs2.(η)))
+    measure!(ctx, :Eta4, sum(abs2.(η))^2)
 
     # Energy per lattice site
     E = total_energy(mc) / N
@@ -77,6 +79,9 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
         return N / T * (mag2 - mag^2)
     end
     evaluate!(eval, :BinderRatio, (:Mag2, :Mag4)) do mag2, mag4
+        1 - (mag4/3/mag2^2)
+    end
+    evaluate!(eval, :EtaBinderRatio, (:Eta2, :Eta4)) do mag2, mag4
         1 - (mag4/3/mag2^2)
     end
 
