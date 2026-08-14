@@ -26,14 +26,16 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
     mc.ηks .= abs2.(mc.ηks)
     ifft!(mc.sks, (1,2))
     ifft!(mc.ηks, (1,2))
-    sr_corrs = zeros(div(Lx, 2))
-    ηr_corrs = zeros(div(Lx, 2))
+    sr_corrs = zeros(div(Lx,2), 4)
+    ηr_corrs = zeros(div(Lx,2), 3)
     for a in disps
-        sr_corrs += [mc.sks[mod1.([1,1] + i*a, (Lx, Ly))...] for i in 0:(div(Lx,2)-1)]
-        ηr_corrs += [mc.ηks[mod1.([1,1] + i*a, (Lx, Ly))...] for i in 0:(div(Lx,2)-1)]
+        for i in 0:(div(Lx,2)-1)
+            sr_corrs[i+1,:] .+= real.(mc.sks[mod1.([1,1] + i*a, (Lx, Ly))..., :])
+            ηr_corrs[i+1,:] .+= real.(mc.ηks[mod1.([1,1] + i*a, (Lx, Ly))..., :])
+        end
     end
-    sr_corrs /= 6
-    ηr_corrs /= 6
+    sr_corrs ./= 6
+    ηr_corrs ./= 6
     measure!(ctx, :sr_corrs, sr_corrs)
     measure!(ctx, :ηr_corrs, ηr_corrs)
 
