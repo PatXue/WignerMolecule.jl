@@ -3,8 +3,6 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
     N = Lx * Ly
 
     η = sum(mc.ηs) ./ N
-    measure!(ctx, :ηx, η[1])
-    measure!(ctx, :ηy, η[2])
     measure!(ctx, :ηz, abs(η[3]))
     measure!(ctx, :ηxy, sqrt(η[1]^2 + η[2]^2))
 
@@ -23,6 +21,22 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
         measure!(ctx, Symbol("ηk_", f), η)
         measure!(ctx, Symbol("ηk_corr_", f), η*η')
     end
+
+    mc.sks .= abs2.(mc.sks)
+    mc.ηks .= abs2.(mc.ηks)
+    ifft!(mc.sks, (1,2))
+    ifft!(mc.ηks, (1,2))
+    sr_corrs = zeros(div(Lx, 2))
+    ηr_corrs = zeros(div(Lx, 2))
+    for a in disps
+        sr_corrs += [mc.sks[mod1.([1,1] + i*a, (Lx, Ly))...] for i in 0:(div(Lx,2)-1)]
+        ηr_corrs += [mc.ηks[mod1.([1,1] + i*a, (Lx, Ly))...] for i in 0:(div(Lx,2)-1)]
+    end
+    sr_corrs /= 6
+    ηr_corrs /= 6
+    measure!(ctx, :sr_corrs, sr_corrs)
+    measure!(ctx, :ηr_corrs, ηr_corrs)
+
     return nothing
 end
 
