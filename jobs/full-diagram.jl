@@ -17,7 +17,7 @@ tm.thermalization = 100000
 tm.binsize = 1000
 
 Ls = [48]
-Ts = [0.5, 0.75, 2.0]
+Ts = [0.5, 0.75, 2.0, 4.0]
 ams = 4:11
 ers = 5:11
 for (am, er, T, L) in Iterators.product(ams, ers, Ts, Ls)
