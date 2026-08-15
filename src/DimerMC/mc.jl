@@ -9,8 +9,8 @@ mutable struct DimerMC{AlgType} <: AbstractMC
     ηs::PeriodicMatrix{SpinVector}
     monomers::BitSet
 
-    sks::Array{ComplexF64, 3}
-    ηks::Array{ComplexF64, 3}       # Fourier transformed ηs
+    sks::PeriodicArray{ComplexF64, 3}
+    ηks::PeriodicArray{ComplexF64, 3}       # Fourier transformed ηs
     corr_rad::Int                   # Radius around which to sum correlations
 
     outdir::String # Output directory for spin plots
