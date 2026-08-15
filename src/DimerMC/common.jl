@@ -20,6 +20,14 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
         measure!(ctx, Symbol("sk_corr_", f), abs2.(s))
         measure!(ctx, Symbol("ηk_", f), η)
         measure!(ctx, Symbol("ηk_corr_", f), η*η')
+        if mc.corr_rad != 0
+            r = mc.corr_rad
+            x, y = pos[1], pos[2]
+            scorr = sum(sk -> abs2.(sk), mc.sks[x-r:x+r, y-r:y+r, :])
+            ηcorr = sum(ηk -> ηk*ηk', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+            measure!(ctx, Symbol("sk_corr_near_", f), scorr)
+            measure!(ctx, Symbol("ηk_corr_near_", f), ηcorr)
+        end
     end
 
     mc.sks .= abs2.(mc.sks)
