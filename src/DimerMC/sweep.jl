@@ -69,9 +69,16 @@ function sweep_monomer!(mc::DimerMC, T, rng=default_rng())
 end
 
 function Carlo.sweep!(mc::DimerMC, ctx::Carlo.MCContext)
-    if !mc.etaonly
-        sweep_dimer!(mc, calc_temp(mc, ctx), ctx.rng)
-        sweep_monomer!(mc, calc_temp(mc, ctx), ctx.rng)
-    end
+    sweep_dimer!(mc, calc_temp(mc, ctx), ctx.rng)
+    sweep_monomer!(mc, calc_temp(mc, ctx), ctx.rng)
+    sweep_η!(mc, calc_temp(mc, ctx), ctx.rng)
+end
+
+function Carlo.sweep!(mc::DimerMC{:SpinOnly}, ctx::Carlo.MCContext)
+    sweep_dimer!(mc, calc_temp(mc, ctx), ctx.rng)
+    sweep_monomer!(mc, calc_temp(mc, ctx), ctx.rng)
+end
+
+function Carlo.sweep!(mc::DimerMC{:HeatbathEta}, ctx::Carlo.MCContext)
     sweep_η!(mc, calc_temp(mc, ctx), ctx.rng)
 end

@@ -29,7 +29,7 @@ end
 
 # Calculate temperature during thermalization
 function calc_temp(mc, ctx::Carlo.MCContext)
-    if is_thermalized(ctx)
+    if is_thermalized(ctx) || mc.T == mc.init_T
         return mc.T
     else
         ΔT = (mc.T - mc.init_T) * ctx.sweeps/ctx.thermalization_sweeps * 2

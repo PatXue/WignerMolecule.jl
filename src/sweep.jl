@@ -10,7 +10,7 @@ Given the local field Bvec on a site, sample a spin from the local Boltzmann dis
 """
 function heatbath_spin(Bvec, T; rng)
     B = norm(Bvec)
-    if isapprox(B, 0.0, atol=1e-5)
+    if isapprox(B/T, 0.0, atol=1e-5)
         return rand(rng, SpinVector)
     end
 
