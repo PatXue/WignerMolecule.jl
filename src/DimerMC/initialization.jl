@@ -36,6 +36,12 @@ function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
         init_vbs_s!(mc)
         init_vbs_eta!(mc)
         allmonomers = false
+    elseif init_type == :vbs_spin
+        init_vbs_s!(mc)
+        allmonomers = false
+    elseif init_type == :vbs_eta
+        rand!(ctx.rng, mc.monospins)
+        init_vbs_eta!(mc)
     elseif init_type == :rand
         rand!(ctx.rng, mc.monospins)
         rand!(ctx.rng, mc.ηs)
