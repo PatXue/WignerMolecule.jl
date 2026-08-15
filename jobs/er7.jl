@@ -10,13 +10,13 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "er7"
 tm.algtype = :Heatbath
-tm.sweeps = 200000
-tm.thermalization = 100000
+tm.sweeps = 100000
+tm.thermalization = 200000
 tm.binsize = 1000
 
 inits = [:stripe, :afm_fe, :afm_afe]
 Ls = [48]
-Ts = [0.5, 1.0, 2.0]
+Ts = [0.5, 0.75, 1.0, 2.0]
 ams = 4:11
 for (am, T, L, init) in Iterators.product(ams, Ts, Ls, inits)
     tm.init_type = init
