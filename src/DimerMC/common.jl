@@ -32,8 +32,8 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
 
     mc.sks .= abs2.(mc.sks)
     mc.ηks .= abs2.(mc.ηks)
-    ifft!(mc.sks, (1,2))
-    ifft!(mc.ηks, (1,2))
+    ifft!(mc.sks.array, (1,2))
+    ifft!(mc.ηks.array, (1,2))
     sr_corrs = zeros(div(Lx,2), 4)
     ηr_corrs = zeros(div(Lx,2), 3)
     for a in disps

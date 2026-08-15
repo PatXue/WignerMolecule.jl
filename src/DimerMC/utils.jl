@@ -30,13 +30,13 @@ function update_fourier!(mc::DimerMC)
         mc.sks[x,y,1:3] .= [mod_equiv(disp, oriented_disps[i], mc) for i in 1:3]
         mc.sks[x,y,4] = mod_equiv(disp, [0,0], mc)
     end
-    fft!(mc.sks, (1, 2))
+    fft!(mc.sks.array, (1, 2))
     mc.sks ./= length(mc.spins)
 
     for i in 1:3
         mc.ηks[:, :, i] .= getindex.(mc.ηs, i)
     end
-    fft!(mc.ηks, (1, 2))
+    fft!(mc.ηks.array, (1, 2))
     mc.ηks ./= length(mc.ηs)
     return nothing
 end
