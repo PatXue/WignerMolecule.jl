@@ -48,25 +48,23 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     measure!(ctx, :Energy2, E^2)
 
     update_fourier!(mc)
-    for f in corr_posns
-        pos = f(Lx, Ly)
-        s = mc.spinks[pos..., :]
-        η = mc.ηks[pos..., :]
+    for f in (Γ, M, half_M, part_K)
+        pos = convert(SVector{2,Int}, f(Lx, Ly))
+        s = getc3fourier(mc.spinks, pos)
+        eta = getc3fourier(mc.ηks, pos)
         measure!(ctx, Symbol("sk_", f), s)
-        measure!(ctx, Symbol("ηk_", f), η)
         measure!(ctx, Symbol("sk_corr_", f), norm2(s))
-        measure!(ctx, Symbol("ηk_corr_", f), η*η')
         measure!(ctx, Symbol("sk_quar_", f), norm2(s)^2)
-        measure!(ctx, Symbol("ηk_quar_", f), abs2.(η*η'))
+        measure!(ctx, Symbol("etak_", f), eta)
+        measure!(ctx, Symbol("etak_corr_", f), eta * eta')
         if mc.corr_rad != 0
-            r = mc.corr_rad
-            x, y = pos[1], pos[2]
-            scorr = sum(abs2, mc.spinks[x-r:x+r, y-r:y+r, :])
-            ηcorr = sum(ηk -> ηk*ηk', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
-            measure!(ctx, Symbol("sk_corr_near_", f), scorr)
-            measure!(ctx, Symbol("ηk_corr_near_", f), ηcorr)
-            measure!(ctx, Symbol("sk_quar_near_", f), scorr^2)
-            measure!(ctx, Symbol("ηk_quar_near_", f), abs2.(ηcorr))
+            s = getc3fourier(mc.spinks, pos, mc.corr_rad)
+            eta = getc3fourier(mc.ηks, pos, mc.corr_rad)
+            measure!(ctx, Symbol("sk_near_", f), s)
+            measure!(ctx, Symbol("sk_corr_near_", f), norm2(s))
+            measure!(ctx, Symbol("sk_quar_near_", f), norm2(s)^2)
+            measure!(ctx, Symbol("etak_near_", f), eta)
+            measure!(ctx, Symbol("etak_corr_near_", f), eta * eta')
         end
     end
 
