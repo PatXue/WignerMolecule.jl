@@ -37,13 +37,10 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     mag = norm(mag_v)
     measure!(ctx, :Mag, mag)
     measure!(ctx, :Mag2, mag^2)
-    measure!(ctx, :Mag4, mag^4)
 
     η = sum(mc.ηs) ./ N
     measure!(ctx, :ηz, abs(η[3]))
     measure!(ctx, :ηxy, sqrt(η[1]^2 + η[2]^2))
-    measure!(ctx, :Eta2, sum(abs2.(η)))
-    measure!(ctx, :Eta4, sum(abs2.(η))^2)
 
     # Energy per lattice site
     E = total_energy(mc) / N
@@ -59,6 +56,8 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         measure!(ctx, Symbol("ηk_", f), η)
         measure!(ctx, Symbol("sk_corr_", f), norm2(s))
         measure!(ctx, Symbol("ηk_corr_", f), η*η')
+        measure!(ctx, Symbol("sk_quar_", f), norm2(s)^2)
+        measure!(ctx, Symbol("ηk_quar_", f), abs2.(η*η'))
         if mc.corr_rad != 0
             r = mc.corr_rad
             x, y = pos[1], pos[2]
@@ -66,6 +65,8 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
             ηcorr = sum(ηk -> ηk*ηk', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
             measure!(ctx, Symbol("sk_corr_near_", f), scorr)
             measure!(ctx, Symbol("ηk_corr_near_", f), ηcorr)
+            measure!(ctx, Symbol("sk_quar_near_", f), scorr^2)
+            measure!(ctx, Symbol("ηk_quar_near_", f), abs2.(ηcorr))
         end
     end
 
@@ -78,12 +79,6 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
     evaluate!(eval, :χ, (:Mag, :Mag2)) do mag, mag2
         return N / T * (mag2 - mag^2)
     end
-    evaluate!(eval, :BinderRatio, (:Mag2, :Mag4)) do mag2, mag4
-        1 - (mag4/3/mag2^2)
-    end
-    evaluate!(eval, :EtaBinderRatio, (:Eta2, :Eta4)) do mag2, mag4
-        1 - (mag4/3/mag2^2)
-    end
 
     C3 = [-1/2 -√3/2 0; √3/2 1/2 0; 0 0 1]
     for f in corr_posns
@@ -92,6 +87,12 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
         end
         evaluate!(eval, Symbol("χη_", f), (Symbol("ηk_", f), Symbol("ηk_corr_", f))) do ηk, ηk2
             N / T * abs.(ηk2 - ηk*ηk')
+        end
+        evaluate!(eval, Symbol("sk_kurt_", f), (Symbol("sk_corr_", f), Symbol("sk_quar_", f))) do sk2, sk4
+            1 - sk4 / 3sk2^2
+        end
+        evaluate!(eval, Symbol("ηk_kurt_", f), (Symbol("ηk_corr_", f), Symbol("ηk_quar_", f))) do ηk2, ηk4
+            @. 1 - ηk4 / 3abs2(ηk2)
         end
         if f in (M, part_K, half_M)
             corrnames = (Symbol("sk_corr_", f), Symbol("sk_corr_", f, "2"), Symbol("sk_corr_", f, "3"))
