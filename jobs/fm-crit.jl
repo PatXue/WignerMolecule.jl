@@ -9,7 +9,7 @@ using LinearAlgebra
 using WignerMolecule
 
 tm = TaskMaker()
-jobname = "fm-anneal"
+jobname = "fm-crit"
 
 tm.algtype = :Heatbath
 tm.sweeps = 100000
@@ -18,7 +18,7 @@ tm.binsize = 1000
 tm.init_type = :const
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 9)
-Ts = 0.0525:0.0025:0.1
+Ts = 0.09:0.0025:0.1175
 Ls = [24, 48, 96]
 for L in Ls
     tm.Lx = tm.Ly = L
