@@ -61,6 +61,19 @@ part_K2(Lx, Ly) = (3*div(Lx, 4)+1, div(Ly, 4)+1)
 part_K3(Lx, Ly) = (3*div(Lx, 4)+1, div(Ly, 2)+1)
 const corr_posns = (Γ, M, M2, M3, half_M, half_M2, half_M3, K, part_K, part_K2, part_K3)
 
+const C3 = SMatrix{3,3}([-1/2 -√3/2 0; √3/2 1/2 0; 0 0 1])
+const C3idx = SMatrix{2,2}([0 -1; 1 1])
+function getc3fourier(A, pos)
+    k1 = A[pos..., :]
+    k2 = C3' * A[C3idx * pos..., :]
+    k3 = C3 * A[C3idx' * pos..., :]
+    return k1 + k2 + k3
+end
+function getc3fourier(A, pos, r)
+    x, y = pos[1], pos[2]
+    return sum((i,j) -> getc3fourier(A, SVector(i,j)), Iterators.product(x-r:x+r, y-r:y+r))
+end
+
 # Calculate sum of chirality for each upwards triangular plaquette
 function chirality(spins)
     Q = 0.0
