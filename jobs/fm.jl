@@ -27,7 +27,7 @@ raw_params = load_object("all_params.jld2")[(45, 5, 20, 9)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
 Ts = 0.01:0.01:0.15
-Ls = [24, 48, 96, 120]
+Ls = [24, 48, 96]
 for L in Ls
     tm.Lx = tm.Ly = L
     for T in Ts
