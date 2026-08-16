@@ -1,4 +1,4 @@
-mutable struct DimerMC{AlgType} <: AbstractMC
+struct DimerMC{AlgType} <: AbstractMC
     T::Float64          # Temperature
     init_T::Float64     # Initial temperature (for thermalization)
     params::WignerParams
