@@ -68,6 +68,32 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         end
     end
 
+    for phase in (:fm, :stripe, :afm_fe, :afm_afe)
+        if phase == :fm
+            pos = SVector(1,1)
+            a = SVector(0,0,1)
+        elseif phase == :stripe
+            pos = SVector{2,Int}(M(Lx, Ly))
+            a = SVector(1/2,√3/2,0)
+        elseif phase == :afm_fe
+            pos = SVector(1,1)
+            a = SVector(1/2,√3/2,0)
+        elseif phase == :afm_afe
+            pos = SVector{2,Int}(M2(Lx, Ly))
+            a = SVector(0,1,0)
+        end
+        etak = a ⋅ getc3fourier(mc.ηks, pos)
+        measure!(ctx, Symbol("etak_", phase), etak)
+        measure!(ctx, Symbol("etak_corr_", phase), abs2(etak))
+        measure!(ctx, Symbol("etak_quar_", phase), abs2(etak)^2)
+        if mc.corr_rad != 0
+            etak = a ⋅ getc3fourier(mc.ηks, pos, mc.corr_rad)
+            measure!(ctx, Symbol("etak_near_", phase), etak)
+            measure!(ctx, Symbol("etak_corr_near_", phase), abs2(etak))
+            measure!(ctx, Symbol("etak_quar_near_", phase), abs2(etak)^2)
+        end
+    end
+
     return nothing
 end
 
@@ -78,28 +104,36 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
         return N / T * (mag2 - mag^2)
     end
 
-    C3 = [-1/2 -√3/2 0; √3/2 1/2 0; 0 0 1]
-    for f in corr_posns
+    for f in (Γ, M, half_M, part_K)
         evaluate!(eval, Symbol("χs_", f), (Symbol("sk_", f), Symbol("sk_corr_", f))) do sk, sk2
             N / T * (sk2 - sum(abs2.(sk)))
-        end
-        evaluate!(eval, Symbol("χη_", f), (Symbol("ηk_", f), Symbol("ηk_corr_", f))) do ηk, ηk2
-            N / T * abs.(ηk2 - ηk*ηk')
         end
         evaluate!(eval, Symbol("sk_kurt_", f), (Symbol("sk_corr_", f), Symbol("sk_quar_", f))) do sk2, sk4
             1 - sk4 / 3sk2^2
         end
-        evaluate!(eval, Symbol("ηk_kurt_", f), (Symbol("ηk_corr_", f), Symbol("ηk_quar_", f))) do ηk2, ηk4
-            @. 1 - ηk4 / 3abs2(ηk2)
-        end
-        if f in (M, part_K, half_M)
-            corrnames = (Symbol("sk_corr_", f), Symbol("sk_corr_", f, "2"), Symbol("sk_corr_", f, "3"))
-            evaluate!(eval, Symbol("sk_corr_", f, "_c3"), corrnames) do sk1, sk2, sk3
-                sk1 + sk2 + sk3
+        if get(params, :corr_rad, 0) != 0
+            evaluate!(eval, Symbol("χs_near_", f), (Symbol("sk_near_", f), Symbol("sk_corr_near_", f))) do sk, sk2
+                N / T * (sk2 - sum(abs2.(sk)))
             end
-            corrnames = (Symbol("ηk_corr_", f), Symbol("ηk_corr_", f, "2"), Symbol("ηk_corr_", f, "3"))
-            evaluate!(eval, Symbol("ηk_corr_", f, "_c3"), corrnames) do ηk1, ηk2, ηk3
-                ηk1 + C3' * ηk2 * C3 + C3 * ηk3 * C3'
+            evaluate!(eval, Symbol("sk_kurt_near_", f), (Symbol("sk_corr_near_", f), Symbol("sk_quar_near_", f))) do sk2, sk4
+                1 - sk4 / 3sk2^2
+            end
+        end
+    end
+
+    for phase in (:fm, :stripe, :afm_fe, :afm_afe)
+        evaluate!(eval, Symbol("χeta_", phase), (Symbol("etak_", phase), Symbol("etak_corr_", phase))) do sk, sk2
+            N / T * (sk2 - sum(abs2.(sk)))
+        end
+        evaluate!(eval, Symbol("etak_kurt_", phase), (Symbol("etak_corr_", phase), Symbol("etak_quar_", phase))) do sk2, sk4
+            1 - sk4 / 3sk2^2
+        end
+        if get(params, :corr_rad, 0) != 0
+            evaluate!(eval, Symbol("χeta_near_", phase), (Symbol("etak_near_", phase), Symbol("etak_corr_near_", phase))) do sk, sk2
+                N / T * (sk2 - sum(abs2.(sk)))
+            end
+            evaluate!(eval, Symbol("etak_kurt_near_", phase), (Symbol("etak_corr_near_", phase), Symbol("etak_quar_near_", phase))) do sk2, sk4
+                1 - sk4 / 3sk2^2
             end
         end
     end
