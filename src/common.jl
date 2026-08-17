@@ -58,6 +58,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         measure!(ctx, Symbol("etak_", f), eta)
         measure!(ctx, Symbol("etak_corr_", f), eta * eta')
         if mc.corr_rad != 0
+            x, y = pos[1], pos[2]
             r = mc.corr_rad
             ks = Iterators.product(x-r:x+r, y-r:y+r)
             s = sum(k -> getc3fourier(mc.spinks, SVector{2,Int}(k)), ks)
@@ -89,7 +90,10 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         measure!(ctx, Symbol("etak_corr_", phase), abs2(etak))
         measure!(ctx, Symbol("etak_quar_", phase), abs2(etak)^2)
         if mc.corr_rad != 0
-            etak = a ⋅ getc3fourier(mc.ηks, pos, mc.corr_rad)
+            x, y = pos[1], pos[2]
+            r = mc.corr_rad
+            ks = Iterators.product(x-r:x+r, y-r:y+r)
+            etak = a ⋅ sum(k -> getc3fourier(mc.ηks, SVector{2,Int}(k)), ks)
             measure!(ctx, Symbol("etak_near_", phase), etak)
             measure!(ctx, Symbol("etak_corr_near_", phase), abs2(etak))
             measure!(ctx, Symbol("etak_quar_near_", phase), abs2(etak)^2)
