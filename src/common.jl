@@ -52,17 +52,23 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         pos = convert(SVector{2,Int}, f(Lx, Ly))
         s = getc3fourier(mc.spinks, pos)
         eta = getc3fourier(mc.ηks, pos)
+        if f == Γ
+            s /= 3
+            eta /= 3
+        end
         measure!(ctx, Symbol("sk_", f), s)
         measure!(ctx, Symbol("sk_corr_", f), norm2(s))
-        measure!(ctx, Symbol("sk_quar_", f), norm2(s)^2)
+        measure!(ctx, Symbol("sk_quar_", f), sum(abs2.(s).^2))
         measure!(ctx, Symbol("etak_", f), eta)
         measure!(ctx, Symbol("etak_corr_", f), eta * eta')
         if mc.corr_rad != 0
-            s = getc3fourier(mc.spinks, pos, mc.corr_rad)
-            eta = getc3fourier(mc.ηks, pos, mc.corr_rad)
+            r = mc.corr_rad
+            ks = Iterators.product(x-r:x+r, y-r:y+r)
+            s = sum(k -> getc3fourier(mc.spinks, SVector{2,Int}(k)), ks)
+            eta = sum(k -> getc3fourier(mc.ηks, SVector{2,Int}(k)), ks)
             measure!(ctx, Symbol("sk_near_", f), s)
             measure!(ctx, Symbol("sk_corr_near_", f), norm2(s))
-            measure!(ctx, Symbol("sk_quar_near_", f), norm2(s)^2)
+            measure!(ctx, Symbol("sk_quar_near_", f), sum(abs2.(s).^2))
             measure!(ctx, Symbol("etak_near_", f), eta)
             measure!(ctx, Symbol("etak_corr_near_", f), eta * eta')
         end
