@@ -52,10 +52,6 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         pos = convert(SVector{2,Int}, f(Lx, Ly))
         s = getc3fourier(mc.spinks, pos)
         eta = getc3fourier(mc.ηks, pos)
-        if f == Γ
-            s /= 3
-            eta /= 3
-        end
         measure!(ctx, Symbol("sk_", f), s)
         measure!(ctx, Symbol("sk_corr_", f), norm2(s))
         measure!(ctx, Symbol("sk_quar_", f), sum(abs2.(s).^2))
