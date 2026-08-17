@@ -65,13 +65,9 @@ const C3 = SMatrix{3,3}([-1/2 -√3/2 0; √3/2 1/2 0; 0 0 1])
 const C3idx = SMatrix{2,2}([0 -1; 1 1])
 function getc3fourier(A, pos)
     k1 = A[pos..., :]
-    k2 = C3' * A[C3idx * pos..., :]
-    k3 = C3 * A[C3idx' * pos..., :]
+    k2 = C3' * A[C3idx * (pos .- (1,1)) .+ (1,1)..., :]
+    k3 = C3 * A[C3idx' * (pos .- (1,1)) .+ (1,1)..., :]
     return k1 + k2 + k3
-end
-function getc3fourier(A, pos, r)
-    x, y = pos[1], pos[2]
-    return sum(v -> getc3fourier(A, SVector{2,Int}(v)), Iterators.product(x-r:x+r, y-r:y+r))
 end
 
 # Calculate sum of chirality for each upwards triangular plaquette
