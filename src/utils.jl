@@ -71,7 +71,7 @@ function getc3fourier(A, pos)
 end
 function getc3fourier(A, pos, r)
     x, y = pos[1], pos[2]
-    return sum((i,j) -> getc3fourier(A, SVector{2,Int}(i,j)), Iterators.product(x-r:x+r, y-r:y+r))
+    return sum(v -> getc3fourier(A, SVector{2,Int}(v)), Iterators.product(x-r:x+r, y-r:y+r))
 end
 
 # Calculate sum of chirality for each upwards triangular plaquette
