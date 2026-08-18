@@ -48,56 +48,57 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     measure!(ctx, :Energy2, E^2)
 
     update_fourier!(mc)
-    for f in (Γ, M, half_M, part_K)
+    for f in corr_posns
         pos = convert(SVector{2,Int}, f(Lx, Ly))
-        s = getc3fourier(mc.spinks, pos)
-        eta = getc3fourier(mc.ηks, pos)
-        measure!(ctx, Symbol("sk_", f), s)
-        measure!(ctx, Symbol("sk_corr_", f), norm2(s))
-        measure!(ctx, Symbol("sk_quar_", f), sum(abs2.(s).^2))
-        measure!(ctx, Symbol("etak_", f), eta)
-        measure!(ctx, Symbol("etak_corr_", f), eta * eta')
-        if mc.corr_rad != 0
+        if mc.corr_rad == 0
+            s = mc.spinks[pos..., :]
+            scorr = norm2(s)
+            eta = mc.ηks[pos..., :]
+            etacorr = eta * eta'
+        else
             x, y = pos[1], pos[2]
             r = mc.corr_rad
-            ks = Iterators.product(x-r:x+r, y-r:y+r)
-            s = sum(k -> getc3fourier(mc.spinks, SVector{2,Int}(k)), ks)
-            eta = sum(k -> getc3fourier(mc.ηks, SVector{2,Int}(k)), ks)
-            measure!(ctx, Symbol("sk_near_", f), s)
-            measure!(ctx, Symbol("sk_corr_near_", f), norm2(s))
-            measure!(ctx, Symbol("sk_quar_near_", f), sum(abs2.(s).^2))
-            measure!(ctx, Symbol("etak_near_", f), eta)
-            measure!(ctx, Symbol("etak_corr_near_", f), eta * eta')
+            s = sum(eachslice(mc.spinks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+            scorr = sum(abs2, mc.spinks[x-r:x+r, y-r:y+r, :])
+            eta = sum(eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+            etacorr = sum(etak -> etak * etak', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
         end
+        measure!(ctx, Symbol("sk_", f), s)
+        measure!(ctx, Symbol("sk_corr_", f), scorr)
+        measure!(ctx, Symbol("etak_", f), eta)
+        measure!(ctx, Symbol("etak_corr_", f), etacorr)
     end
 
     for phase in (:fm, :stripe, :afm_fe, :afm_afe)
         if phase == :fm
-            pos = SVector(1,1)
-            a = SVector(0,0,1)
+            posns = [SVector(1,1)]
+            as = [SVector(0.0,0,1)]
         elseif phase == :stripe
-            pos = SVector{2,Int}(M(Lx, Ly))
-            a = SVector(1/2,√3/2,0)
+            posns = [SVector{2,Int}(M(Lx, Ly)), SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly))]
+            as = [SVector(1/2,√3/2,0), SVector(-1.0,0,0), SVector(1/2,-√3/2,0)]
         elseif phase == :afm_fe
-            pos = SVector(1,1)
-            a = SVector(1/2,√3/2,0)
+            posns = [SVector(1,1)]
+            as = [SVector(1/2,√3/2,0)]
         elseif phase == :afm_afe
-            pos = SVector{2,Int}(M2(Lx, Ly))
-            a = SVector(0,1,0)
+            posns = [SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly)), SVector{2,Int}(M(Lx, Ly))]
+            as = [SVector(0.0,1,0), SVector(-√3/2,-1/2,0), SVector(√3/2,-1/2,0)]
         end
-        etak = a ⋅ getc3fourier(mc.ηks, pos)
-        measure!(ctx, Symbol("etak_", phase), etak)
-        measure!(ctx, Symbol("etak_corr_", phase), abs2(etak))
-        measure!(ctx, Symbol("etak_quar_", phase), abs2(etak)^2)
-        if mc.corr_rad != 0
-            x, y = pos[1], pos[2]
-            r = mc.corr_rad
-            ks = Iterators.product(x-r:x+r, y-r:y+r)
-            etak = a ⋅ sum(k -> getc3fourier(mc.ηks, SVector{2,Int}(k)), ks)
-            measure!(ctx, Symbol("etak_near_", phase), etak)
-            measure!(ctx, Symbol("etak_corr_near_", phase), abs2(etak))
-            measure!(ctx, Symbol("etak_quar_near_", phase), abs2(etak)^2)
+        etacorr = 0.0
+        etaquar = 0.0
+        for (pos, a) in Iterators.zip(posns, as)
+            if mc.corr_rad != 0
+                x, y = pos[1], pos[2]
+                r = mc.corr_rad
+                etacorr += sum(etak -> abs2(a ⋅ etak), eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+                etaquar += sum(etak -> abs2(a ⋅ etak)^2, eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+            else
+                etak = mc.ηks[pos..., :]
+                etacorr += abs2(a ⋅ etak)
+                etaquar += abs2(a ⋅ etak)^2
+            end
         end
+        measure!(ctx, Symbol("etak_corr_", phase), etacorr)
+        measure!(ctx, Symbol("etak_quar_", phase), etaquar)
     end
 
     return nothing
