@@ -17,7 +17,7 @@ tm.thermalization = 100000
 tm.binsize = 1000
 
 Ls = [24, 48]
-Ts = [0.5, 1.0, 2.0, 4.0]
+Ts = [0.5, 1.0, 1.5, 2.0, 3.0, 4.0]
 ams = 4:11
 for (am, T, L) in Iterators.product(ams, Ts, Ls)
     tm.corr_rad = div(L, 12)
