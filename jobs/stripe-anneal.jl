@@ -10,35 +10,24 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "stripe-anneal"
-
 tm.init_type = :stripe
+tm.algtype = :Heatbath
 
-stripe_bias(x, _) = [0, 0, (-1)^(div(x, 2))]
-tm.bias = stripe_bias
-bias_type = typeof(stripe_bias)
-tm.B = 0.0
-tm.init_B = 5.0
-JSON.lower(f::bias_type) = f(1, 1)
-
-raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
-norm_params = raw_params ./ norm(raw_params)
-tm.wigparams = WignerParams(norm_params...)
-Ls = [24, 48, 96, 120]
+tm.wigparams = WignerParams("all_params.jld2", 5, 6)
+tm.sweeps = 100000
+tm.thermalization = 100000
+tm.binsize = 1000
+Ls = [24, 48, 72]
 Ts = 0.01:0.01:0.15
 for L in Ls
     tm.Lx = tm.Ly = L
-    tm.sweeps = div(50000 * L, 24)
-    tm.thermalization = div(50000 * L, 24)
-    tm.binsize = div(250 * L, 24)
     for T in Ts
         tm.T = T
-        spins_dir = "$jobname.data/$(current_task_name(tm))"
-        tm.outdir = spins_dir
         task(tm)
     end
 end
 
-job = JobInfo("$jobname", WignerMC{:Metropolis, bias_type};
+job = JobInfo("$jobname", WignerMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
