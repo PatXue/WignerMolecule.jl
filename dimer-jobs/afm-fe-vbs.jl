@@ -11,7 +11,7 @@ jobname = "afm-fe-vbs"
 tm.init_type = :vbs
 tm.wigparams = WignerParams("all_params.jld2", 11, 10)
 
-tm.sweeps = 100000
+tm.sweeps = 200000
 tm.thermalization = 100000
 tm.binsize = 500
 Ls = [48]
