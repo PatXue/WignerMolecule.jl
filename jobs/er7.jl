@@ -12,7 +12,7 @@ jobname = "er7"
 tm.algtype = :Heatbath
 tm.init_type = :rand
 tm.init_T = 4.0
-tm.sweeps = 100000
+tm.sweeps = 150000
 tm.thermalization = 100000
 tm.binsize = 1000
 
