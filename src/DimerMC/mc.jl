@@ -38,7 +38,7 @@ function DimerMC(params::AbstractDict)
     fug = try
         params[:fug]
     catch
-        exp(-params[:μ] / T)
+        exp(-params[:mu] / T)
     end
     algtype = get(params, :algtype, :Heatbath)
     corr_rad = get(params, :corr_rad, 0)
