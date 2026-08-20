@@ -85,24 +85,21 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         end
         etatot = 0.0 + 0.0im
         etacorr = 0.0
-        etaquar = 0.0
         for (pos, a) in Iterators.zip(posns, as)
             if mc.corr_rad != 0
                 x, y = pos[1], pos[2]
                 r = mc.corr_rad
                 etatot += sum(eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
                 etacorr += sum(etak -> abs2(a ⋅ etak), eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
-                etaquar += sum(etak -> abs2(a ⋅ etak)^2, eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
             else
                 etak = mc.ηks[pos..., :]
                 etatot += a ⋅ etak
                 etacorr += abs2(a ⋅ etak)
-                etaquar += abs2(a ⋅ etak)^2
             end
         end
         measure!(ctx, Symbol("etak_", phase), etatot)
         measure!(ctx, Symbol("etak_corr_", phase), etacorr)
-        measure!(ctx, Symbol("etak_quar_", phase), etaquar)
+        measure!(ctx, Symbol("etak_quar_", phase), etacorr^2)
     end
 
     return nothing
