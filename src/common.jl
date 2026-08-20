@@ -83,20 +83,24 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
             posns = [SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly)), SVector{2,Int}(M(Lx, Ly))]
             as = [SVector(0.0,1,0), SVector(-√3/2,-1/2,0), SVector(√3/2,-1/2,0)]
         end
+        etatot = 0.0 + 0.0im
         etacorr = 0.0
         etaquar = 0.0
         for (pos, a) in Iterators.zip(posns, as)
             if mc.corr_rad != 0
                 x, y = pos[1], pos[2]
                 r = mc.corr_rad
+                etatot += sum(eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
                 etacorr += sum(etak -> abs2(a ⋅ etak), eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
                 etaquar += sum(etak -> abs2(a ⋅ etak)^2, eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
             else
                 etak = mc.ηks[pos..., :]
+                etatot += a ⋅ etak
                 etacorr += abs2(a ⋅ etak)
                 etaquar += abs2(a ⋅ etak)^2
             end
         end
+        measure!(ctx, Symbol("etak_", phase), etatot)
         measure!(ctx, Symbol("etak_corr_", phase), etacorr)
         measure!(ctx, Symbol("etak_quar_", phase), etaquar)
     end
@@ -115,17 +119,6 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
         evaluate!(eval, Symbol("χs_", f), (Symbol("sk_", f), Symbol("sk_corr_", f))) do sk, sk2
             N / T * (sk2 - sum(abs2.(sk)))
         end
-        evaluate!(eval, Symbol("sk_kurt_", f), (Symbol("sk_corr_", f), Symbol("sk_quar_", f))) do sk2, sk4
-            1 - sk4 / 3sk2^2
-        end
-        if get(params, :corr_rad, 0) != 0
-            evaluate!(eval, Symbol("χs_near_", f), (Symbol("sk_near_", f), Symbol("sk_corr_near_", f))) do sk, sk2
-                N / T * (sk2 - sum(abs2.(sk)))
-            end
-            evaluate!(eval, Symbol("sk_kurt_near_", f), (Symbol("sk_corr_near_", f), Symbol("sk_quar_near_", f))) do sk2, sk4
-                1 - sk4 / 3sk2^2
-            end
-        end
     end
 
     for phase in (:fm, :stripe, :afm_fe, :afm_afe)
@@ -134,14 +127,6 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
         end
         evaluate!(eval, Symbol("etak_kurt_", phase), (Symbol("etak_corr_", phase), Symbol("etak_quar_", phase))) do sk2, sk4
             1 - sk4 / 3sk2^2
-        end
-        if get(params, :corr_rad, 0) != 0
-            evaluate!(eval, Symbol("χeta_near_", phase), (Symbol("etak_near_", phase), Symbol("etak_corr_near_", phase))) do sk, sk2
-                N / T * (sk2 - sum(abs2.(sk)))
-            end
-            evaluate!(eval, Symbol("etak_kurt_near_", phase), (Symbol("etak_corr_near_", phase), Symbol("etak_quar_near_", phase))) do sk2, sk4
-                1 - sk4 / 3sk2^2
-            end
         end
     end
 
