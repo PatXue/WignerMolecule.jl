@@ -89,7 +89,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
             if mc.corr_rad != 0
                 x, y = pos[1], pos[2]
                 r = mc.corr_rad
-                etatot += sum(eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+                etatot += sum(etak -> a ⋅ etak, eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
                 etacorr += sum(etak -> abs2(a ⋅ etak), eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
             else
                 etak = mc.ηks[pos..., :]
