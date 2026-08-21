@@ -18,10 +18,10 @@ tm.binsize = 250
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 9)
 Ts = 0.02:0.02:0.2
-Ls = [24, 48]
+Ls = [24, 48, 72]
 for L in Ls
     tm.Lx = tm.Ly = L
-    tm.corr_rad = div(L, 12)
+    tm.corr_rad = 2
     for T in Ts
         tm.T = T
         spins_dir = "$jobname.data/$(current_task_name(tm))"
