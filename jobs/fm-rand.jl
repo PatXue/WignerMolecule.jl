@@ -10,13 +10,14 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "fm-rand"
 tm.init_type = :rand
+tm.algtype = :Heatbath
 tm.init_T = 1.0
 tm.sweeps = 50000
 tm.thermalization = 50000
 tm.binsize = 250
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 9)
-Ts = 0.01:0.01:0.2
+Ts = 0.02:0.02:0.2
 Ls = [24, 48]
 for L in Ls
     tm.Lx = tm.Ly = L
@@ -29,7 +30,7 @@ for L in Ls
     end
 end
 
-job = JobInfo("$jobname", WignerMC{:Metropolis, Nothing};
+job = JobInfo("$jobname", WignerMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
