@@ -10,7 +10,11 @@ struct WignerParams
 end
 
 function WignerParams(paramfile, e_r, a_M, ϕ=45, d_g=20; H0=nothing)
-    raw_params = load_object(paramfile)[(ϕ, e_r, d_g, a_M)]
+    WignerParams(paramfile, (ϕ, e_r, d_g, a_M); H0)
+end
+
+function WignerParams(paramfile, idx; H0=nothing)
+    raw_params = load_object(paramfile)[idx]
     params = [raw_params[i] for i in 1:8]
     for i in (1, 2, 3, 6, 8)
         try
