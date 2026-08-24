@@ -74,12 +74,56 @@ function flip_spin!(mc::WignerMC{:Heatbath}, T, B, rng)
     mc.spins[pos...] = heatbath_spin(site_field_s(mc, pos, B), T; rng)
 end
 
-function Carlo.sweep!(mc, ctx::Carlo.MCContext)
+function Carlo.sweep!(mc::WignerMC, ctx::Carlo.MCContext)
     rng = ctx.rng
     T = calc_temp(mc, ctx)
     for _ in 1:length(mc.spins)
         flip_eta!(mc, T, rng)
         flip_spin!(mc, T, calc_B(mc, ctx), rng)
+    end
+    return nothing
+end
+
+
+function cluster_spin!(mc, T, rng)
+    Lx, Ly = size(mc.spins)
+    nhat = rand(SpinVector, rng)
+    pos = SVector{2,Int}(rand(rng, 1:Lx), rand(rng, 1:Ly))
+
+    cluster = Set{SVector{2,Int}}()
+    newposns = Set{SVector{2,Int}}()
+    push!(cluster, pos)
+    push!(newposns, pos)
+
+    while length(newposns) > 0
+        pos = pop!(newposns)
+        s = mc.spins[pos...] / 2
+        for a in disps
+            posj = mod1.(pos + a, (Lx, Ly))
+            if posj in cluster
+                continue
+            end
+            sj = mc.spins[posj...] / 2
+            prob = 1 - exp(min(0, 2 * ssfactor(mc, Dimer(pos, posj)) * (nhat ⋅ s) * (nhat ⋅ sj) / T))
+            if rand(rng) < prob
+                push!(cluster, posj)
+                push!(newposns, posj)
+            end
+        end
+    end
+
+    for pos in cluster
+        mc.spins[pos...] -= 2 * (nhat ⋅ mc.spins[pos...]) * nhat
+    end
+    return length(cluster)
+end
+
+function Carlo.sweep!(mc::WignerMC{:Cluster}, ctx::Carlo.MCContext)
+    rng = ctx.rng
+    T = calc_temp(mc, ctx)
+    for _ in 1:length(mc.spins)
+        flip_eta!(mc, T, rng)
+        cluster_spin!(mc, T, rng)
     end
     return nothing
 end
