@@ -87,7 +87,7 @@ end
 
 function cluster_spin!(mc, T, rng)
     Lx, Ly = size(mc.spins)
-    nhat = rand(SpinVector, rng)
+    nhat = rand(rng, SpinVector)
     pos = SVector{2,Int}(rand(rng, 1:Lx), rand(rng, 1:Ly))
 
     cluster = Set{SVector{2,Int}}()
@@ -118,12 +118,21 @@ function cluster_spin!(mc, T, rng)
     return length(cluster)
 end
 
-function Carlo.sweep!(mc::WignerMC{:Cluster}, ctx::Carlo.MCContext)
+function Carlo.sweep!(mc::ClusterWigMC, ctx::Carlo.MCContext)
     rng = ctx.rng
-    T = calc_temp(mc, ctx)
-    for _ in 1:length(mc.spins)
-        flip_eta!(mc, T, rng)
-        cluster_spin!(mc, T, rng)
+    T = calc_temp(mc.mc, ctx)
+    N = length(mc.mc.spins)
+    for _ in 1:N
+        flip_eta!(mc.mc, T, rng)
+    end
+    if !is_thermalized(ctx)
+        for _ in 1:N
+            mc.Nc[] = addsample(mc.Nc[], cluster_spin!(mc.mc, T, rng))
+        end
+    else
+        for _ in 1:cld(N, (mc.Nc[]).val)
+            cluster_spin!(mc.mc, T, rng)
+        end
     end
     return nothing
 end

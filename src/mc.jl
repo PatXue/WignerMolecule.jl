@@ -80,3 +80,13 @@ function WignerMC(params::AbstractDict)
 
     return WignerMC(; T, init_T, wigparams, B, init_B, bias, Lx, Ly, corr_rad, algtype)
 end
+
+struct ClusterWigMC <: AbstractMC
+    mc::WignerMC{:Cluster, Nothing}
+    Nc::Ref{Expectation}
+end
+
+function ClusterWigMC(params::AbstractDict)
+    params[:algtype] = :Cluster
+    return ClusterWigMC(WignerMC(params), Ref(Expectation(0.0, 0)))
+end

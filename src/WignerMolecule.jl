@@ -3,6 +3,7 @@ module WignerMolecule
 export WignerMC, WignerParams
 export total_energy, init_skyrm!
 export SpinVector
+export ClusterWigMC
 
 export EtaParams, EtaMC
 
@@ -20,6 +21,8 @@ using JLD2
 using LinearAlgebra
 using Random
 using StaticArrays
+include("Expectation.jl")
+using .Expectations
 include("PeriodicArrays.jl")
 using .PeriodicArrays
 

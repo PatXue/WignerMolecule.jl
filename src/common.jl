@@ -28,6 +28,9 @@ function Carlo.init!(mc::WignerMC, ctx::Carlo.MCContext, params::AbstractDict)
     update_fourier!(mc)
     return nothing
 end
+function Carlo.init!(mc::ClusterWigMC, ctx::Carlo.MCContext, params::AbstractDict)
+    Carlo.init!(mc.mc, ctx, params)
+end
 
 function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
@@ -105,6 +108,8 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     return nothing
 end
 
+Carlo.measure!(mc::ClusterWigMC, ctx::Carlo.MCContext) = Carlo.measure!(mc.mc, ctx)
+
 function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, params::AbstractDict)
     T = params[:T]
     N = params[:Lx] * params[:Ly]
@@ -138,6 +143,10 @@ function Carlo.register_evaluables(::Type{WignerMC{AlgType, BiasType}}, eval::Ab
     Carlo.register_evaluables(WignerMC, eval, params)
 end
 
+function Carlo.register_evaluables(::Type{ClusterWigMC}, eval::AbstractEvaluator, params::AbstractDict)
+    Carlo.register_evaluables(WignerMC, eval, params)
+end
+
 function Carlo.write_checkpoint(mc::WignerMC, out::HDF5.Group)
     out["spins"] = mc.spins
     out["etas"] = mc.ηs
@@ -148,6 +157,18 @@ function Carlo.read_checkpoint!(mc::WignerMC, in::HDF5.Group)
     raw_ηs = read(in, "etas")
     mc.spins .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_spins)
     mc.ηs .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_ηs)
+    return nothing
+end
+
+function Carlo.write_checkpoint(mc::ClusterWigMC, out::HDF5.Group)
+    Carlo.write_checkpoint(mc.mc, out)
+    out["Nc_val"] = (mc.Nc[]).val
+    out["Nc_n"] = (mc.Nc[]).n
+    return nothing
+end
+function Carlo.read_checkpoint!(mc::ClusterWigMC, in::HDF5.Group)
+    Carlo.read_checkpoint!(mc.mc, in)
+    mc.Nc[] = Expectation(read(in, "Nc_val"), read(in, "Nc_n"))
     return nothing
 end
 
