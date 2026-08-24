@@ -11,7 +11,7 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "stripe-high-t"
 tm.init_type = :stripe
-tm.algtype = :Heatbath
+tm.algtype = :Cluster
 
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
