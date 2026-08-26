@@ -15,6 +15,7 @@ mod_equiv(pos, posj, mc) = all((pos .- posj) .% size(mc.spins) .== (0,0))
 const disps = (SVector(1,0), SVector(-1,1), SVector(0,-1), SVector(-1,0), SVector(1,-1), SVector(0,1))
 const oriented_disps = (SVector(1,0), SVector(-1,1), SVector(0,-1))
 
+areneighbors(pos, posj, mc) = any([mod_equiv(posj .- pos, a, mc) for a in disps])
 isoriented(d::Dimer, mc) = any([mod_equiv(d.posj - d.pos, a, mc) for a in oriented_disps])
 # Check and flip dimer to lie along a1, a2, or a3
 function orientdimer(d::Dimer, mc)

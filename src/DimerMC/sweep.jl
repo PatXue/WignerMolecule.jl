@@ -50,6 +50,20 @@ function sweep_dimer!(mc::DimerMC, T, rng=default_rng())
                 mc.spins[pos...] = posj
                 mc.spins[posj...] = pos
             end
+
+        else # Double dimer move
+            d = orientdimer(getdimer(pos, mc), mc)
+            dj = orientdimer(getdimer(posj, mc), mc)
+            if arestacked(d, dj, mc)
+                new_d = Dimer(d.pos, dj.pos)
+                new_dj = Dimer(d.posj, dj.posj)
+                old_E = dimer_energy_s(mc, d) + dimer_energy_s(mc, dj)
+                new_E = dimer_energy_s(mc, new_d) + dimer_energy_s(mc, new_dj)
+                if metropolisacc(new_E - old_E, T; rng)
+                    add_dimer!(new_d, mc)
+                    add_dimer!(new_dj, mc)
+                end
+            end
         end
     end
 end

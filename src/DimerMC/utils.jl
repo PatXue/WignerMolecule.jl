@@ -1,6 +1,20 @@
 ismonomer(pos, mc::DimerMC) = mod_equiv(mc.spins[pos...], pos, mc)
 indimer(pos, d::Dimer, mc::DimerMC) = mod_equiv(pos, d.pos, mc) || mod_equiv(pos, d.posj, mc)
 
+# Get dimer pos is part of (assumes pos is not a monomer)
+getdimer(pos, mc::DimerMC) = Dimer(pos, mc.spins[pos...])
+"""
+    arestacked(d::Dimer, dj::Dimer, mc)
+
+Check if double dimer move is possible (two parallel stacked dimers). Dimers must be oriented
+"""
+arestacked(d::Dimer, dj::Dimer, mc) = areneighbors(d.pos, dj.pos, mc) && areneighbors(d.posj, dj.posj, mc)
+
+function add_dimer!(d::Dimer, mc::DimerMC)
+    mc.spins[d.pos...] = d.posj
+    mc.spins[d.posj...] = d.pos
+end
+
 # Monomer BitSet handling functions
 function addmonomer!(pos, s, mc::DimerMC)
     Lx = size(mc.spins, 1)
