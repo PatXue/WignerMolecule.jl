@@ -21,6 +21,7 @@ using JLD2
 using LinearAlgebra
 using Random
 using StaticArrays
+using StatsBase
 include("Expectation.jl")
 using .Expectations
 include("PeriodicArrays.jl")
