@@ -1,3 +1,15 @@
+function sample(rng, as, Zs)
+    Z = sum(Zs)
+    prob = rand(rng)
+    for i in eachindex(Zs, as)
+        prob -= Zs[i] / Z
+        if prob <= 0
+            return as[i]
+        end
+    end
+    return last(as)
+end
+
 """
     worm_dimer!(mc::DimerMC{:Worm}, ctx::Carlo.MCContext)
 
@@ -26,7 +38,7 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
             end
         end
 
-        a = sample(rng, disps, Zs)
+        a = sample(rng, collect(disps), Zs)
         posj = pos + a
         if !mod_equiv(mc.spins[pos...], posj, mc)
             steps += 1
@@ -99,4 +111,20 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
             copy!(mc.spins, mc.spinscopy)
         end
     end
+end
+
+function Carlo.sweep!(mc::DimerMC{:Worm}, ctx::Carlo.MCContext)
+    Lx, Ly = size(mc.spins)
+    T = calc_temp(mc, ctx)
+    rng = ctx.rng
+    sweep_dimer!(mc, T, rng)
+    for _ in 1:max(Lx, Ly)
+        pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+        if ismonomer(pos, mc)
+            worm_mono!(mc, pos, ctx)
+        else
+            worm_dimer!(mc, pos, ctx)
+        end
+    end
+    sweep_monomer!(mc, T, ctx.rng)
 end
