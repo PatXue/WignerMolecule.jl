@@ -22,6 +22,7 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
     rng = ctx.rng
 
     steps = 0
+    changes = 0
     retries = 0
     pos = init_pos # Current worm head position
     posf = mc.spins[pos...] # Partner of init_pos, termination point
@@ -41,7 +42,7 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
         a = sample(rng, collect(disps), Zs)
         posj = pos + a
         if !mod_equiv(mc.spins[pos...], posj, mc)
-            steps += 1
+            changes += 1
         end
         mc.spins[pos...] = posj
         if ismonomer(posj, mc)
@@ -50,6 +51,7 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
             break
         end
         pos, mc.spins[posj...] = mc.spins[posj...], pos
+        steps += 1
 
         if steps > 100 * length(mc.spins) # Retry after loop exceeds 100N
             steps = 0
@@ -58,6 +60,7 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
             copy!(mc.spins, mc.spinscopy)
         end
     end
+    return (steps, changes, retries)
 end
 
 """
@@ -72,6 +75,7 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
     rng = ctx.rng
 
     steps = 0
+    changes = 0
     retries = 0
     pos = init_pos # Current worm head position
     delmonomer!(pos, mc)
@@ -89,20 +93,16 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
 
         i = sample(rng, 1:7, Zs)
         if i == 7
-	    addmonomer!(pos, new_s, mc)
+            addmonomer!(pos, new_s, mc)
             break
         end
         posj = pos + disps[i]
         if !mod_equiv(mc.spins[pos...], posj, mc)
-            steps += 1
+            changes += 1
         end
         mc.spins[pos...] = posj
-        if ismonomer(posj, mc)
-            delmonomer!(posj, mc)
-            mc.spins[posj...] = pos
-            break
-        end
         pos, mc.spins[posj...] = mc.spins[posj...], pos
+        steps += 1
 
         if steps > 100 * length(mc.spins) # Retry after loop exceeds 100N
             steps = 0
@@ -111,6 +111,7 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
             copy!(mc.spins, mc.spinscopy)
         end
     end
+    return (steps, changes, retries)
 end
 
 function Carlo.sweep!(mc::DimerMC{:Worm}, ctx::Carlo.MCContext)
