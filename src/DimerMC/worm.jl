@@ -55,4 +55,48 @@ Compute a worm/loop update starting at the monomer site `init_pos`. Can
 terminate at any point, forming a monomer at the head
 """
 function worm_mono!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
+    T = calc_temp(mc, ctx)
+    copy!(mc.spinscopy, mc.spins)
+    rng = ctx.rng
+
+    steps = 0
+    retries = 0
+    pos = init_pos # Current worm head position
+    delmonomer!(pos, mc)
+    new_s = rand(rng, SpinVector)
+    while true
+        Zs = zeros(7)
+        for i in 1:6
+            posj = pos + disps[i]
+            if !ismonomer(posj, mc)
+                d = Dimer(pos, posj)
+                Zs[i] = exp(-dimer_energy_s(mc, d) / T)
+            end
+        end
+        Zs[7] = exp(-site_energy_s(mc, pos, new_s) / T)
+
+        i = sample(rng, 1:7, Zs)
+        if i == 7
+            mc.spins[pos...] = new_s
+            break
+        end
+        posj = pos + disps[i]
+        if !mod_equiv(mc.spins[pos...], posj, mc)
+            steps += 1
+        end
+        mc.spins[pos...] = posj
+        if ismonomer(posj, mc)
+            delmonomer!(posj, mc)
+            mc.spins[posj...] = pos
+            break
+        end
+        pos, mc.spins[posj...] = mc.spins[posj...], pos
+
+        if steps > 100 * length(mc.spins) # Retry after loop exceeds 100N
+            steps = 0
+            retries += 1
+            pos = init_pos
+            copy!(mc.spins, mc.spinscopy)
+        end
+    end
 end
