@@ -89,7 +89,7 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
 
         i = sample(rng, 1:7, Zs)
         if i == 7
-            mc.spins[pos...] = new_s
+	    addmonomer!(pos, new_s, mc)
             break
         end
         posj = pos + disps[i]
