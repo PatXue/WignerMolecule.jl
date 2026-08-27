@@ -1,0 +1,32 @@
+import Pkg
+Pkg.activate("..")
+
+using Carlo
+using Carlo.JobTools
+using JLD2
+using WignerMolecule
+
+tm = TaskMaker()
+jobname = "vbs-worm"
+tm.wigparams = WignerParams("all_params.jld2", 10, 6)
+tm.algtype = :Worm
+
+tm.sweeps = 50000
+tm.thermalization = 50000
+tm.binsize = 500
+Ts = 0.01:0.01:0.15
+Ls = [48]
+fugs = [0.01, 0.15, 0.5, 1.0]
+for (T, L, fug) in Iterators.product(Ts, Ls, fugs)
+    tm.Lx = tm.Ly = L
+    tm.T = T
+    tm.fug = fug
+    task(tm)
+end
+
+job = JobInfo("$jobname", DimerMC;
+    run_time = "24:00:00",
+    checkpoint_time = "30:00",
+    tasks = make_tasks(tm),
+)
+start(job, ARGS)
