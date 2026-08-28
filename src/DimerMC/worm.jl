@@ -26,16 +26,16 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
     retries = 0
     pos = init_pos # Current worm head position
     posf = mc.spins[pos...] # Partner of init_pos, termination point
-    addmonomer!(posf, rand(rng, SpinVector), mc)
     while true
         Zs = zeros(6)
         for i in 1:6
             posj = pos + disps[i]
             d = Dimer(pos, posj)
-            if !ismonomer(posj, mc) || mod_equiv(posj, posf, mc)
+            if !ismonomer(posj, mc)
                 Zs[i] = exp(-dimer_energy_s(mc, d) / T)
             else
-                Zs[i] = exp(-shift_energy_s(mc, d, posf, mc.monospins[posf...]) / T)
+                ΔE = dimer_energy_s(mc, d) - site_energy_s(mc, posj, mc.monospins[posj...])
+                Zs[i] = exp(-ΔE / T)
             end
         end
 
@@ -47,6 +47,10 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
         mc.spins[pos...] = posj
         if ismonomer(posj, mc)
             delmonomer!(posj, mc)
+            addmonomer!(posf, rand(rng, SpinVector), mc)
+            mc.spins[posj...] = pos
+            break
+        elseif mod_equiv(posj, posf, mc)
             mc.spins[posj...] = pos
             break
         end
