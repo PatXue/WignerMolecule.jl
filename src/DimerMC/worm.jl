@@ -78,7 +78,6 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
     changes = 0
     retries = 0
     pos = init_pos # Current worm head position
-    delmonomer!(pos, mc)
     new_s = rand(rng, SpinVector)
     while true
         Zs = zeros(7)
@@ -89,10 +88,14 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
                 Zs[i] = exp(-dimer_energy_s(mc, d) / T)
             end
         end
+        if sum(Zs) == 0.0
+            break
+        end
         Zs[7] = exp(-site_energy_s(mc, pos, new_s) / T)
 
         i = sample(rng, 1:7, Zs)
         if i == 7
+            delmonomer!(init_pos, mc)
             addmonomer!(pos, new_s, mc)
             break
         end
