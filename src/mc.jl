@@ -51,10 +51,12 @@ struct WignerMC{AlgType, BiasType} <: AbstractMC
     spinks::PeriodicArray{ComplexF64, 3}    # Fourier transformed spins
     ηks::PeriodicArray{ComplexF64, 3}       # Fourier transformed ηs
     corr_rad::Int                           # Radius around which to sum correlations
+
+    f::Float64          # Each sweep flips f*N spins
 end
 
 function WignerMC(; T=1.0, init_T=1.0, wigparams=default_params, B=0.0, init_B=0.0,
-    bias=nothing, Lx=48, Ly=48, corr_rad=0, algtype=:Metropolis)
+    bias=nothing, Lx=48, Ly=48, corr_rad=0, algtype=:Metropolis, f=1)
     biastype = typeof(bias)
     init_spins = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
@@ -62,7 +64,7 @@ function WignerMC(; T=1.0, init_T=1.0, wigparams=default_params, B=0.0, init_B=0
         T, init_T, wigparams, B, init_B, bias, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
-        corr_rad
+        corr_rad, f
     )
 end
 
@@ -73,12 +75,13 @@ function WignerMC(params::AbstractDict)
     init_T = get(params, :init_T, T)
     wigparams = params[:wigparams]
     corr_rad = get(params, :corr_rad, 0)
+    f = get(params, :f, 1)
 
     B = get(params, :B, 0.0)
     init_B = get(params, :init_B, B)
     bias = get(params, :bias, nothing)
 
-    return WignerMC(; T, init_T, wigparams, B, init_B, bias, Lx, Ly, corr_rad, algtype)
+    return WignerMC(; T, init_T, wigparams, B, init_B, bias, Lx, Ly, corr_rad, algtype, f)
 end
 
 struct ClusterWigMC <: AbstractMC
