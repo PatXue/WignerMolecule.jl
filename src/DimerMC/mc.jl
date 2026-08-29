@@ -13,12 +13,9 @@ struct DimerMC{AlgType} <: AbstractMC
     sks::PeriodicArray{ComplexF64, 3}
     ηks::PeriodicArray{ComplexF64, 3}       # Fourier transformed ηs
     corr_rad::Int                   # Radius around which to sum correlations
-
-    outdir::String # Output directory for spin plots
-    savefreq::Int  # No. of sweeps between saving spins
 end
 
-function DimerMC(; T, init_T, wigparams, fug, Lx, Ly, algtype=:Heatbath, corr_rad=0, outdir="", savefreq=0)
+function DimerMC(; T, init_T, wigparams, fug, Lx, Ly, algtype=:Heatbath, corr_rad=0)
     init_ss = fill(zeros(SVector{2,Int}), (Lx, Ly))
     copy_ss = algtype == :Worm ? copy(init_ss) : zeros(0, 0)
     init_ssmono = fill(zeros(SpinVector), (Lx, Ly))
@@ -29,7 +26,7 @@ function DimerMC(; T, init_T, wigparams, fug, Lx, Ly, algtype=:Heatbath, corr_ra
         init_ss, copy_ss, init_ssmono, init_ηs, BitSet(1:(Lx*Ly)),
         Array{ComplexF64}(undef, (Lx, Ly, 4)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
-        corr_rad, outdir, savefreq
+        corr_rad
     )
 end
 
@@ -46,8 +43,5 @@ function DimerMC(params::AbstractDict)
     algtype = get(params, :algtype, :Heatbath)
     corr_rad = get(params, :corr_rad, 0)
 
-    outdir = get(params, :outdir, ".")
-    savefreq = get(params, :savefreq, 0)
-
-    return DimerMC(; T, init_T, wigparams, fug, Lx, Ly, algtype, corr_rad, outdir, savefreq)
+    return DimerMC(; T, init_T, wigparams, fug, Lx, Ly, algtype, corr_rad)
 end
