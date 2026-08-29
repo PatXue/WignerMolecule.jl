@@ -135,4 +135,5 @@ function Carlo.sweep!(mc::DimerMC{:Worm}, ctx::Carlo.MCContext)
         end
     end
     sweep_monomer!(mc, T, ctx.rng)
+    sweep_η!(mc, T, rng)
 end
