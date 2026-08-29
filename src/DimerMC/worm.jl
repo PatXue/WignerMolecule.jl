@@ -64,7 +64,7 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
             copy!(mc.spins, mc.spinscopy)
         end
     end
-    return (steps, changes, retries)
+    return changes
 end
 
 """
