@@ -12,7 +12,8 @@ struct DimerMC{AlgType} <: AbstractMC
 
     sks::PeriodicArray{ComplexF64, 3}
     ηks::PeriodicArray{ComplexF64, 3}       # Fourier transformed ηs
-    corr_rad::Int                   # Radius around which to sum correlations
+    corr_rad::Int                           # Radius around which to sum correlations
+    Nw::Ref{Expectation}                    # Average size of worm
 end
 
 function DimerMC(; T, init_T, wigparams, fug, Lx, Ly, algtype=:Heatbath, corr_rad=0)
@@ -20,13 +21,14 @@ function DimerMC(; T, init_T, wigparams, fug, Lx, Ly, algtype=:Heatbath, corr_ra
     copy_ss = algtype == :Worm ? copy(init_ss) : zeros(0, 0)
     init_ssmono = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
+    Nw = Ref{Expectation}(Expectation(0.0,0))
 
     return DimerMC{algtype}(
         T, init_T, wigparams, fug,
         init_ss, copy_ss, init_ssmono, init_ηs, BitSet(1:(Lx*Ly)),
         Array{ComplexF64}(undef, (Lx, Ly, 4)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
-        corr_rad
+        corr_rad, Nw
     )
 end
 

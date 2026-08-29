@@ -80,7 +80,6 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
 
     steps = 0
     changes = 0
-    retries = 0
     pos = init_pos # Current worm head position
     new_s = rand(rng, SpinVector)
     while true
@@ -113,25 +112,39 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
 
         if steps > 100 * length(mc.spins) # Retry after loop exceeds 100N
             steps = 0
-            retries += 1
             pos = init_pos
             copy!(mc.spins, mc.spinscopy)
         end
     end
-    return (steps, changes, retries)
+    return changes
 end
 
 function Carlo.sweep!(mc::DimerMC{:Worm}, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
+    N = Lx * Ly
     T = calc_temp(mc, ctx)
     rng = ctx.rng
     sweep_dimer!(mc, T, rng)
-    for _ in 1:max(Lx, Ly)
-        pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
-        if ismonomer(pos, mc)
-            worm_mono!(mc, pos, ctx)
-        else
-            worm_dimer!(mc, pos, ctx)
+    if !is_thermalized(ctx)
+        tot_changes = 0
+        while tot_changes < N
+            pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+            if ismonomer(pos, mc)
+                changes = worm_mono!(mc, pos, ctx) + 1
+            else
+                changes = worm_dimer!(mc, pos, ctx) + 1
+            end
+            tot_changes += changes
+            mc.Nw[] = addsample(mc.Nw[], changes)
+        end
+    else
+        for _ in 1:cld(N, (mc.Nw[]).val)
+            pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+            if ismonomer(pos, mc)
+                worm_mono!(mc, pos, ctx)
+            else
+                worm_dimer!(mc, pos, ctx)
+            end
         end
     end
     sweep_monomer!(mc, T, ctx.rng)
