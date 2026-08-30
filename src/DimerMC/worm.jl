@@ -64,7 +64,7 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
             copy!(mc.spins, mc.spinscopy)
         end
     end
-    return changes
+    return (changes, retries)
 end
 
 """
@@ -118,7 +118,7 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, ctx::Carlo.MCContext)
             copy!(mc.spins, mc.spinscopy)
         end
     end
-    return changes
+    return (changes, retries)
 end
 
 function Carlo.sweep!(mc::DimerMC{:Worm}, ctx::Carlo.MCContext)
@@ -132,24 +132,27 @@ function Carlo.sweep!(mc::DimerMC{:Worm}, ctx::Carlo.MCContext)
         while tot_changes < N
             pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
             if ismonomer(pos, mc)
-                changes = worm_mono!(mc, pos, ctx)
+                changes = worm_mono!(mc, pos, ctx)[1]
             else
-                changes = worm_dimer!(mc, pos, ctx)
+                changes = worm_dimer!(mc, pos, ctx)[1]
             end
             tot_changes += changes + 1
             mc.Nw[] = addsample(mc.Nw[], changes)
         end
     else
         tot_changes = 0
-        for _ in 1:cld(N, (mc.Nw[]).val)
+        tot_retries = 0
+        worms = cld(N, (mc.Nw[]).val)
+        for _ in 1:worms
             pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
             if ismonomer(pos, mc)
-                tot_changes += worm_mono!(mc, pos, ctx)
+                (tot_changes, tot_retries) .+= worm_mono!(mc, pos, ctx)
             else
-                tot_changes += worm_dimer!(mc, pos, ctx)
+                (tot_changes, tot_retries) .+= worm_dimer!(mc, pos, ctx)
             end
         end
-        measure!(ctx, :WormChanges, tot_changes)
+        measure!(ctx, :WormChanges, tot_changes / worms)
+        measure!(ctx, :WormRetries, tot_retries / worms)
     end
     sweep_monomer!(mc, T, ctx.rng)
     sweep_η!(mc, T, rng)
