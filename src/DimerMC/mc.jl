@@ -18,7 +18,7 @@ end
 
 function DimerMC(; T, init_T, wigparams, fug, Lx, Ly, algtype=:Heatbath, corr_rad=0)
     init_ss = fill(zeros(SVector{2,Int}), (Lx, Ly))
-    copy_ss = algtype == :Worm ? copy(init_ss) : zeros(0, 0)
+    copy_ss = algtype == :Worm ? copy(init_ss) : zeros(SVector{2,Int}, 0, 0)
     init_ssmono = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     Nw = Ref{Expectation}(Expectation(0.0,0))
