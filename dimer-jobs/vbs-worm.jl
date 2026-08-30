@@ -14,7 +14,7 @@ tm.algtype = :Worm
 tm.sweeps = 50000
 tm.thermalization = 50000
 tm.binsize = 500
-Ts = 0.015:0.015:0.15
+Ts = 0.01:0.01:0.15
 Ls = [48]
 fugs = [0.1, 0.5, 1.0, 5.0]
 for (T, L, fug) in Iterators.product(Ts, Ls, fugs)
