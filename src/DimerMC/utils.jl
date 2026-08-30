@@ -27,6 +27,7 @@ function inttopos(n, mc::DimerMC)
 end
 function addmonomer!(pos, s, mc::DimerMC)
     mc.monospins[pos...] = s
+    mc.spins[pos...] = pos
     push!(mc.monomers, postoint(pos, mc))
 end
 function delmonomer!(pos, mc::DimerMC)
@@ -66,13 +67,13 @@ function validate_mc(mc::DimerMC)
         x,y = Tuple(I)
         pos = SVector(x, y)
         posj = mc.spins[pos...]
-        @assert areneighbors(pos, posj, mc)
         @assert mod_equiv(pos, mc.spins[posj...], mc)
         if ismonomer(pos, mc)
             @assert mod_equiv(pos, posj, mc)
             @assert postoint((x,y), mc) in mc.monomers
             @assert norm(mc.monospins[pos...]) ≈ 1.0
         else
+            @assert areneighbors(pos, posj, mc)
             @assert !mod_equiv(pos, posj, mc)
             @assert !(postoint((x,y), mc) in mc.monomers)
             @assert norm(mc.monospins[pos...]) == 0.0
