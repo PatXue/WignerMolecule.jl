@@ -63,6 +63,8 @@ function Carlo.write_checkpoint(mc::DimerMC, out::HDF5.Group)
     out["spins"] = mc.spins
     out["monospins"] = mc.monospins
     out["etas"] = mc.ηs
+    out["Nw_val"] = (mc.Nw[]).val
+    out["Nw_n"] = (mc.Nw[]).n
     return nothing
 end
 function Carlo.read_checkpoint!(mc::DimerMC, in::HDF5.Group)
@@ -76,6 +78,7 @@ function Carlo.read_checkpoint!(mc::DimerMC, in::HDF5.Group)
     end
     raw_ηs = read(in, "etas")
     mc.ηs .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_ηs)
+    mc.Nw[] = Expectation(read(in, "Nw_val"), read(in, "Nw_n"))
     return nothing
 end
 
