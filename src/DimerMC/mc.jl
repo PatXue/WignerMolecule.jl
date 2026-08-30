@@ -5,7 +5,6 @@ struct DimerMC{AlgType} <: AbstractMC
     fug::Float64        # Fugacity of a dimer
 
     spins::PeriodicMatrix{SVector{2,Int}}  # Matrix holding position (x,y) of entangled partner
-    spinscopy::PeriodicMatrix{SVector{2,Int}}
     monospins::PeriodicMatrix{SpinVector}
     ηs::PeriodicMatrix{SpinVector}
     monomers::BitSet
@@ -18,14 +17,13 @@ end
 
 function DimerMC(; T=0, init_T=0, wigparams=default_params, fug=1.0, Lx=48, Ly=48, algtype=:Heatbath, corr_rad=0)
     init_ss = fill(zeros(SVector{2,Int}), (Lx, Ly))
-    copy_ss = algtype == :Worm ? copy(init_ss) : zeros(SVector{2,Int}, 0, 0)
     init_ssmono = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
-    Nw = Ref{Expectation}(Expectation(0.0,0))
+    Nw = Ref{Expectation}(Expectation(Lx, 0))
 
     return DimerMC{algtype}(
         T, init_T, wigparams, fug,
-        init_ss, copy_ss, init_ssmono, init_ηs, BitSet(1:(Lx*Ly)),
+        init_ss, init_ssmono, init_ηs, BitSet(0:Lx*Ly-1),
         Array{ComplexF64}(undef, (Lx, Ly, 4)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         corr_rad, Nw
