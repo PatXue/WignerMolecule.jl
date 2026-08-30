@@ -127,7 +127,7 @@ function Carlo.sweep!(mc::ClusterWigMC, ctx::Carlo.MCContext)
     end
     if !is_thermalized(ctx)
         flipped = 0
-        while flipped < N
+        while flipped < ceil(mc.mc.f * N)
             Nc = cluster_spin!(mc.mc, T, rng)
             flipped += Nc
             mc.Nc[] = addsample(mc.Nc[], Nc)
