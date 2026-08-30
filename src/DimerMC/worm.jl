@@ -139,14 +139,14 @@ function Carlo.sweep!(mc::DimerMC{:Worm}, ctx::Carlo.MCContext)
     if !is_thermalized(ctx)
         tot_changes = 0
         while tot_changes < N
-            changes = -1
-            while changes != -1
-                pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
-                if ismonomer(pos, mc)
-                    changes = worm_mono!(mc, pos, T, rng)
-                else
-                    changes = worm_dimer!(mc, pos, T, rng)
-                end
+            pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
+            if ismonomer(pos, mc)
+                changes = worm_mono!(mc, pos, T, rng)
+            else
+                changes = worm_dimer!(mc, pos, T, rng)
+            end
+            if changes == -1
+                continue
             end
             tot_changes += changes + 1
             mc.Nw[] = addsample(mc.Nw[], changes+1)
@@ -157,15 +157,16 @@ function Carlo.sweep!(mc::DimerMC{:Worm}, ctx::Carlo.MCContext)
         tot_retries = 0
         worms = cld(N, (mc.Nw[]).val)
         for _ in 1:worms
+            retries = 0
             pos = SVector(rand(rng, 1:Lx), rand(rng, 1:Ly))
-            changes = retries = -1
-            while changes != -1
-                if ismonomer(pos, mc)
-                    changes = worm_mono!(mc, pos, T, rng)
-                else
-                    changes = worm_dimer!(mc, pos, T, rng)
-                end
+            if ismonomer(pos, mc)
+                changes = worm_mono!(mc, pos, T, rng)
+            else
+                changes = worm_dimer!(mc, pos, T, rng)
+            end
+            if changes == -1
                 retries += 1
+                continue
             end
             tot_changes += changes
             tot_retries += retries
