@@ -60,6 +60,7 @@ function validate_mc(mc::DimerMC)
         x,y = Tuple(I)
         pos = SVector(x, y)
         posj = mc.spins[pos...]
+        @assert areneighbors(pos, posj, mc)
         @assert mod_equiv(pos, mc.spins[posj...], mc)
         if ismonomer(pos, mc)
             @assert mod_equiv(pos, posj, mc)
