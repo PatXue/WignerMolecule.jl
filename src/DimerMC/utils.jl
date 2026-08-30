@@ -35,6 +35,12 @@ function delmonomer!(pos, mc::DimerMC)
 end
 
 randmonomer(mc::DimerMC, rng=default_rng()) = inttopos(rand(rng, mc.monomers), mc)
+function randdimer(mc::DimerMC, rng=default_rng())
+    N = length(mc.spins)
+    dimers = setdiff(BitSet(0:N-1), mc.monomers)
+    pos = inttopos(rand(rng, dimers), mc)
+    return pos
+end
 
 # Perform Fourier transform on MC, updating preallocated ηks matrix
 function update_fourier!(mc::DimerMC)

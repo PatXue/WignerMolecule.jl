@@ -65,7 +65,8 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, T, rng)
         if steps > 100 * length(mc.spins) # Retry after loop exceeds 100N
             steps = 0
             retries += 1
-            pos = init_pos
+            pos = randdimer(mc, rng)
+            posf = mc.spins[pos...]
             for (n, nj) in pairs(worm)
                 mc.spins[inttopos(n, mc)...] = inttopos(nj, mc)
             end
@@ -126,7 +127,7 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, T, rng)
         if steps > 100 * length(mc.spins) # Retry after loop exceeds 100N
             steps = 0
             retries += 1
-            pos = init_pos
+            pos = randmonomer(mc, rng)
             for (n, nj) in pairs(worm)
                 mc.spins[inttopos(n, mc)...] = inttopos(nj, mc)
             end
