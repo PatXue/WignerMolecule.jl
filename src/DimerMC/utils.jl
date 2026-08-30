@@ -16,25 +16,25 @@ function add_dimer!(d::Dimer, mc::DimerMC)
 end
 
 # Monomer BitSet handling functions
-function addmonomer!(pos, s, mc::DimerMC)
+function postoint(pos, mc::DimerMC)
     Lx = size(mc.spins, 1)
-    pos = mod1.(pos, size(mc.spins))
-    mc.spins[pos...] = pos
+    pos = mod.(pos, size(mc.spins))
+    return pos[1] + Lx * pos[2]
+end
+function inttopos(n, mc::DimerMC)
+    Lx = size(mc.spins, 1)
+    return SVector{2,Int}(n % Lx, fld(n, Lx))
+end
+function addmonomer!(pos, s, mc::DimerMC)
     mc.monospins[pos...] = s
-    push!(mc.monomers, pos[1] + Lx * pos[2])
+    push!(mc.monomers, postoint(pos, mc))
 end
 function delmonomer!(pos, mc::DimerMC)
-    Lx = size(mc.spins, 1)
-    pos = mod1.(pos, size(mc.spins))
-    pop!(mc.monomers, pos[1] + Lx * pos[2])
     mc.monospins[pos...] = SVector(0,0,0)
+    pop!(mc.monomers, postoint(pos, mc))
 end
 
-function randmonomer(mc::DimerMC, rng=default_rng())
-    Lx = size(mc.spins, 1)
-    n = rand(rng, mc.monomers)
-    return SVector(div(n, Lx), n % Lx)
-end
+randmonomer(mc::DimerMC, rng=default_rng()) = inttopos(rand(rng, mc.monomers), mc)
 
 # Perform Fourier transform on MC, updating preallocated ηks matrix
 function update_fourier!(mc::DimerMC)

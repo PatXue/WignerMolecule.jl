@@ -16,7 +16,7 @@ struct DimerMC{AlgType} <: AbstractMC
     Nw::Ref{Expectation}                    # Average size of worm
 end
 
-function DimerMC(; T, init_T, wigparams, fug, Lx, Ly, algtype=:Heatbath, corr_rad=0)
+function DimerMC(; T=0, init_T=0, wigparams=default_params, fug=1.0, Lx=48, Ly=48, algtype=:Heatbath, corr_rad=0)
     init_ss = fill(zeros(SVector{2,Int}), (Lx, Ly))
     copy_ss = algtype == :Worm ? copy(init_ss) : zeros(SVector{2,Int}, 0, 0)
     init_ssmono = fill(zeros(SpinVector), (Lx, Ly))
