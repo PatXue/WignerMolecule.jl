@@ -37,7 +37,7 @@ const default_params = WignerParams(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 
 const SpinVector = SVector{3, Float64}
 # Note: Using temperature in units of energy (k_B = 1)
-struct WignerMC{AlgType, BiasType} <: AbstractMC
+mutable struct WignerMC{AlgType, BiasType} <: AbstractMC
     T::Float64          # Temperature
     init_T::Float64     # Initial temperature (for thermalization)
     params::WignerParams

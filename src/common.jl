@@ -184,3 +184,15 @@ function Carlo.parallel_tempering_change_parameter!(mc, param_name::Symbol, new_
     end
     mc.T = new_val
 end
+function Carlo.parallel_tempering_log_weight_ratio(mc::ClusterWigMC, param_name::Symbol, new_val)
+    if param_name != :T
+        throw(ArgumentError("Parallel tempering only supported for T"))
+    end
+    return -(1/new_val - 1/mc.T) * total_energy(mc.mc)
+end
+function Carlo.parallel_tempering_change_parameter!(mc::ClusterWigMC, param_name::Symbol, new_val)
+    if param_name != :T
+        throw(ArgumentError("Parallel tempering only supported for T"))
+    end
+    mc.mc.T = new_val
+end
