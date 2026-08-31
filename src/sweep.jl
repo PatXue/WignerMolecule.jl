@@ -118,23 +118,23 @@ function cluster_spin!(mc, T, rng)
     return length(cluster)
 end
 
-function Carlo.sweep!(mc::ClusterWigMC, ctx::Carlo.MCContext)
+function Carlo.sweep!(mc::WignerMC{:Cluster}, ctx::Carlo.MCContext)
     rng = ctx.rng
-    T = calc_temp(mc.mc, ctx)
-    N = length(mc.mc.spins)
-    for _ in 1:ceil(mc.mc.f * N)
-        flip_eta!(mc.mc, T, rng)
+    T = calc_temp(mc, ctx)
+    N = length(mc.spins)
+    for _ in 1:ceil(mc.f * N)
+        flip_eta!(mc, T, rng)
     end
     if !is_thermalized(ctx)
         flipped = 0
-        while flipped < ceil(mc.mc.f * N)
-            Nc = cluster_spin!(mc.mc, T, rng)
+        while flipped < ceil(mc.f * N)
+            Nc = cluster_spin!(mc, T, rng)
             flipped += Nc
             mc.Nc[] = addsample(mc.Nc[], Nc)
         end
     else
-        for _ in 1:cld(mc.mc.f * N, (mc.Nc[]).val)
-            cluster_spin!(mc.mc, T, rng)
+        for _ in 1:cld(mc.f * N, (mc.Nc[]).val)
+            cluster_spin!(mc, T, rng)
         end
     end
     return nothing

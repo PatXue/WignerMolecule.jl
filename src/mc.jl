@@ -52,7 +52,8 @@ mutable struct WignerMC{AlgType, BiasType} <: AbstractMC
     ηks::PeriodicArray{ComplexF64, 3}       # Fourier transformed ηs
     corr_rad::Int                           # Radius around which to sum correlations
 
-    f::Float64          # Each sweep flips f*N spins
+    f::Float64              # Each sweep flips f*N spins
+    Nc::Ref{Expectation}    # Avg cluster size
 end
 
 function WignerMC(; T=1.0, init_T=1.0, wigparams=default_params, B=0.0, init_B=0.0,
@@ -64,7 +65,7 @@ function WignerMC(; T=1.0, init_T=1.0, wigparams=default_params, B=0.0, init_B=0
         T, init_T, wigparams, B, init_B, bias, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
-        corr_rad, f
+        corr_rad, f, Ref{Expectation}(Expectation(0.0, 0))
     )
 end
 
@@ -82,14 +83,4 @@ function WignerMC(params::AbstractDict)
     bias = get(params, :bias, nothing)
 
     return WignerMC(; T, init_T, wigparams, B, init_B, bias, Lx, Ly, corr_rad, algtype, f)
-end
-
-struct ClusterWigMC <: AbstractMC
-    mc::WignerMC{:Cluster, Nothing}
-    Nc::Ref{Expectation}
-end
-
-function ClusterWigMC(params::AbstractDict)
-    params[:algtype] = :Cluster
-    return ClusterWigMC(WignerMC(params), Ref(Expectation(0.0, 0)))
 end
