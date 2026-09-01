@@ -11,25 +11,29 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "stripe-crit"
 tm.init_type = :stripe
-tm.algtype = :Heatbath
+tm.algtype = :Cluster
+tm.sweeps = 100000
+tm.thermalization = 100000
+tm.binsize = 1000
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
-tm.sweeps = 200000
-tm.thermalization = 200000
-tm.binsize = 1000
-Ls = [48, 72, 96]
-Ts = 0.08:0.0002:0.082
+Ls = [36, 48]
+Ts = collect(0.08:0.0001:0.0815)
+tm.parallel_tempering = (
+    mc = WignerMC,
+    parameter = :T,
+    values = Ts,
+    interval = 10
+)
 for L in Ls
     tm.Lx = tm.Ly = L
-    for T in Ts
-        tm.T = T
-        task(tm)
-    end
+    task(tm)
 end
 
-job = JobInfo("$jobname", WignerMC;
+job = JobInfo("$jobname", ParallelTemperingMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
+    ranks_per_run = length(Ts)
 )
 start(job, ARGS)
