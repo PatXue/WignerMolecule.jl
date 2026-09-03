@@ -1,5 +1,6 @@
 function bond_energy(mc::EtaMC, s::SpinVector, sj::SpinVector, ν)
     # Coupling energies
+    J = mc.params.J
     Jzz = mc.params.Jzz
     Jp = mc.params.Jp
 
