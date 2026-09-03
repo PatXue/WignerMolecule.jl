@@ -25,19 +25,19 @@ struct EtaMC <: AbstractMC
     init_T::Float64
 
     spins::PeriodicMatrix{SpinVector}
-    spinks::Array{ComplexF64, 3}        # Fourier transformed spins
+    spinks::PeriodicArray{ComplexF64, 3}        # Fourier transformed spins
 
     chis::Matrix{ComplexF64}
-    allchis::Bool
+    corr_rad::Int
 end
 
-function EtaMC(; T=1.0, init_T=1.0, B=0.0, etaparams=EtaParams(0.0,0.0), Lx=24, Ly=24, allchis=false)
+function EtaMC(; T=1.0, init_T=1.0, B=0.0, etaparams=EtaParams(0.0,0.0), Lx=24, Ly=24, corr_rad=0)
     init = fill(zeros(SpinVector), (Lx, Ly))
     return EtaMC(
         T, etaparams, B, init_T, init,
         Array{ComplexF64, 3}(undef, (Lx, Ly, 3)),
         Matrix{ComplexF64}(undef, Lx, Ly),
-        allchis
+        corr_rad
     )
 end
 
@@ -47,6 +47,6 @@ function EtaMC(params::AbstractDict)
     etaparams = params[:wigparams]
     B = get(params, :B, 0.0)
     init_T = get(params, :init_T, T)
-    allchis = get(params, :allchis, false)
-    return EtaMC(; T, init_T, B, Lx, Ly, etaparams, allchis)
+    corr_rad = get(params, :corr_rad, 0)
+    return EtaMC(; T, init_T, B, Lx, Ly, etaparams, corr_rad)
 end

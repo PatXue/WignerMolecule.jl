@@ -54,19 +54,25 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
 
     for f in (Γ, M, M2, M3)
         pos = f(Lx, Ly)
-        s = mc.spinks[pos..., :]
-        measure!(ctx, Symbol("sk_corr_", f), s*s')
-        measure!(ctx, Symbol("chik_corr_", f), mc.chis[pos...])
-    end
-    if mc.allchis
-        ifft!(mc.chis)
-        avgcorrs = zeros(div(Lx, 2))
-        for a in disps
-            avgcorrs += [mc.chis[mod1.([1,1] + i*a, (Lx, Ly))...] for i in 0:(div(Lx,2)-1)]
+        if mc.corr_rad != 0
+            x, y = pos[1], pos[2]
+            r = mc.corr_rad
+            scorr = sum(sk -> sk * sk', eachslice(mc.spinks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+        else
+            sk = mc.spinks[pos..., :]
+            scorr = sk * sk'
         end
-        avgcorrs /= 6
-        measure!(ctx, :realcorrs, avgcorrs)
+        measure!(ctx, Symbol("sk_corr_", f), scorr)
     end
+    measure!(ctx, Symbol("chik_corr_Γ"), mc.chis[1,1])
+
+    ifft!(mc.chis)
+    avgcorrs = zeros(div(Lx, 2))
+    for a in disps
+        avgcorrs += [mc.chis[mod1.([1,1] + i*a, (Lx, Ly))...] for i in 0:(div(Lx,2)-1)]
+    end
+    avgcorrs /= 6
+    measure!(ctx, :realcorrs, avgcorrs)
 
     return nothing
 end

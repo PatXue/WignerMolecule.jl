@@ -4,7 +4,7 @@ function update_fourier!(mc::EtaMC)
     for i in 1:3
         mc.spinks[:, :, i] .= getindex.(mc.spins, i)
     end
-    fft!(mc.spinks, (1, 2))
+    fft!(mc.spinks.array, (1, 2))
     mc.spinks ./= length(mc.spins)
 
     fft!(mc.chis)
