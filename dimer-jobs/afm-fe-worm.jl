@@ -17,7 +17,7 @@ tm.thermalization = 50000
 tm.binsize = 500
 Ls = [48]
 fugs = [0.1, 0.5, 1.0, 5.0]
-Ts = 0.02:0.02:0.2
+Ts = 0.04:0.02:0.2
 for (T, fug, L) in Iterators.product(Ts, fugs, Ls)
     tm.Lx = tm.Ly = L
     tm.T = T
@@ -27,7 +27,7 @@ end
 
 job = JobInfo("$jobname", DimerMC;
     run_time = "24:00:00",
-    checkpoint_time = "30:00",
+    checkpoint_time = "15:00",
     tasks = make_tasks(tm),
 )
 start(job, ARGS)
