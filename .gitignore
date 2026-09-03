@@ -4,14 +4,14 @@
 *Manifest.toml
 
 class-opt
+# Carlo outputs
 *.log
 *.data
 *.results.json
 
 *.png
 
-# High temp outputs
-high-temp/expectations.jld2
+*.jld2
 
 # Tex outputs
 *.pdf
