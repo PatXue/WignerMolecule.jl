@@ -94,5 +94,6 @@ end
 function Carlo.read_checkpoint!(mc::EtaMC, in::HDF5.Group)
     raw_spins = read(in, "spins")
     mc.spins .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_spins)
+    update_fourier!(mc)
     return nothing
 end

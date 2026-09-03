@@ -18,7 +18,7 @@ function EtaParams(params::WignerParams)
     return EtaParams(J, Jzz, Jp)
 end
 
-struct EtaMC <: AbstractMC
+struct EtaMC{AlgType} <: AbstractMC
     T::Float64
     params::EtaParams
     B::Float64
@@ -31,9 +31,10 @@ struct EtaMC <: AbstractMC
     corr_rad::Int
 end
 
-function EtaMC(; T=1.0, init_T=1.0, B=0.0, etaparams=EtaParams(0.0,0.0), Lx=24, Ly=24, corr_rad=0)
+function EtaMC(; T=1.0, init_T=1.0, B=0.0, etaparams=EtaParams(0.0,0.0), algtype=:Metropolis,
+    Lx=24, Ly=24, corr_rad=0)
     init = fill(zeros(SpinVector), (Lx, Ly))
-    return EtaMC(
+    return EtaMC{algtype}(
         T, etaparams, B, init_T, init,
         Array{ComplexF64, 3}(undef, (Lx, Ly, 3)),
         Matrix{ComplexF64}(undef, Lx, Ly),
@@ -45,8 +46,11 @@ function EtaMC(params::AbstractDict)
     Lx, Ly = params[:Lx], params[:Ly]
     T = params[:T]
     etaparams = params[:wigparams]
+
+    algtype = get(params, :algtype, :Metropolis)
     B = get(params, :B, 0.0)
     init_T = get(params, :init_T, T)
     corr_rad = get(params, :corr_rad, 0)
-    return EtaMC(; T, init_T, B, Lx, Ly, etaparams, corr_rad)
+
+    return EtaMC(; T, init_T, B, algtype, Lx, Ly, etaparams, corr_rad)
 end
