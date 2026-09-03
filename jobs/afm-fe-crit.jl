@@ -11,7 +11,7 @@ tm = TaskMaker()
 jobname = "afm-fe-crit"
 tm.init_type = :afm_fe
 tm.algtype = :Cluster
-tm.sweeps = 200000
+tm.sweeps = 400000
 tm.thermalization = 200000
 tm.binsize = 2000
 
