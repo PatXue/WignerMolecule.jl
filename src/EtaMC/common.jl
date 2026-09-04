@@ -52,7 +52,7 @@ function Carlo.measure!(mc::EtaMC, ctx::Carlo.MCContext)
     update_fourier!(mc)
     mc.chis .= abs2.(mc.chis)
 
-    for f in (Γ, M, M2, M3)
+    for f in corr_posns
         pos = f(Lx, Ly)
         if mc.corr_rad != 0
             x, y = pos[1], pos[2]
