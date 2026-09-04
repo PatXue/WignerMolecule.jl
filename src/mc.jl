@@ -1,12 +1,12 @@
 struct WignerParams
-    J_SS::Float64           # Spin-spin coupling
-    J_EzEz_SS::Float64      # Spin-ηz coupling
-    J_EzEz::Float64         # ηz coupling
+    J_SS::ComplexF64        # Spin-spin coupling
+    J_EzEz_SS::ComplexF64   # Spin-ηz coupling
+    J_EzEz::ComplexF64      # ηz coupling
     J_EAM_SS::ComplexF64    # Spin-η weird coupling (J+)
     J_EMEP_SS::ComplexF64   # Spin-η± coupling
-    J_EMEM_SS::Float64      # Spin-η- coupling
+    J_EMEM_SS::ComplexF64   # Spin-η- coupling
     J_EMEP::ComplexF64      # η± coupling
-    J_EMEM::Float64         # η- coupling
+    J_EMEM::ComplexF64      # η- coupling
 end
 
 function WignerParams(paramfile, e_r, a_M, ϕ=45, d_g=20; H0=nothing)
@@ -16,17 +16,6 @@ end
 function WignerParams(paramfile, idx; H0=nothing)
     raw_params = load_object(paramfile)[idx]
     params = [raw_params[i] for i in 1:8]
-    for i in (1, 2, 3, 6, 8)
-        try
-            convert(Float64, params[i])
-        catch e
-            if isapprox(imag(params[i]), 0, atol=1e-5)
-                params[i] = real(params[i])
-            else
-                throw(e)
-            end
-        end
-    end
     H0 = isnothing(H0) ? norm(params) : H0
     norm_params = params ./ H0
     return WignerParams(norm_params...)
