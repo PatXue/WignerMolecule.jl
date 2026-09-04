@@ -120,8 +120,8 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
     end
 
     for phase in (:fm, :stripe, :afm_fe, :afm_afe)
-        evaluate!(eval, Symbol("χeta_", phase), (Symbol("etak_", phase), Symbol("etak_corr_", phase))) do sk, sk2
-            N / T * (sk2 - sum(abs2.(sk)))
+        evaluate!(eval, Symbol("χeta_", phase), (Symbol("etak_re_", phase), Symbol("etak_im_", phase), Symbol("etak_corr_", phase))) do skr, ski, sk2
+            N / T * (sk2 - (skr^2 + ski^2))
         end
         evaluate!(eval, Symbol("etak_kurt_", phase), (Symbol("etak_corr_", phase), Symbol("etak_quar_", phase))) do sk2, sk4
             1 - sk4 / 3sk2^2
