@@ -97,7 +97,8 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
                 etacorr += abs2(a ⋅ etak)
             end
         end
-        measure!(ctx, Symbol("etak_", phase), etatot)
+        measure!(ctx, Symbol("etak_re_", phase), real(etatot))
+        measure!(ctx, Symbol("etak_im_", phase), imag(etatot))
         measure!(ctx, Symbol("etak_corr_", phase), etacorr)
         measure!(ctx, Symbol("etak_quar_", phase), etacorr^2)
     end
