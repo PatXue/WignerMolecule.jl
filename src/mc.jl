@@ -24,12 +24,18 @@ end
 # Default WignerParams values (for testing)
 const default_params = WignerParams(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 
+norm2(v) = sum(abs2.(v))
+function LinearAlgebra.norm(wp::WignerParams)
+    sqrt(norm2([wp.J_SS, wp.J_EAM_SS, wp.J_EMEM_SS, wp.J_EMEP_SS, wp.J_EzEz_SS, wp.J_EMEM, wp.J_EMEP, wp.J_EzEz]))
+end
+
 const SpinVector = SVector{3, Float64}
 # Note: Using temperature in units of energy (k_B = 1)
 mutable struct WignerMC{AlgType, BiasType} <: AbstractMC
     T::Float64          # Temperature
     init_T::Float64     # Initial temperature (for thermalization)
     params::WignerParams
+    H0::Float64         # Energy scale of params
     B::Float64          # Bias field magnitude
     init_B::Float64     # Thermalization bias field
     bias::BiasType      # Bias field pattern (normalized)
@@ -51,7 +57,7 @@ function WignerMC(; T=1.0, init_T=1.0, wigparams=default_params, B=0.0, init_B=0
     init_spins = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
     return WignerMC{algtype, biastype}(
-        T, init_T, wigparams, B, init_B, bias, init_spins, init_ηs,
+        T, init_T, wigparams, norm(wigparams), B, init_B, bias, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         corr_rad, f, Ref{Expectation}(Expectation(0.0, 0))

@@ -28,6 +28,7 @@ function save_spin(mc::WignerMC, ctx::Carlo.MCContext)
 end
 
 # Calculate temperature during thermalization
+const annealT = 0.05
 function calc_temp(mc, ctx::Carlo.MCContext)
     if is_thermalized(ctx) || mc.T == mc.init_T
         return mc.T
@@ -36,6 +37,26 @@ function calc_temp(mc, ctx::Carlo.MCContext)
         return mc.init_T + sign(ΔT) * min(abs(ΔT), abs(mc.T - mc.init_T))
     end
 end
+function calc_temp(mc::WignerMC, ctx::Carlo.MCContext)
+    if is_thermalized(ctx) || mc.T == mc.init_T
+        return mc.T
+    else
+        n = ctx.sweeps/ctx.thermalization_sweeps
+        if mc.T > mc.H0 * annealT
+            ΔT = (mc.T - mc.init_T) * 2n
+            return max(mc.init_T + ΔT, mc.T)
+        elseif n <= 1/3
+            ΔT = (mc.H0 * annealT - mc.init_T) * 3n
+            return mc.init_T + ΔT
+        elseif n <= 2/3
+            return mc.H0 * annealT
+        else
+            ΔT = (mc.T - mc.H0 * annealT) * 3(n - 2/3)
+            return mc.H0 * annealT + ΔT
+        end
+    end
+end
+
 # Calculate bias field during thermalization
 function calc_B(mc, ctx::Carlo.MCContext)
     if is_thermalized(ctx)
@@ -97,8 +118,6 @@ function chirality2(spins)
     end
     return Q / length(spins)
 end
-
-norm2(v) = sum(abs2.(v))
 
 # Randomize spins in MC
 function randomize!(mc::WignerMC)
