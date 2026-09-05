@@ -11,14 +11,14 @@ tm = TaskMaker()
 jobname = "er7"
 tm.algtype = :Heatbath
 tm.init_type = :rand
-tm.init_T = 4.0
+tm.init_T = 10.0
 tm.sweeps = 100000
 tm.thermalization = 100000
 tm.binsize = 1000
 
 Ls = [48]
 Ts = [0.5, 1.0, 1.5, 2.0, 3.0, 4.0]
-ams = 4:0.25:11
+ams = 4:0.5:11
 for (am, T, L) in Iterators.product(ams, Ts, Ls)
     tm.corr_rad = 2
     tm.Lx = tm.Ly = L
