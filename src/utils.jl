@@ -41,19 +41,22 @@ function calc_temp(mc::WignerMC, ctx::Carlo.MCContext)
     if is_thermalized(ctx) || mc.T == mc.init_T
         return mc.T
     else
-        n = ctx.sweeps/ctx.thermalization_sweeps
-        if mc.T > mc.H0 * annealT
-            ΔT = (mc.T - mc.init_T) * 2n
-            return max(mc.init_T + ΔT, mc.T)
-        elseif n <= 1/3
-            ΔT = (mc.H0 * annealT - mc.init_T) * 3n
-            return mc.init_T + ΔT
-        elseif n <= 2/3
-            return mc.H0 * annealT
-        else
-            ΔT = (mc.T - mc.H0 * annealT) * 3(n - 2/3)
-            return mc.H0 * annealT + ΔT
-        end
+        return therm_temp(mc.T, mc.H0, mc.init_T, ctx)
+    end
+end
+function therm_temp(T, H0, init_T, ctx::Carlo.MCContext)
+    n = ctx.sweeps/ctx.thermalization_sweeps
+    if T > H0 * annealT
+        ΔT = (T - init_T) * 2n
+        return max(init_T + ΔT, T)
+    elseif n <= 1/3
+        ΔT = (H0 * annealT - init_T) * 3n
+        return init_T + ΔT
+    elseif n <= 2/3
+        return H0 * annealT
+    else
+        ΔT = (T - H0 * annealT) * 3(n - 2/3)
+        return H0 * annealT + ΔT
     end
 end
 
