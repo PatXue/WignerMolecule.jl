@@ -13,21 +13,58 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
 
     update_fourier!(mc)
     for f in corr_posns
-        pos = f(Lx,Ly)
-        s = mc.sks[pos..., :]
-        η = mc.ηks[pos..., :]
-        measure!(ctx, Symbol("sk_", f), s)
-        measure!(ctx, Symbol("sk_corr_", f), abs2.(s))
-        measure!(ctx, Symbol("ηk_", f), η)
-        measure!(ctx, Symbol("ηk_corr_", f), η*η')
-        if mc.corr_rad != 0
-            r = mc.corr_rad
+        pos = convert(SVector{2,Int}, f(Lx, Ly))
+        if mc.corr_rad == 0
+            s = mc.spinks[pos..., :]
+            scorr = norm2(s)
+            eta = mc.ηks[pos..., :]
+            etacorr = eta * eta'
+        else
             x, y = pos[1], pos[2]
-            scorr = sum(sk -> abs2.(sk), mc.sks[x-r:x+r, y-r:y+r, :])
-            ηcorr = sum(ηk -> ηk*ηk', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
-            measure!(ctx, Symbol("sk_corr_near_", f), scorr)
-            measure!(ctx, Symbol("ηk_corr_near_", f), ηcorr)
+            r = mc.corr_rad
+            s = sum(eachslice(mc.spinks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+            scorr = sum(abs2, mc.spinks[x-r:x+r, y-r:y+r, :])
+            eta = sum(eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+            etacorr = sum(etak -> etak * etak', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
         end
+        measure!(ctx, Symbol("sk_", f), s)
+        measure!(ctx, Symbol("sk_corr_", f), scorr)
+        measure!(ctx, Symbol("etak_", f), eta)
+        measure!(ctx, Symbol("etak_corr_", f), etacorr)
+    end
+
+    for phase in (:fm, :stripe, :afm_fe, :afm_afe)
+        if phase == :fm
+            posns = [SVector(1,1)]
+            as = [SVector(0.0,0,1)]
+        elseif phase == :stripe
+            posns = [SVector{2,Int}(M(Lx, Ly)), SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly))]
+            as = [SVector(1/2,√3/2,0), SVector(-1.0,0,0), SVector(1/2,-√3/2,0)]
+        elseif phase == :afm_fe
+            posns = [SVector(1,1),SVector(1,1),SVector(1,1)]
+            as = [SVector(1/2,√3/2,0), SVector(-1.0,0,0), SVector(1/2,-√3/2,0)]
+        elseif phase == :afm_afe
+            posns = [SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly)), SVector{2,Int}(M(Lx, Ly))]
+            as = [SVector(0.0,1,0), SVector(-√3/2,-1/2,0), SVector(√3/2,-1/2,0)]
+        end
+        etatot = 0.0 + 0.0im
+        etacorr = 0.0
+        for (pos, a) in Iterators.zip(posns, as)
+            if mc.corr_rad != 0
+                x, y = pos[1], pos[2]
+                r = mc.corr_rad
+                etatot += sum(etak -> a ⋅ etak, eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+                etacorr += sum(etak -> abs2(a ⋅ etak), eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+            else
+                etak = mc.ηks[pos..., :]
+                etatot += a ⋅ etak
+                etacorr += abs2(a ⋅ etak)
+            end
+        end
+        measure!(ctx, Symbol("etak_re_", phase), real(etatot))
+        measure!(ctx, Symbol("etak_im_", phase), imag(etatot))
+        measure!(ctx, Symbol("etak_corr_", phase), etacorr)
+        measure!(ctx, Symbol("etak_quar_", phase), etacorr^2)
     end
 
     mc.sks .= abs2.(mc.sks)
