@@ -13,12 +13,12 @@ jobname = "stripe-crit"
 tm.init_type = :stripe
 tm.algtype = :Cluster
 tm.sweeps = 200000
-tm.thermalization = 200000
+tm.thermalization = 300000
 tm.binsize = 2000
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
 Ls = [48, 72, 96]
-Ts = collect(0.08:0.0001:0.0815)
+Ts = collect(0.0801:0.0001:0.0815)
 tm.parallel_tempering = (
     mc = WignerMC,
     parameter = :T,
