@@ -145,9 +145,9 @@ function Carlo.sweep!(mc::DimerMC{:Worm}, ctx::Carlo.MCContext)
             else
                 changes = worm_dimer!(mc, pos, T, rng)
             end
-            changes = max(0, changes)
-            tot_changes += changes + 1
-            mc.Nw[] = addsample(mc.Nw[], changes+1)
+            changes = max(1, changes)
+            tot_changes += 2 * changes
+            mc.Nw[] = addsample(mc.Nw[], 2 * changes)
         end
 
     else
