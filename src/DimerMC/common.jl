@@ -73,16 +73,19 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
     ifft!(mc.ηks.array, (1,2))
     sr_corrs = zeros(div(Lx,2), 4)
     ηr_corrs = zeros(div(Lx,2), 3)
-    for a in disps
+    for j in 1:3
+        a = oriented_disps[j]
         for i in 0:(div(Lx,2)-1)
             sr_corrs[i+1,:] .+= real.(mc.sks[mod1.([1,1] + i*a, (Lx, Ly))..., :])
             ηr_corrs[i+1,:] .+= real.(mc.ηks[mod1.([1,1] + i*a, (Lx, Ly))..., :])
+            sr_corrs[i+1,:] .+= real.(mc.sks[mod1.([1,1] - i*a, (Lx, Ly))..., :])
+            ηr_corrs[i+1,:] .+= real.(mc.ηks[mod1.([1,1] - i*a, (Lx, Ly))..., :])
         end
+        sr_corrs ./= 2
+        ηr_corrs ./= 2
+        measure!(ctx, Symbol("sr_corr_a$j"), sr_corrs)
+        measure!(ctx, Symbol("etar_corr_a$j"), ηr_corrs)
     end
-    sr_corrs ./= 6
-    ηr_corrs ./= 6
-    measure!(ctx, :sr_corrs, sr_corrs)
-    measure!(ctx, :ηr_corrs, ηr_corrs)
 
     return nothing
 end
