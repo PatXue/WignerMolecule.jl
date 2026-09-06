@@ -15,15 +15,15 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
     for f in corr_posns
         pos = convert(SVector{2,Int}, f(Lx, Ly))
         if mc.corr_rad == 0
-            s = mc.spinks[pos..., :]
+            s = mc.sks[pos..., :]
             scorr = norm2(s)
             eta = mc.ηks[pos..., :]
             etacorr = eta * eta'
         else
             x, y = pos[1], pos[2]
             r = mc.corr_rad
-            s = sum(eachslice(mc.spinks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
-            scorr = sum(abs2, mc.spinks[x-r:x+r, y-r:y+r, :])
+            s = sum(eachslice(mc.sks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+            scorr = sum(abs2, mc.sks[x-r:x+r, y-r:y+r, :])
             eta = sum(eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
             etacorr = sum(etak -> etak * etak', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
         end
