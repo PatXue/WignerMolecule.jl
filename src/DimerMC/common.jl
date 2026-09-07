@@ -16,14 +16,14 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
         pos = convert(SVector{2,Int}, f(Lx, Ly))
         if mc.corr_rad == 0
             s = mc.sks[pos..., :]
-            scorr = norm2(s)
+            scorr = s * s'
             eta = mc.ηks[pos..., :]
             etacorr = eta * eta'
         else
             x, y = pos[1], pos[2]
             r = mc.corr_rad
             s = sum(eachslice(mc.sks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
-            scorr = sum(abs2, mc.sks[x-r:x+r, y-r:y+r, :])
+            scorr = sum(sk -> sk * sk', mc.sks[x-r:x+r, y-r:y+r, :])
             eta = sum(eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
             etacorr = sum(etak -> etak * etak', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
         end
