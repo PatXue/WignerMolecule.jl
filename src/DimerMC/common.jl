@@ -71,9 +71,9 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
     mc.ηks .= abs2.(mc.ηks)
     ifft!(mc.sks.array, (1,2))
     ifft!(mc.ηks.array, (1,2))
-    sr_corrs = zeros(div(Lx,2), 4)
-    ηr_corrs = zeros(div(Lx,2), 3)
     for j in 1:3
+        sr_corrs = zeros(div(Lx,2), 4)
+        ηr_corrs = zeros(div(Lx,2), 3)
         a = oriented_disps[j]
         for i in 0:(div(Lx,2)-1)
             sr_corrs[i+1,:] .+= real.(mc.sks[mod1.([1,1] + i*a, (Lx, Ly))..., :])
