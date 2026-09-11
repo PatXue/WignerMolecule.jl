@@ -103,6 +103,24 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         measure!(ctx, Symbol("etak_quar_", phase), etacorr^2)
     end
 
+    mc.spinks .= abs2.(mc.spinks)
+    mc.ηks .= abs2.(mc.ηks)
+    ifft!(mc.spinks.array, (1, 2))
+    ifft!(mc.ηks.array, (1, 2))
+    sr_corrs = zeros(div(Lx,2))
+    ηr_corrs = zeros(div(Lx,2), 3)
+    for a in disps
+        for i in 0:(div(Lx,2)-1)
+            pos = SVector(1,1) + i*a
+            sr_corrs[i+1] += real(sum(mc.spinks[pos..., :]))
+            ηr_corrs[i+1,:] .+= real.(mc.ηks[pos..., :])
+        end
+    end
+    sr_corrs ./= 6
+    ηr_corrs ./= 6
+    measure!(ctx, Symbol("sr_corr"), sr_corrs)
+    measure!(ctx, Symbol("etar_corr"), ηr_corrs)
+
     return nothing
 end
 
