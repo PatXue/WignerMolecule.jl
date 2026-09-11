@@ -9,14 +9,15 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "vbs-inf"
 tm.init_type = :rand
+tm.algtype = :Worm
 tm.wigparams = WignerParams("all_params.jld2", 10, 6)
 
-tm.sweeps = 25000
-tm.thermalization = 25000
-tm.binsize = 250
+tm.sweeps = 10000
+tm.thermalization = 10000
+tm.binsize = 100
 tm.T = Inf
-fugs = 0.0:0.1:1.9
-Ls = [24, 48]
+fugs = 0.1:0.1:2.0
+Ls = [48]
 for (fug, L) in Iterators.product(fugs, Ls)
     tm.Lx = tm.Ly = L
     tm.fug = fug
