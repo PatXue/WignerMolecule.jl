@@ -75,13 +75,13 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
             as = [SVector(0.0,0,1)]
         elseif phase == :stripe
             posns = [SVector{2,Int}(M(Lx, Ly)), SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly))]
-            as = [SVector(1/2,-√3/2,0), SVector(1/2,√3/2,0), SVector(-1.0,0,0)]
+            as = [SVector(1/2,√3/2,0), SVector(-1.0,0,0), SVector(1/2,-√3/2,0)]
         elseif phase == :afm_fe
             posns = [SVector(1,1),SVector(1,1),SVector(1,1)]
             as = [SVector(1/2,√3/2,0), SVector(-1.0,0,0), SVector(1/2,-√3/2,0)]
         elseif phase == :afm_afe
             posns = [SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly)), SVector{2,Int}(M(Lx, Ly))]
-            as = [SVector(0.0,-1,0), SVector(√3/2,1/2,0), SVector(-√3/2,1/2,0)]
+            as = [SVector(0.0,1,0), SVector(-√3/2,-1/2,0), SVector(√3/2,-1/2,0)]
         end
         etatot = 0.0 + 0.0im
         etacorr = 0.0
