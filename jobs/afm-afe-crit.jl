@@ -13,17 +13,17 @@ jobname = "afm-afe-crit"
 tm.init_type = :afm_afe
 tm.algtype = :Cluster
 tm.sweeps = 200000
-tm.thermalization = 300000
+tm.thermalization = 200000
 tm.binsize = 1000
 
 tm.wigparams = WignerParams("all_params.jld2", 11, 7)
-Ts = range(0.035, 0.037, 10)
+Ts = collect(Iterators.flatten((0.035, range(0.0355, 0.0365, 10), 0.037)))
 Ls = [60, 72, 84]
 tm.parallel_tempering = (
     mc = WignerMC,
     parameter = :T,
     values = Ts,
-    interval = 5
+    interval = 1
 )
 for L in Ls
     tm.Lx = tm.Ly = L
