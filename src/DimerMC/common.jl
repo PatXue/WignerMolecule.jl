@@ -27,42 +27,30 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
             eta = sum(eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
             etacorr = sum(etak -> etak * etak', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
         end
-        measure!(ctx, Symbol("sk_", f), s)
         measure!(ctx, Symbol("sk_corr_", f), scorr)
-        measure!(ctx, Symbol("etak_", f), eta)
         measure!(ctx, Symbol("etak_corr_", f), etacorr)
     end
+    measure!(ctx, :n_monomer, mc.sks[1,1,4] / N)
 
-    for phase in (:fm, :stripe, :afm_fe, :afm_afe)
+    for phase in (:fm, :stripe)
         if phase == :fm
             posns = [SVector(1,1)]
             as = [SVector(0.0,0,1)]
         elseif phase == :stripe
             posns = [SVector{2,Int}(M(Lx, Ly)), SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly))]
             as = [SVector(1/2,√3/2,0), SVector(-1.0,0,0), SVector(1/2,-√3/2,0)]
-        elseif phase == :afm_fe
-            posns = [SVector(1,1),SVector(1,1),SVector(1,1)]
-            as = [SVector(1/2,√3/2,0), SVector(-1.0,0,0), SVector(1/2,-√3/2,0)]
-        elseif phase == :afm_afe
-            posns = [SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly)), SVector{2,Int}(M(Lx, Ly))]
-            as = [SVector(0.0,1,0), SVector(-√3/2,-1/2,0), SVector(√3/2,-1/2,0)]
         end
-        etatot = 0.0 + 0.0im
         etacorr = 0.0
         for (pos, a) in Iterators.zip(posns, as)
             if mc.corr_rad != 0
                 x, y = pos[1], pos[2]
                 r = mc.corr_rad
-                etatot += sum(etak -> a ⋅ etak, eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
                 etacorr += sum(etak -> abs2(a ⋅ etak), eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
             else
                 etak = mc.ηks[pos..., :]
-                etatot += a ⋅ etak
                 etacorr += abs2(a ⋅ etak)
             end
         end
-        measure!(ctx, Symbol("etak_re_", phase), real(etatot))
-        measure!(ctx, Symbol("etak_im_", phase), imag(etatot))
         measure!(ctx, Symbol("etak_corr_", phase), etacorr)
         measure!(ctx, Symbol("etak_quar_", phase), etacorr^2)
     end
