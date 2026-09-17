@@ -1,6 +1,7 @@
 struct DimerMC{AlgType} <: AbstractMC
     T::Float64          # Temperature
     init_T::Float64     # Initial temperature (for thermalization)
+    H0::Float64
     params::WignerParams
     fug::Float64        # Fugacity of a dimer
 
@@ -19,10 +20,11 @@ function DimerMC(; T=0, init_T=0, wigparams=default_params, fug=1.0, Lx=48, Ly=4
     init_ss = fill(zeros(SVector{2,Int}), (Lx, Ly))
     init_ssmono = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
+    H0 = norm(wigparams)
     Nw = Ref{Expectation}(Expectation(Lx, 0))
 
     return DimerMC{algtype}(
-        T, init_T, wigparams, fug,
+        T, init_T, H0, wigparams, fug,
         init_ss, init_ssmono, init_ηs, BitSet(0:Lx*Ly-1),
         Array{ComplexF64}(undef, (Lx, Ly, 4)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
