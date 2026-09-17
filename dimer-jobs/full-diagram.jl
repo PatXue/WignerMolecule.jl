@@ -10,9 +10,9 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "full-diagram"
 tm.init_type = :vbs
-tm.sweeps = 100000
-tm.thermalization = 100000
-tm.binsize = 1000
+tm.sweeps = 200000
+tm.thermalization = 200000
+tm.binsize = 2000
 tm.fug = 1.0
 
 Ls = [48]
