@@ -22,9 +22,7 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
         else
             x, y = pos[1], pos[2]
             r = mc.corr_rad
-            s = sum(eachslice(mc.sks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
-            scorr = sum(sk -> sk * sk', mc.sks[x-r:x+r, y-r:y+r, :])
-            eta = sum(eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+            scorr = sum(sk -> sk * sk', eachslice(mc.sks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
             etacorr = sum(etak -> etak * etak', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
         end
         measure!(ctx, Symbol("sk_corr_", f), scorr)
