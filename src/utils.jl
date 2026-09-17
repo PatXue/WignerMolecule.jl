@@ -44,13 +44,6 @@ function calc_temp(mc::WignerMC, ctx::Carlo.MCContext)
         return therm_temp(mc.T, mc.H0, mc.init_T, ctx)
     end
 end
-function calc_temp(mc::DimerMC, ctx::Carlo.MCContext)
-    if is_thermalized(ctx) || mc.T == mc.init_T
-        return mc.T
-    else
-        return therm_temp(mc.T, mc.H0, mc.init_T, ctx)
-    end
-end
 function therm_temp(T, H0, init_T, ctx::Carlo.MCContext)
     n = ctx.sweeps/ctx.thermalization_sweeps
     if T > H0 * annealT

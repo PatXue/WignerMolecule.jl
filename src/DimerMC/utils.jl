@@ -43,6 +43,14 @@ function randdimer(mc::DimerMC, rng=default_rng())
     return pos
 end
 
+function calc_temp(mc::DimerMC, ctx::Carlo.MCContext)
+    if is_thermalized(ctx) || mc.T == mc.init_T
+        return mc.T
+    else
+        return therm_temp(mc.T, mc.H0, mc.init_T, ctx)
+    end
+end
+
 # Perform Fourier transform on MC, updating preallocated ηks matrix
 function update_fourier!(mc::DimerMC)
     Lx, Ly = size(mc.spins)
