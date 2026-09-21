@@ -16,16 +16,16 @@ tm.thermalization = 100000
 tm.binsize = 1000
 tm.corr_rad = 2
 
-tm.init_T = 10
+tm.init_T = 0.1
 Ls = [48]
-Ts = [0.5, 0.75, 2.0, 4.0]
+Ts = [0.005, 0.007, 0.01, 0.02, 0.04, 0.08]
 ams = 4:11
 ers = 5:11
 for (am, er, T, L) in Iterators.product(ams, ers, Ts, Ls)
     tm.Lx = tm.Ly = L
     tm.am = am
     tm.er = er
-    tm.wigparams = WignerParams("all_params.jld2", er, am, H0=1)
+    tm.wigparams = WignerParams("all_params.jld2", er, am)
     tm.T = T
     task(tm)
 end
