@@ -18,7 +18,7 @@ tm.corr_rad = 2
 
 tm.init_T = 0.1
 Ls = [48]
-Ts = [0.005, 0.007, 0.01, 0.02, 0.04, 0.08]
+Ts = [0.005, 0.007, 0.01, 0.02, 0.04, 0.08, 0.12]
 ams = 4:11
 ers = 5:11
 for (am, er, T, L) in Iterators.product(ams, ers, Ts, Ls)
