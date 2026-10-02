@@ -85,22 +85,29 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         end
         etatot = 0.0 + 0.0im
         etacorr = 0.0
+        etacomp = 0.0 + 0.0im
         for i in eachindex(posns, as)
+            pos = posns[i]
+            a = as[i]
             if mc.corr_rad != 0
                 x, y = pos[1], pos[2]
                 r = mc.corr_rad
-                eta = sum(etak -> a ⋅ etak, eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
+                etaks = eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2))
+                eta = sum(etak -> a ⋅ etak, etaks)
             else
                 etak = mc.ηks[pos..., :]
                 eta = a ⋅ etak
             end
             etatot += eta
             etacorr += abs2(eta)
+            etacomp += abs2(eta) * ω^(i-1)
         end
         measure!(ctx, Symbol("etak_re_", phase), real(etatot))
         measure!(ctx, Symbol("etak_im_", phase), imag(etatot))
         measure!(ctx, Symbol("etak_corr_", phase), etacorr)
         measure!(ctx, Symbol("etak_quar_", phase), etacorr^2)
+        measure!(ctx, Symbol("rho_", phase), etacomp)
+        measure!(ctx, Symbol("rho_quar_", phase), abs2(etacomp))
     end
 
     mc.spinks .= abs2.(mc.spinks)
