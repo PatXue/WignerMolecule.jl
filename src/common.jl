@@ -152,7 +152,7 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
             1 - sk4 / 3sk2^2
         end
         evaluate!(eval, Symbol("rho_kurt_", phase), (Symbol("rho_", phase), Symbol("rho_quar_", phase))) do rk2, rk4
-            1 - rk4 / 3rk2^2
+            1 - rk4 / 3abs2(rk2)
         end
     end
 
