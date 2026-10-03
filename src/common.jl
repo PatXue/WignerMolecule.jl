@@ -83,7 +83,6 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
             posns = [SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly)), SVector{2,Int}(M(Lx, Ly))]
             as = [SVector(0.0,1,0), SVector(-√3/2,-1/2,0), SVector(√3/2,-1/2,0)]
         end
-        etatot = 0.0 + 0.0im
         etacorr = 0.0
         etacomp = 0.0 + 0.0im
         for i in eachindex(posns, as)
@@ -98,12 +97,11 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
                 etak = mc.ηks[pos..., :]
                 eta = a ⋅ etak
             end
-            etatot += eta
             etacorr += abs2(eta)
             etacomp += abs2(eta) * ω^(i-1)
+            measure!(ctx, Symbol("etak_corr_", phase, i), abs2(eta))
+            measure!(ctx, Symbol("etak_quar_", phase, i), abs2(eta)^2)
         end
-        measure!(ctx, Symbol("etak_re_", phase), real(etatot))
-        measure!(ctx, Symbol("etak_im_", phase), imag(etatot))
         measure!(ctx, Symbol("etak_corr_", phase), etacorr)
         measure!(ctx, Symbol("etak_quar_", phase), etacorr^2)
         measure!(ctx, Symbol("rho_", phase), etacomp)
@@ -145,14 +143,16 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
     end
 
     for phase in (:fm, :stripe, :afm_fe, :afm_afe)
-        evaluate!(eval, Symbol("χeta_", phase), (Symbol("etak_re_", phase), Symbol("etak_im_", phase), Symbol("etak_corr_", phase))) do skr, ski, sk2
-            N / T * (sk2 - (skr^2 + ski^2))
+        evaluate!(eval, Symbol("χeta_", phase), (Symbol("etak_corr_", phase),)) do sk2
+            N / T * sk2
         end
         evaluate!(eval, Symbol("etak_kurt_", phase), (Symbol("etak_corr_", phase), Symbol("etak_quar_", phase))) do sk2, sk4
             1 - sk4 / 3sk2^2
         end
-        evaluate!(eval, Symbol("rho_kurt_", phase), (Symbol("rho_", phase), Symbol("rho_quar_", phase))) do rk2, rk4
-            1 - rk4 / 3abs2(rk2)
+        for i in 1:3
+            evaluate!(eval, Symbol("etak_kurt_", phase, i), (Symbol("etak_corr_", phase, i), Symbol("etak_quar_", phase, i))) do sk2, sk4
+                1 - sk4 / 3sk2^2
+            end
         end
     end
 
