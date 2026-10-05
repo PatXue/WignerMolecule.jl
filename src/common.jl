@@ -100,14 +100,15 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
                 corr = abs2(a ⋅ etak)
             end
             etacorr += corr
-            etacomp += corr * ω^(i-1)
+            etacomp += sqrt(corr) * ω^(i-1)
             measure!(ctx, Symbol("etak_corr_", phase, i), corr)
             measure!(ctx, Symbol("etak_quar_", phase, i), corr^2)
         end
         measure!(ctx, Symbol("etak_corr_", phase), etacorr)
         measure!(ctx, Symbol("etak_quar_", phase), etacorr^2)
         measure!(ctx, Symbol("rho_", phase), etacomp)
-        measure!(ctx, Symbol("rho_quar_", phase), abs2(etacomp))
+        measure!(ctx, Symbol("rho_corr_", phase), abs2(etacomp))
+        measure!(ctx, Symbol("rho_quar_", phase), abs2(etacomp)^2)
     end
 
     mc.spinks .= abs2.(mc.spinks)
