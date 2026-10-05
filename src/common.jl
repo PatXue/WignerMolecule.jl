@@ -93,14 +93,16 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
                 r = mc.corr_rad
                 etaks = eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2))
                 eta = sum(etak -> a ⋅ etak, etaks)
+                corr = sum(etak -> abs2(a ⋅ etak), etaks)
             else
                 etak = mc.ηks[pos..., :]
                 eta = a ⋅ etak
+                corr = abs2(a ⋅ etak)
             end
-            etacorr += abs2(eta)
-            etacomp += abs2(eta) * ω^(i-1)
-            measure!(ctx, Symbol("etak_corr_", phase, i), abs2(eta))
-            measure!(ctx, Symbol("etak_quar_", phase, i), abs2(eta)^2)
+            etacorr += corr
+            etacomp += corr * ω^(i-1)
+            measure!(ctx, Symbol("etak_corr_", phase, i), corr)
+            measure!(ctx, Symbol("etak_quar_", phase, i), corr^2)
         end
         measure!(ctx, Symbol("etak_corr_", phase), etacorr)
         measure!(ctx, Symbol("etak_quar_", phase), etacorr^2)
