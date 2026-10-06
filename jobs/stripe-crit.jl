@@ -12,9 +12,9 @@ tm = TaskMaker()
 jobname = "stripe-crit"
 tm.init_type = :stripe
 tm.algtype = :Cluster
-tm.sweeps = 400000
-tm.thermalization = 200000
-tm.binsize = 2000
+tm.sweeps = 200000
+tm.thermalization = 400000
+tm.binsize = 1000
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
 Ls = [60, 72, 84]
