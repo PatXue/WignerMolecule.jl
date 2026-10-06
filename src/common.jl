@@ -152,6 +152,9 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
         evaluate!(eval, Symbol("etak_kurt_", phase), (Symbol("etak_corr_", phase), Symbol("etak_quar_", phase))) do sk2, sk4
             1 - sk4 / 3sk2^2
         end
+        evaluate!(eval, Symbol("rho_kurt_", phase), (Symbol("rho_corr_", phase), Symbol("rho_quar_", phase))) do sk2, sk4
+            1 - sk4 / 3sk2^2
+        end
 
         if phase != :fm
             for i in 1:3
