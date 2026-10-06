@@ -104,7 +104,8 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
         end
         measure!(ctx, Symbol("etak_corr_", phase), etacorr)
         measure!(ctx, Symbol("etak_quar_", phase), etacorr^2)
-        measure!(ctx, Symbol("rho_", phase), etacomp)
+        measure!(ctx, Symbol("rho_re_", phase), real(etacomp))
+        measure!(ctx, Symbol("rho_im_", phase), imag(etacomp))
         measure!(ctx, Symbol("rho_corr_", phase), abs2(etacomp))
         measure!(ctx, Symbol("rho_quar_", phase), abs2(etacomp)^2)
     end
