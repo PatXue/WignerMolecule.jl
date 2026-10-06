@@ -63,9 +63,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
             eta = sum(eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
             etacorr = sum(etak -> etak * etak', eachslice(mc.ηks[x-r:x+r, y-r:y+r, :], dims=(1,2)))
         end
-        measure!(ctx, Symbol("sk_", f), s)
         measure!(ctx, Symbol("sk_corr_", f), scorr)
-        measure!(ctx, Symbol("etak_", f), eta)
         measure!(ctx, Symbol("etak_corr_", f), etacorr)
     end
 
@@ -140,8 +138,8 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
     end
 
     for f in (Γ, M, half_M, part_K)
-        evaluate!(eval, Symbol("χs_", f), (Symbol("sk_", f), Symbol("sk_corr_", f))) do sk, sk2
-            N / T * (sk2 - sum(abs2.(sk)))
+        evaluate!(eval, Symbol("χs_", f), (Symbol("sk_corr_", f),)) do sk2
+            N / T * sk2
         end
     end
 
