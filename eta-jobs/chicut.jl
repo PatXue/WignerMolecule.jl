@@ -19,11 +19,11 @@ for (d, Jp, T, L) in Iterators.product(diffs, Jps, Ts, Ls)
     tm.thermalization = 50000
     tm.binsize = 250
 
-    tm.wigparams = EtaParams(Jz, 0.9)
     tm.T = T
     tm.Lx = tm.Ly = L
     tm.Jp = Jp
     tm.Jz = max(1.0, Jp) + d
+    tm.wigparams = EtaParams(tm.Jz, Jp)
     tm.init_type = (d > 0) ? :fm : ((Jp > 1) ? :stripe : :fe)
     task(tm)
 end
