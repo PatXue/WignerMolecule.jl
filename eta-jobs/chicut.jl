@@ -11,10 +11,10 @@ tm.B = 0.001
 tm.allchis = true
 
 Ls = [60]
-Ts = [0.1, 0.75, 1.25]
+Ts = [0.1, 0.5, 0.75, 1.0, 1.25]
+diffs = [-0.15, -0.05, -0.025, 0.05, 0.1, 0.2]
 Jps = Iterators.flatten((range(0.0, 0.9, 5), range(1.1, 2.0, 5)))
-diffs = [-0.15, -0.05, 0.05, 0.1, 0.2]
-for (d, Jp, T, L) in Iterators.product(diffs, Jps, Ts, Ls)
+for (Jp, d, T, L) in Iterators.product(Jps, diffs, Ts, Ls)
     tm.sweeps = 50000
     tm.thermalization = 50000
     tm.binsize = 250
