@@ -18,7 +18,7 @@ tm.binsize = 1000
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
 Ls = [60, 72, 84]
-Ts = collect(Iterators.flatten((0.079, range(0.0795, 0.081, 10), 0.082)))
+Ts = collect(range(0.07, 0.08, 12))
 tm.Ts = Ts
 tm.init_T = 1.0
 tm.corr_rad = 2
