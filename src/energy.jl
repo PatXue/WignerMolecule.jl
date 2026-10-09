@@ -177,7 +177,7 @@ Calculate spin field on `pos` due to `posj`
 """
 bond_field_s(mc::WignerMC, pos, posj) = ssfactor(mc, Dimer(pos, posj)) * mc.spins[posj...] / 2
 
-function site_field_s(mc::WignerMC, pos)
+function site_field_s(mc, pos)
     B = [0,0,0]
     for disp in disps
         posj = pos + disp
@@ -185,7 +185,7 @@ function site_field_s(mc::WignerMC, pos)
     end
     return B
 end
-function site_field_s(mc::WignerMC, pos, B)
+function site_field_s(mc, pos, B)
     return site_field_s(mc, pos) - biasfield(mc, pos, B)
 end
 
