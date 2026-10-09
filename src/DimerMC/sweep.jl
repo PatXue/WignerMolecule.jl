@@ -71,14 +71,7 @@ end
 function sweep_monomer!(mc::DimerMC, T, rng=default_rng())
     for _ in 1:length(mc.monomers)
         pos = randmonomer(mc, rng)
-
-        old_E = site_energy_s(mc, pos, mc.monospins[pos...])
-        new_s = rand(rng, SpinVector)
-        new_E = site_energy_s(mc, pos, new_s)
-
-        if metropolisacc(new_E - old_E, T; rng)
-            mc.monospins[pos...] = new_s
-        end
+        mc.monospins[pos...] = heatbath_spin(site_field_s(mc, pos), T; rng)
     end
 end
 
