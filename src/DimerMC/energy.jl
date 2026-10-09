@@ -24,6 +24,19 @@ end
 # Energy from spin-orbit coupling on bond d with given sdot
 dimer_energy_s(mc::DimerMC, d::Dimer) = bond_energy_s(mc, d, -3/4)
 
+"""
+    bond_field_s(mc::DimerMC, pos, posj)
+
+Calculate spin field on `pos` due to `posj` (assuming `pos` is a monomer)
+"""
+function bond_field_s(mc::DimerMC, pos, posj)
+    if !ismonomer(posj, mc)
+        return zeros(3)
+    else
+        return ssfactor(mc, Dimer(pos, posj)) * mc.monospins[posj...] / 2
+    end
+end
+
 function site_energy_s(mc::DimerMC, pos, s)
     E = 0.0
     for disp in disps
