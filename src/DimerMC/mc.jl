@@ -46,7 +46,7 @@ function DimerMC(params::AbstractDict)
     end
     algtype = get(params, :algtype, :Heatbath)
     corr_rad = get(params, :corr_rad, 0)
-    realcorrs = get(param, :realcorrs, false)
+    realcorrs = get(params, :realcorrs, false)
 
     return DimerMC(; T, init_T, wigparams, fug, Lx, Ly, algtype, corr_rad, realcorrs)
 end
