@@ -47,7 +47,7 @@ end
 function therm_temp(T, H0, init_T, ctx::Carlo.MCContext)
     n = ctx.sweeps/ctx.thermalization_sweeps
     if T > H0 * annealT
-        ΔT = (T - init_T) * 2n
+        ΔT = (T - init_T) * 3n
         return max(init_T + ΔT, T)
     elseif n <= 1/3
         ΔT = (H0 * annealT - init_T) * 3n
