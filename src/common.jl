@@ -156,6 +156,12 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
         end
 
         if phase != :fm
+            corrs = [Symbol("etak_corr_", phase, i) for i in 1:3]
+            quars = [Symbol("etak_quar_", phase, i) for i in 1:3]
+            evaluate!(eval, Symbol("bind_", phase), Tuple(vcat(corrs, quars))) do c1, c2, c3, q1, q2, q3
+                1 - (q1+q2+q3) / (c1+c2+c3)^2
+            end
+
             for i in 1:3
                 evaluate!(eval, Symbol("etak_kurt_", phase, i),
                     (Symbol("etak_corr_", phase, i), Symbol("etak_quar_", phase, i))) do sk2, sk4
