@@ -11,12 +11,13 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "stripe-high-t"
 tm.init_type = :stripe
+tm.algtype = :ClusterEta
 
 raw_params = load_object("all_params.jld2")[(45, 5, 20, 6)]
 norm_params = raw_params ./ norm(raw_params)
 tm.wigparams = WignerParams(norm_params...)
 Ls = [8]
-βs = 1:12
+βs = 1:11
 for (β,L) in Iterators.product(βs, Ls)
     tm.Lx = tm.Ly = L
     tm.sweeps = 20000
@@ -27,7 +28,7 @@ for (β,L) in Iterators.product(βs, Ls)
     task(tm)
 end
 
-job = JobInfo("$jobname", ClusterWigMC;
+job = JobInfo("$jobname", WignerMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
