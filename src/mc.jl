@@ -48,7 +48,8 @@ mutable struct WignerMC{AlgType, BiasType} <: AbstractMC
     corr_rad::Int                           # Radius around which to sum correlations
 
     f::Float64              # Each sweep flips f*N spins
-    Nc::Ref{Expectation}    # Avg cluster size
+    Nc::Expectation         # Avg cluster size
+    Nc_eta::Expectation      # Avg eta cluster size
 end
 
 function WignerMC(; T=1.0, init_T=1.0, wigparams=default_params, B=0.0, init_B=0.0,
@@ -60,7 +61,7 @@ function WignerMC(; T=1.0, init_T=1.0, wigparams=default_params, B=0.0, init_B=0
         T, init_T, wigparams, norm(wigparams), B, init_B, bias, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
-        corr_rad, f, Ref{Expectation}(Expectation(0.0, 0))
+        corr_rad, f, Expectation(0.0, 0), Expectation(0.0, 0)
     )
 end
 

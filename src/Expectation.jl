@@ -1,6 +1,6 @@
 module Expectations
 
-export Expectation, combine, addsample
+export Expectation, combine, addsample, addsample!
 
 mutable struct Expectation
     val::Float64    # Value of measured expectation
