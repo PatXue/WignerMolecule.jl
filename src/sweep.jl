@@ -194,7 +194,7 @@ function Carlo.sweep!(mc::WignerMC{:Cluster}, ctx::Carlo.MCContext)
             addsample!(mc.Nc, Nc)
         end
     else
-        for _ in 1:cld(mc.f * N, (mc.Nc[]).val)
+        for _ in 1:cld(mc.f * N, mc.Nc.val)
             cluster_spin!(mc, T, rng)
         end
     end
