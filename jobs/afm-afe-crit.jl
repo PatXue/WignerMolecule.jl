@@ -12,10 +12,11 @@ tm = TaskMaker()
 jobname = "afm-afe-crit"
 tm.init_type = :afm_afe
 tm.algtype = :Cluster
-tm.sweeps = 400000
+tm.sweeps = 200000
 tm.thermalization = 400000
 tm.binsize = 1000
 
+tm.init_T = 0.0363
 tm.wigparams = WignerParams("all_params.jld2", 11, 7)
 Ts = collect(Iterators.flatten((0.03575, range(0.0359, 0.0363, 10), 0.0365)))
 Ls = [60, 72, 84]
