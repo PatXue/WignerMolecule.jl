@@ -25,6 +25,7 @@ struct EtaMC{AlgType} <: AbstractMC
     params::EtaParams
     B::Float64
     init_T::Float64
+    annealT::Float64
     H0::Float64
 
     spins::PeriodicMatrix{SpinVector}
@@ -34,11 +35,11 @@ struct EtaMC{AlgType} <: AbstractMC
     corr_rad::Int
 end
 
-function EtaMC(; T=1.0, init_T=1.0, B=0.0, etaparams=EtaParams(0.0,0.0), algtype=:Metropolis,
+function EtaMC(; T=1.0, init_T=1.0, annealT=1.0, B=0.0, etaparams=EtaParams(0.0,0.0), algtype=:Metropolis,
     Lx=24, Ly=24, corr_rad=0)
     init = fill(zeros(SpinVector), (Lx, Ly))
     return EtaMC{algtype}(
-        T, etaparams, B, init_T, norm(etaparams), init,
+        T, etaparams, B, init_T, annealT, norm(etaparams), init,
         Array{ComplexF64, 3}(undef, (Lx, Ly, 3)),
         Matrix{ComplexF64}(undef, Lx, Ly),
         corr_rad
@@ -53,7 +54,8 @@ function EtaMC(params::AbstractDict)
     algtype = get(params, :algtype, :Metropolis)
     B = get(params, :B, 0.0)
     init_T = get(params, :init_T, T)
+    annealT = get(params, :annealT, 1.0)
     corr_rad = get(params, :corr_rad, 0)
 
-    return EtaMC(; T, init_T, B, algtype, Lx, Ly, etaparams, corr_rad)
+    return EtaMC(; T, init_T, annealT, B, algtype, Lx, Ly, etaparams, corr_rad)
 end
