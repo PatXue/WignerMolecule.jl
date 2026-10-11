@@ -119,23 +119,24 @@ end
 
 function cluster_eta!(mc, T, rng)
     Lx, Ly = size(mc.spins)
+    r = rand(rng, 1:2)  # Rotate by C3^r
     origin = SVector{2,Int}(rand(rng, 1:Lx), rand(rng, 1:Ly))
 
-    cluster = Set{SVector{2,Int}}()
-    newposns = Set{SVector{2,Int}}()
-    push!(cluster, origin)
-    push!(newposns, origin)
+    cluster = Set{SVector{2,Int}}(SVector(0,0))
+    newposns = Set{SVector{2,Int}}(SVector(0,0))
 
     while length(newposns) > 0
         pos = pop!(newposns)
-        s = mc.ηs[pos...] / 2
+        eta = mc.ηs[pos...] / 2
         for a in (SVector(1,0), SVector(0,1), SVector(-1,1))
-            posj = mod1.(pos + a, (Lx, Ly))
-            if posj in cluster
+            if pos == SVector(0,0) && a == SVector(-1,1)
                 continue
             end
-            sj = mc.ηs[posj...] / 2
-            prob = 1 - exp(min(0, 2 * ssfactor(mc, Dimer(pos, posj)) * (nhat ⋅ s) * (nhat ⋅ sj) / T))
+            posj = pos + a
+            if mod.(posj, (Lx, Ly)) in cluster
+                continue
+            end
+            etaj = mc.ηs[posj...] / 2
             if rand(rng) < prob
                 push!(cluster, posj)
                 push!(newposns, posj)
