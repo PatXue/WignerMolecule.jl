@@ -185,8 +185,10 @@ end
 function Carlo.write_checkpoint(mc::WignerMC, out::HDF5.Group)
     out["spins"] = mc.spins
     out["etas"] = mc.ηs
-    out["Nc_val"] = (mc.Nc[]).val
-    out["Nc_n"] = (mc.Nc[]).n
+    out["Nc_val"] = mc.Nc.val
+    out["Nc_n"] = mc.Nc.n
+    out["Nc_eta_val"] = mc.Nc_eta.val
+    out["Nc_eta_n"] = mc.Nc_eta.n
     return nothing
 end
 function Carlo.read_checkpoint!(mc::WignerMC, in::HDF5.Group)
@@ -194,7 +196,8 @@ function Carlo.read_checkpoint!(mc::WignerMC, in::HDF5.Group)
     raw_ηs = read(in, "etas")
     mc.spins .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_spins)
     mc.ηs .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_ηs)
-    mc.Nc[] = Expectation(read(in, "Nc_val"), read(in, "Nc_n"))
+    mc.Nc = Expectation(read(in, "Nc_val"), read(in, "Nc_n"))
+    mc.Nc_eta = Expectation(read(in, "Nc_eta_val"), read(in, "Nc_eta_n"))
     return nothing
 end
 
