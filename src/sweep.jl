@@ -125,7 +125,6 @@ function cluster_eta!(mc, T, rng)
 
     cluster = Set{SVector{2,Int}}(SVector(0,0))
     newposns = Set{SVector{2,Int}}(SVector(0,0))
-
     while length(newposns) > 0
         posi = pop!(newposns)
         for a in (SVector(1,0), SVector(0,1), SVector(-1,1))
@@ -165,13 +164,18 @@ function cluster_eta!(mc, T, rng)
             prob = 1 - exp(-(newE - oldE) / T)
 
             if rand(rng) < prob
+                for i in 1:3
+                    newi = mod1(i-r, 3)
+                    pos = posjs[i]
+                    mc.spins[origin + pos...] = 2Cr * sjs[newi]
+                    mc.ηs[origin + pos...] = 2Cr * etajs[newi]
+                    push!(cluster, mod(pos, mc))
+                end
                 push!(newposns, mod(posj, mc))
             end
         end
     end
 
-    for pos in cluster
-    end
     return length(cluster)
 end
 
