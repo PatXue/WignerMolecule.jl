@@ -12,8 +12,7 @@ function Carlo.sweep!(mc::EtaMC, ctx::Carlo.MCContext)
         ΔE = energy(mc, new_s - old_s, x, y)    # energy linear in s
 
         # Probability of accepting spin flip (for ΔE ≤ 0 always accept)
-        prob = exp(-ΔE / T)
-        if prob >= 1.0 || rand(rng) < prob
+        if ΔE <= 0 || rand(rng) < exp(-ΔE / T)
             mc.spins[x, y] = new_s
         end
     end

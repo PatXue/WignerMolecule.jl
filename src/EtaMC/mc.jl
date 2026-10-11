@@ -18,11 +18,14 @@ function EtaParams(params::WignerParams)
     return EtaParams(J, Jzz, Jp)
 end
 
+LinearAlgebra.norm(ep::EtaParams) = sqrt(norm2([ep.J, ep.Jp, ep.Jzz]))
+
 struct EtaMC{AlgType} <: AbstractMC
     T::Float64
     params::EtaParams
     B::Float64
     init_T::Float64
+    H0::Float64
 
     spins::PeriodicMatrix{SpinVector}
     spinks::PeriodicArray{ComplexF64, 3}        # Fourier transformed spins
@@ -35,7 +38,7 @@ function EtaMC(; T=1.0, init_T=1.0, B=0.0, etaparams=EtaParams(0.0,0.0), algtype
     Lx=24, Ly=24, corr_rad=0)
     init = fill(zeros(SpinVector), (Lx, Ly))
     return EtaMC{algtype}(
-        T, etaparams, B, init_T, init,
+        T, etaparams, B, init_T, norm(etaparams), init,
         Array{ComplexF64, 3}(undef, (Lx, Ly, 3)),
         Matrix{ComplexF64}(undef, Lx, Ly),
         corr_rad

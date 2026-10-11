@@ -28,23 +28,14 @@ function save_spin(mc::WignerMC, ctx::Carlo.MCContext)
 end
 
 # Calculate temperature during thermalization
-const annealT = 0.05
-function calc_temp(mc, ctx::Carlo.MCContext)
+function calc_temp(mc, ctx::Carlo.MCContext; annealT=0.05)
     if is_thermalized(ctx) || mc.T == mc.init_T
         return mc.T
     else
-        ΔT = (mc.T - mc.init_T) * ctx.sweeps/ctx.thermalization_sweeps * 2
-        return mc.init_T + sign(ΔT) * min(abs(ΔT), abs(mc.T - mc.init_T))
+        return therm_temp(mc.T, mc.H0, mc.init_T, ctx; annealT)
     end
 end
-function calc_temp(mc::WignerMC, ctx::Carlo.MCContext)
-    if is_thermalized(ctx) || mc.T == mc.init_T
-        return mc.T
-    else
-        return therm_temp(mc.T, mc.H0, mc.init_T, ctx)
-    end
-end
-function therm_temp(T, H0, init_T, ctx::Carlo.MCContext)
+function therm_temp(T, H0, init_T, ctx::Carlo.MCContext; annealT=0.05)
     n = ctx.sweeps/ctx.thermalization_sweeps
     if T > H0 * annealT
         ΔT = (T - init_T) * 3n
