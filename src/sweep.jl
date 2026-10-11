@@ -129,7 +129,7 @@ function cluster_eta!(mc, T, rng)
     newposns = Set{SVector{2,Int}}(Ref(SVector(0,0)))
     while length(newposns) > 0
         posi = pop!(newposns)
-        for a in (SVector(1,0), SVector(0,1), SVector(-1,1))
+        for a in disps
             if posi == SVector(0,0) && a == SVector(-1,1)
                 continue
             end
@@ -162,7 +162,7 @@ function cluster_eta!(mc, T, rng)
                     newE += bond_energy(mc, newsj, s, newetaj, eta, getν(d, mc))
                 end
             end
-            prob = 1 - exp(-(oldE - newE) / T)
+            prob = 1 - exp(-(oldE - newE) / 3T)
 
             if rand(rng) < prob
                 for i in 1:3
@@ -171,8 +171,8 @@ function cluster_eta!(mc, T, rng)
                     mc.spins[origin + pos...] = 2Cr * sjs[newi]
                     mc.ηs[origin + pos...] = 2Cr * etajs[newi]
                     push!(cluster, mod(pos, mc))
+                    push!(newposns, mod(pos, mc))
                 end
-                push!(newposns, mod(posj, mc))
             end
         end
     end
