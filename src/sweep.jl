@@ -139,19 +139,20 @@ function cluster_eta!(mc, T, rng)
 
             posis = [C3ridx^i * posi for i in 0:2]
             posjs = [C3ridx^i * posj for i in 0:2]
-            etais = [mc.ηs[origin + pos...] for pos in posis]
-            etajs = [mc.ηs[origin + pos...] for pos in posjs]
+            sis = [mc.spins[origin + pos...] / 2 for pos in posis]
+            sjs = [mc.spins[origin + pos...] / 2 for pos in posjs]
+            etais = [mc.ηs[origin + pos...] / 2 for pos in posis]
+            etajs = [mc.ηs[origin + pos...] / 2 for pos in posjs]
             # newE is energy if only posis are rotated (and not posjs)
             # oldE is energy if both are rotated (original energy b/c C3 symmetric)
             oldE = newE = 0.0
             for i in 1:3
                 d = Dimer(posis[i], posjs[i])
-                eta = mc.ηs[origin + posis[i]...] / 2
-                etaj = mc.ηs[origin + posjs[i]...] / 2
-                sj = mc.spins[origin + posjs[i]...] / 2
-                newi = mod1(i-r, 3)
-                news = Cr * mc.spins[origin + posis[newi]...] / 2
-                neweta = Cr * mc.ηs[origin + posis[newi]...] / 2
+                eta = etais[i]
+                etaj = etajs[i]
+                sj = sjs[i]
+                neweta = Cr * etais[mod1(i-r, 3)]
+                news = Cr * sis[mod1(i-r, 3)]
                 if isoriented(d, mc)
                     oldE += bond_energy(mc, d, eta, etaj)
                     newE += bond_energy(mc, news, sj, neweta, etaj, getν(d, mc))
@@ -164,7 +165,6 @@ function cluster_eta!(mc, T, rng)
             prob = 1 - exp(-(newE - oldE) / T)
 
             if rand(rng) < prob
-                push!(cluster, mod(posj, mc))
                 push!(newposns, mod(posj, mc))
             end
         end
