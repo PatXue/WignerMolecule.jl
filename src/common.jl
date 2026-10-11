@@ -196,8 +196,11 @@ function Carlo.read_checkpoint!(mc::WignerMC, in::HDF5.Group)
     raw_ηs = read(in, "etas")
     mc.spins .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_spins)
     mc.ηs .= map(v -> SVector(v[:data][1], v[:data][2], v[:data][3]), raw_ηs)
-    mc.Nc = Expectation(read(in, "Nc_val"), read(in, "Nc_n"))
-    mc.Nc_eta = Expectation(read(in, "Nc_eta_val"), read(in, "Nc_eta_n"))
+    try
+        mc.Nc = Expectation(read(in, "Nc_val"), read(in, "Nc_n"))
+        mc.Nc_eta = Expectation(read(in, "Nc_eta_val"), read(in, "Nc_eta_n"))
+    catch
+    end
     return nothing
 end
 
