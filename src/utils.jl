@@ -79,15 +79,6 @@ const corr_posns = (Γ, M, M2, M3, half_M, half_M2, half_M3, K, part_K, part_K2,
 const C3 = SMatrix{3,3}([-1/2 -√3/2 0; √3/2 -1/2 0; 0 0 1])
 const C3ridx = SMatrix{2,2}([-1 -1; 1 0])
 const C3kidx = SMatrix{2,2}([0 -1; 1 -1])
-function getc3fourier(A, pos)
-    if all(pos .== (1,1))
-        return A[1,1,:]
-    end
-    k1 = A[pos..., :]
-    k2 = C3' * A[C3kidx * (pos .- (1,1)) .+ (1,1)..., :]
-    k3 = C3 * A[C3kidx' * (pos .- (1,1)) .+ (1,1)..., :]
-    return k1 + k2 + k3
-end
 
 # Calculate sum of chirality for each upwards triangular plaquette
 function chirality(spins)
