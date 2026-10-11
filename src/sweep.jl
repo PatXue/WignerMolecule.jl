@@ -84,7 +84,6 @@ function Carlo.sweep!(mc::WignerMC, ctx::Carlo.MCContext)
     return nothing
 end
 
-
 function cluster_spin!(mc, T, rng)
     Lx, Ly = size(mc.spins)
     nhat = rand(rng, SpinVector)
@@ -117,6 +116,38 @@ function cluster_spin!(mc, T, rng)
     end
     return length(cluster)
 end
+
+function cluster_eta!(mc, T, rng)
+    Lx, Ly = size(mc.spins)
+    origin = SVector{2,Int}(rand(rng, 1:Lx), rand(rng, 1:Ly))
+
+    cluster = Set{SVector{2,Int}}()
+    newposns = Set{SVector{2,Int}}()
+    push!(cluster, origin)
+    push!(newposns, origin)
+
+    while length(newposns) > 0
+        pos = pop!(newposns)
+        s = mc.ηs[pos...] / 2
+        for a in (SVector(1,0), SVector(0,1), SVector(-1,1))
+            posj = mod1.(pos + a, (Lx, Ly))
+            if posj in cluster
+                continue
+            end
+            sj = mc.ηs[posj...] / 2
+            prob = 1 - exp(min(0, 2 * ssfactor(mc, Dimer(pos, posj)) * (nhat ⋅ s) * (nhat ⋅ sj) / T))
+            if rand(rng) < prob
+                push!(cluster, posj)
+                push!(newposns, posj)
+            end
+        end
+    end
+
+    for pos in cluster
+    end
+    return length(cluster)
+end
+
 
 function Carlo.sweep!(mc::WignerMC{:Cluster}, ctx::Carlo.MCContext)
     rng = ctx.rng
