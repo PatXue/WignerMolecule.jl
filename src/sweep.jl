@@ -142,26 +142,25 @@ function cluster_eta!(mc, T, rng)
             sjs = [mc.spins[origin + pos...] / 2 for pos in posjs]
             etais = [mc.ηs[origin + pos...] / 2 for pos in posis]
             etajs = [mc.ηs[origin + pos...] / 2 for pos in posjs]
-            # newE is energy if only posis are rotated (and not posjs)
-            # oldE is energy if both are rotated (original energy b/c C3 symmetric)
+            # oldE is energy if only posis are rotated (and not posjs)
+            # newE is energy if both are rotated
             oldE = newE = 0.0
             for i in 1:3
                 d = Dimer(posis[i], posjs[i])
                 eta = etais[i]
-                etaj = etajs[i]
-                sj = sjs[i]
-                neweta = Cr * etais[mod1(i-r, 3)]
-                news = Cr * sis[mod1(i-r, 3)]
+                s = sis[i]
+                newetaj = Cr * etajs[mod1(i-r, 3)]
+                newsj = Cr * sjs[mod1(i-r, 3)]
                 if isoriented(d, mc)
-                    oldE += bond_energy(mc, d, eta, etaj)
-                    newE += bond_energy(mc, news, sj, neweta, etaj, getν(d, mc))
+                    oldE += bond_energy(mc, d)
+                    newE += bond_energy(mc, s, newsj, eta, newetaj, getν(d, mc))
                 else
                     d = orientdimer(d)
-                    oldE += bond_energy(mc, d, etaj, eta)
-                    newE += bond_energy(mc, sj, news, etaj, neweta, getν(d, mc))
+                    oldE += bond_energy(mc, d)
+                    newE += bond_energy(mc, newsj, s, newetaj, eta, getν(d, mc))
                 end
             end
-            prob = 1 - exp(-(newE - oldE) / T)
+            prob = 1 - exp(-(oldE - newE) / T)
 
             if rand(rng) < prob
                 for i in 1:3
