@@ -123,15 +123,15 @@ function cluster_eta!(mc, T, rng)
     Cr = C3^r
     origin = SVector{2,Int}(rand(rng, 1:Lx), rand(rng, 1:Ly))
 
-    cluster = Set{SVector{2,Int}}(SVector(0,0))
-    newposns = Set{SVector{2,Int}}(SVector(0,0))
+    cluster = Set{SVector{2,Int}}(Ref(SVector(0,0)))
+    newposns = Set{SVector{2,Int}}(Ref(SVector(0,0)))
     while length(newposns) > 0
         posi = pop!(newposns)
         for a in (SVector(1,0), SVector(0,1), SVector(-1,1))
             if posi == SVector(0,0) && a == SVector(-1,1)
                 continue
             end
-            posj = pos + a
+            posj = posi + a
             if mod(posj, mc) in cluster
                 continue
             end
@@ -155,7 +155,7 @@ function cluster_eta!(mc, T, rng)
                     oldE += bond_energy(mc, d)
                     newE += bond_energy(mc, s, newsj, eta, newetaj, getν(d, mc))
                 else
-                    d = orientdimer(d)
+                    d = orientdimer(d, mc)
                     oldE += bond_energy(mc, d)
                     newE += bond_energy(mc, newsj, s, newetaj, eta, getν(d, mc))
                 end
