@@ -12,6 +12,7 @@ tm.allchis = true
 tm.corr_rad = 2
 tm.init_type = :rand
 tm.init_T = 5.0
+tm.annealT = 0.8
 
 Ls = [60]
 Ts = [0.1, 0.5, 0.75, 1.0, 1.25]
