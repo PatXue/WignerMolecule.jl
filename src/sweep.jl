@@ -126,20 +126,30 @@ function cluster_eta!(mc, T, rng)
     newposns = Set{SVector{2,Int}}(SVector(0,0))
 
     while length(newposns) > 0
-        pos = pop!(newposns)
-        eta = mc.ηs[pos...] / 2
+        posi = pop!(newposns)
         for a in (SVector(1,0), SVector(0,1), SVector(-1,1))
-            if pos == SVector(0,0) && a == SVector(-1,1)
+            if posi == SVector(0,0) && a == SVector(-1,1)
                 continue
             end
             posj = pos + a
-            if mod.(posj, (Lx, Ly)) in cluster
+            if mod(posj, mc) in cluster
                 continue
             end
-            etaj = mc.ηs[posj...] / 2
+
+            posis = [C3ridx^i * posi for i in 0:2]
+            posjs = [C3ridx^i * posj for i in 0:2]
+            etais = [mc.ηs[origin + pos...] for pos in posis]
+            etajs = [mc.ηs[origin + pos...] for pos in posjs]
+            # newE is energy if only posis are rotated (and not posjs)
+            # oldE is energy if both are rotated (original energy b/c C3 symmetric)
+            oldE = newE = 0.0
+            for i in 1:3
+            end
+            prob = 1 - exp(-(newE - oldE) / T)
+
             if rand(rng) < prob
-                push!(cluster, posj)
-                push!(newposns, posj)
+                push!(cluster, mod(posj, mc))
+                push!(newposns, mod(posj, mc))
             end
         end
     end

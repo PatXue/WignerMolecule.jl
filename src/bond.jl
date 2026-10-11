@@ -5,6 +5,7 @@ struct Dimer
 end
 
 # Apply periodic boundaries to positions
+Base.mod(pos, mc) = mod.(pos, size(mc.spins))
 Base.mod1(pos, mc) = mod1.(pos, size(mc.spins))
 function Base.mod1(d::Dimer, mc)
     dims = size(mc.spins)
