@@ -10,6 +10,31 @@ Functions for total energy are used for measurements, so only use the current mc
 
 const ω::ComplexF64 = exp(im * 2π/3)
 
+function bond_energy(mc::WignerMC, s, sj, η, ηj, ν)
+    # Couplings
+    J_EzEz = mc.params.J_EzEz
+    J_EMEP = mc.params.J_EMEP
+    J_EMEM = mc.params.J_EMEM
+
+    # η raising and lowering operators
+    η_m = η[1] + 1.0im*η[2]
+    ηj_p = ηj[1] - 1.0im*ηj[2]
+    ηj_m = ηj[1] + 1.0im*ηj[2]
+
+    E_spin = 0.0
+    E_η = 0.0 + 0.0im
+
+    # η-only energy
+    E_η +=   J_EzEz *     η[3] * ηj[3]
+    E_η += 2*J_EMEP *     η_m * ηj_p
+    E_η += 2*J_EMEM * ν * η_m * ηj_m
+
+    # η-S energy
+    E_spin = (s⋅sj) * ssfactor(mc, η, ηj, ν)
+
+    return E_spin + real(E_η)
+end
+
 ## η sweep functions ##
 
 """

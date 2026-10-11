@@ -120,6 +120,7 @@ end
 function cluster_eta!(mc, T, rng)
     Lx, Ly = size(mc.spins)
     r = rand(rng, 1:2)  # Rotate by C3^r
+    Cr = C3^r
     origin = SVector{2,Int}(rand(rng, 1:Lx), rand(rng, 1:Ly))
 
     cluster = Set{SVector{2,Int}}(SVector(0,0))
@@ -144,6 +145,21 @@ function cluster_eta!(mc, T, rng)
             # oldE is energy if both are rotated (original energy b/c C3 symmetric)
             oldE = newE = 0.0
             for i in 1:3
+                d = Dimer(posis[i], posjs[i])
+                eta = mc.ηs[origin + posis[i]...] / 2
+                etaj = mc.ηs[origin + posjs[i]...] / 2
+                sj = mc.spins[origin + posjs[i]...] / 2
+                newi = mod1(i-r, 3)
+                news = Cr * mc.spins[origin + posis[newi]...] / 2
+                neweta = Cr * mc.ηs[origin + posis[newi]...] / 2
+                if isoriented(d, mc)
+                    oldE += bond_energy(mc, d, eta, etaj)
+                    newE += bond_energy(mc, news, sj, neweta, etaj, getν(d, mc))
+                else
+                    d = orientdimer(d)
+                    oldE += bond_energy(mc, d, etaj, eta)
+                    newE += bond_energy(mc, sj, news, etaj, neweta, getν(d, mc))
+                end
             end
             prob = 1 - exp(-(newE - oldE) / T)
 
