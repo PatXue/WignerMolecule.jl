@@ -2,7 +2,7 @@ module Expectations
 
 export Expectation, combine, addsample
 
-struct Expectation
+mutable struct Expectation
     val::Float64    # Value of measured expectation
     n::Int          # Number of samples expectations calculated from
 end
@@ -28,6 +28,15 @@ function addsample(e::Expectation, x)
     n = e.n
     new_val = (n*val + x) / (n+1)
     return Expectation(new_val, n+1)
+end
+
+function addsample!(e::Expectation, x)
+    if e.n == 0
+        e.n += 1
+        e.val = x
+    end
+    e.val = (e.n*e.val + x) / (e.n+1)
+    e.n += 1
 end
 
 end
