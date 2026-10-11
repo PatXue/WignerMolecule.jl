@@ -123,8 +123,8 @@ function cluster_eta!(mc, T, rng)
     Cr = C3^r
     origin = SVector{2,Int}(rand(rng, 1:Lx), rand(rng, 1:Ly))
 
-    mc.spins[origin...] *= Cr
-    mc.ηs[origin...] *= Cr
+    mc.spins[origin...] = Cr * mc.spins[origin...]
+    mc.ηs[origin...] = Cr * mc.ηs[origin...]
     cluster = Set{SVector{2,Int}}(Ref(SVector(0,0)))
     newposns = Set{SVector{2,Int}}(Ref(SVector(0,0)))
     while length(newposns) > 0
