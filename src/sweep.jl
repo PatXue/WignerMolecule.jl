@@ -171,7 +171,7 @@ function cluster_eta!(mc, T, rng)
                     mc.spins[origin + pos...] = 2Cr * sjs[newi]
                     mc.ηs[origin + pos...] = 2Cr * etajs[newi]
                     push!(cluster, mod(pos, mc))
-                    push!(newposns, mod(pos, mc))
+                    push!(newposns, pos)
                 end
             end
         end

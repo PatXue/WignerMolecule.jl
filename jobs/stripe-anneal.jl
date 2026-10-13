@@ -11,14 +11,14 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "stripe-anneal"
 tm.init_type = :stripe
-tm.algtype = :Heatbath
+tm.algtype = :ClusterEta
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
-tm.sweeps = 100000
-tm.thermalization = 100000
-tm.binsize = 1000
-Ls = [24, 48, 72]
-Ts = 0.01:0.01:0.15
+tm.sweeps = 50000
+tm.thermalization = 50000
+tm.binsize = 500
+Ls = [48, 72, 96]
+Ts = range(0.01, 0.1, 10)
 for L in Ls
     tm.Lx = tm.Ly = L
     for T in Ts
