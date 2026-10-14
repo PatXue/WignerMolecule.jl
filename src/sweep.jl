@@ -130,9 +130,6 @@ function cluster_eta!(mc, T, rng)
     while length(newposns) > 0
         posi = pop!(newposns)
         for a in disps
-            if posi == SVector(0,0) && a == SVector(-1,1)
-                continue
-            end
             posj = posi + a
             if mod(posj, mc) in cluster
                 continue
