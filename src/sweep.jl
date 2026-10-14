@@ -161,7 +161,7 @@ function cluster_eta!(mc, T, rng)
             end
             prob = 1 - exp(-(oldE - newE) / 3T)
 
-            if rand(rng) < prob
+            if 0 < prob && rand(rng) < prob
                 for i in 1:3
                     newi = mod1(i-r, 3)
                     pos = posjs[i]
