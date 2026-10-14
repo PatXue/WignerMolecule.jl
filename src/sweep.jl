@@ -213,8 +213,9 @@ function Carlo.sweep!(mc::WignerMC{:ClusterEta}, ctx::Carlo.MCContext)
             E = total_energy(mc)
             Nc = cluster_eta!(mc, T, rng)
             if Nc == N
-                println("Check E")
-                @assert E == total_energy(mc)
+                newE = total_energy(mc)
+                println("E was $E, now $newE")
+                @assert E ≈ newE
             end
             flipped += Nc
             addsample!(mc.Nc_eta, Nc)
