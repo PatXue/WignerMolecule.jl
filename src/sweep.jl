@@ -126,7 +126,7 @@ function cluster_eta!(mc, T, rng)
     mc.spins[origin...] = Cr * mc.spins[origin...]
     mc.ηs[origin...] = Cr * mc.ηs[origin...]
     cluster = Set{SVector{2,Int}}(Ref(SVector(0,0)))
-    newposns = Set{SVector{2,Int}}(Ref(SVector(0,0)))
+    newposns = [SVector(0,0)]
     while length(newposns) > 0
         posi = pop!(newposns)
         for a in disps
@@ -210,7 +210,12 @@ function Carlo.sweep!(mc::WignerMC{:ClusterEta}, ctx::Carlo.MCContext)
     if !is_thermalized(ctx)
         flipped = 0
         while flipped < ceil(mc.f * N)
+            E = total_energy(mc)
             Nc = cluster_eta!(mc, T, rng)
+            if Nc == N
+                println("Check E")
+                @assert E == total_energy(mc)
+            end
             flipped += Nc
             addsample!(mc.Nc_eta, Nc)
         end
