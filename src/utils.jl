@@ -111,3 +111,13 @@ function randomize!(mc::WignerMC)
     rand!(mc.ηs)
     update_fourier!(mc)
 end
+
+function validate_mc(mc::WignerMC)
+    for I in eachindex(mc.spins)
+        x,y = Tuple(I)
+        pos = SVector(x, y)
+        @assert norm(mc.spins[pos...]) ≈ 1.0
+        @assert norm(mc.ηs[pos...]) ≈ 1.0
+    end
+    return true
+end
