@@ -14,18 +14,19 @@ tm.init_type = :rand
 tm.init_T = 5.0
 tm.annealT = 0.0
 
+tm.sweeps = 100000
+tm.thermalization = 100000
+tm.binsize = 500
+
 Ls = [60]
 Ts = [0.1, 0.5, 0.75, 1.0, 1.25]
-Jzs = Iterators.flatten((range(0.1, 0.875, 3), 0.95, 0.975, 1.025, 1.05, range(1.1, 2.1, 3)))
+Jzs = [0.4, 0.8, 0.9, 0.95, 0.975, 1.025, 1.05, 1.1, 1.5, 2.0]
 for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
     if Jz <= 1.0
-        Jps = Iterators.flatten((range(0.1, 0.9, 5), 0.95, 1.05, range(1.1, 2.0, 3)))
+        Jps = Iterators.flatten((range(0.1, 0.9, 5), 0.95, 1.05, range(1.1, 1.5, 3)))
     else
-        Jps = Iterators.flatten((range(0.1, Jz-0.1, 5), Jz-0.05, Jz+0.05, range(Jz+0.1, 2.0, 3)))
+        Jps = Iterators.flatten((range(0.1, Jz-0.1, 5), Jz-0.05, Jz+0.05, range(Jz+0.1, Jz+0.5, 3)))
     end
-    tm.sweeps = 100000
-    tm.thermalization = 100000
-    tm.binsize = 500
     tm.T = T
     tm.Lx = tm.Ly = L
     tm.Jz = Jz
