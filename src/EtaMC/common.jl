@@ -94,7 +94,7 @@ function Carlo.register_evaluables(::Type{EtaMC}, eval::AbstractEvaluator,
     evaluate!(eval, :sk_corr_stripe, (:sk_corr_M, :sk_corr_M2, :sk_corr_M3)) do sk1, sk2, sk3
         sks = [sk1, sk2, sk3]
         xhat = [1,0,0]
-        sum(i -> (C3^(i-1) * xhat)' * sks[i] * (C3^(i-1) * xhat), 1:3)
+        real(sum(i -> (C3^(i-1) * xhat)' * sks[i] * (C3^(i-1) * xhat), 1:3))
     end
     return nothing
 end
