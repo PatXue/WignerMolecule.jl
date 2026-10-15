@@ -6,7 +6,7 @@ using Carlo.JobTools
 using WignerMolecule
 
 tm = TaskMaker()
-jobname = "chicut"
+jobname = "full-diagram"
 tm.B = 0.001
 tm.allchis = true
 tm.corr_rad = 2
