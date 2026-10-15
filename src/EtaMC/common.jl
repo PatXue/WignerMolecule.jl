@@ -84,6 +84,18 @@ function Carlo.register_evaluables(::Type{EtaMC}, eval::AbstractEvaluator,
     evaluate!(eval, :HeatCap, (:Energy2, :Energy)) do E2, E
         return N * (E2 - E^2) / T^2
     end
+
+    evaluate!(eval, :sk_corr_fm, (:sk_corr_Γ,)) do sk
+        real(sk[3,3])
+    end
+    evaluate!(eval, :sk_corr_fe, (:sk_corr_Γ,)) do sk
+        real(sk[1,1] + sk[2,2])
+    end
+    evaluate!(eval, :sk_corr_stripe, (:sk_corr_M, :sk_corr_M2, :sk_corr_M3)) do sk1, sk2, sk3
+        sks = [sk1, sk2, sk3]
+        xhat = [1,0,0]
+        sum(i -> (C3^(i-1) * xhat)' * sks[i] * (C3^(i-1) * xhat), 1:3)
+    end
     return nothing
 end
 
