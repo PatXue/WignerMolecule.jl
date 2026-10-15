@@ -46,6 +46,7 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     E = total_energy(mc) / N
     measure!(ctx, :Energy, E)
     measure!(ctx, :Energy2, E^2)
+    measure!(ctx, :Energy4, E^4)
 
     update_fourier!(mc)
     for f in corr_posns
