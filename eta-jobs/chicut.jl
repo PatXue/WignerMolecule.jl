@@ -12,24 +12,28 @@ tm.allchis = true
 tm.corr_rad = 2
 tm.init_type = :rand
 tm.init_T = 5.0
-tm.annealT = 0.8
+tm.annealT = 0.0
 
 Ls = [60]
 Ts = [0.1, 0.5, 0.75, 1.0, 1.25]
-diffs = [-0.15, -0.05, -0.025, 0.05, 0.1, 0.2]
-Jps = Iterators.flatten((range(0.0, 0.9, 5), range(1.1, 2.0, 5)))
-for (Jp, d, T, L) in Iterators.product(Jps, diffs, Ts, Ls)
+Jzs = Iterators.flatten((range(0.1, 0.875, 3), 0.95, 0.975, 1.025, 1.05, range(1.1, 2.1, 3)))
+for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
+    if Jz <= 1.0
+        Jps = Iterators.flatten((range(0.1, 0.9, 5), 0.95, 1.05, range(1.1, 2.0, 3)))
+    else
+        Jps = Iterators.flatten((range(0.1, Jz-0.1, 5), Jz-0.05, Jz+0.05, range(Jz+0.1, 2.0, 3)))
+    end
     tm.sweeps = 100000
     tm.thermalization = 100000
     tm.binsize = 500
-
     tm.T = T
     tm.Lx = tm.Ly = L
-    tm.Jp = Jp
-    tm.Jz = max(1.0, Jp) + d
-    tm.wigparams = EtaParams(tm.Jz, Jp)
-    # tm.init_type = (d > 0) ? :fm : ((Jp > 1) ? :stripe : :fe)
-    task(tm)
+    tm.Jz = Jz
+    for Jp in Jps
+        tm.Jp = Jp
+        tm.wigparams = EtaParams(Jz, Jp)
+        task(tm)
+    end
 end
 
 job = JobInfo("$jobname", EtaMC;
