@@ -17,8 +17,8 @@ tm.thermalization = 400000
 tm.binsize = 1000
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
-Ls = [60]
-Ts = collect(range(0.07, 0.08, 12))
+Ls = [60, 72, 84]
+Ts = collect(range(0.075, 0.079, 12))
 tm.Ts = Ts
 tm.parallel_tempering = (
     mc = WignerMC,
