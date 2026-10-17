@@ -13,10 +13,10 @@ tm.init_type = :afm_fe
 tm.algtype = :Cluster
 tm.sweeps = 200000
 tm.thermalization = 400000
-tm.binsize = 1000
+tm.binsize = 2000
 
 tm.wigparams = WignerParams("all_params.jld2", 11, 10)
-Ls = [60]
+Ls = [24, 36, 48]
 Ts = range(0.051, 0.0515, 12)
 tm.parallel_tempering = (
     mc = WignerMC,
