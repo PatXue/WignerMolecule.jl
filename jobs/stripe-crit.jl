@@ -15,6 +15,7 @@ tm.algtype = :Cluster
 tm.sweeps = 200000
 tm.thermalization = 400000
 tm.binsize = 1000
+tm.init_T = 0.08
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
 Ls = [60, 72, 84]
