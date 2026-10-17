@@ -18,8 +18,8 @@ tm.binsize = 1000
 tm.init_T = 0.08
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
-Ls = [60, 72, 84]
-Ts = collect(range(0.075, 0.079, 12))
+Ls = [12, 24, 36]
+Ts = collect(range(0.075, 0.085, 11))
 tm.Ts = Ts
 tm.parallel_tempering = (
     mc = WignerMC,
