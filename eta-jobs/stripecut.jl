@@ -19,7 +19,7 @@ tm.thermalization = 100000
 tm.binsize = 1000
 
 Ls = [24]
-Ts = [0.1, 0.5, 0.75, 1.0, 1.25]
+Ts = [0.1, 0.5, 0.75, 1.0, 1.25, 0.05]
 diffs = [-0.15, -0.1, -0.05, -0.025, 0.025, 0.05, 0.1, 0.15]
 Jps = range(1.05, 2.0, 10)
 for (Jp, d, T, L) in Iterators.product(Jps, diffs, Ts, Ls)
