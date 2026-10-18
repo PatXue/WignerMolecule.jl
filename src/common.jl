@@ -132,9 +132,33 @@ function Carlo.measure!(mc::WignerMC, ctx::Carlo.MCContext)
     return nothing
 end
 
+function Carlo.measure!(mc::WignerMC{algtype, biastype, :EnergyOnly}, ctx::Carlo.MCContext) where {algtype, biastype}
+    Lx, Ly = size(mc.spins)
+    N = Lx * Ly
+
+    # Energy per lattice site
+    E = total_energy(mc) / N
+    measure!(ctx, :Energy, E)
+    measure!(ctx, :Energy2, E^2)
+    measure!(ctx, :Energy4, E^4)
+
+    return nothing
+end
+
 function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, params::AbstractDict)
     T = params[:T]
     N = params[:Lx] * params[:Ly]
+    evaluate!(eval, :energy_kurt, (:Energy2, :Energy4)) do e2, e4
+        1 - e4 / (3*e2^2)
+    end
+    evaluate!(eval, :HeatCap, (:Energy2, :Energy)) do E2, E
+        return N * (E2 - E^2) / T^2
+    end
+
+    if get(params, :meastype, :All) == :EnergyOnly
+        return
+    end
+
     evaluate!(eval, :χ, (:Mag, :Mag2)) do mag, mag2
         return N / T * (mag2 - mag^2)
     end
@@ -143,9 +167,6 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
         evaluate!(eval, Symbol("χs_", f), (Symbol("sk_corr_", f),)) do sk2
             N / T * sk2
         end
-    end
-    evaluate!(eval, :energy_kurt, (:Energy2, :Energy4)) do e2, e4
-        1 - e4 / (3*e2^2)
     end
 
     for phase in (:fm, :stripe, :afm_fe, :afm_afe)
@@ -173,10 +194,6 @@ function Carlo.register_evaluables(::Type{WignerMC}, eval::AbstractEvaluator, pa
                 end
             end
         end
-    end
-
-    evaluate!(eval, :HeatCap, (:Energy2, :Energy)) do E2, E
-        return N * (E2 - E^2) / T^2
     end
 
     return nothing

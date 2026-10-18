@@ -30,8 +30,7 @@ function LinearAlgebra.norm(wp::WignerParams)
 end
 
 const SpinVector = SVector{3, Float64}
-# Note: Using temperature in units of energy (k_B = 1)
-mutable struct WignerMC{AlgType, BiasType} <: AbstractMC
+mutable struct WignerMC{AlgType, BiasType, MeasType} <: AbstractMC
     T::Float64          # Temperature
     init_T::Float64     # Initial temperature (for thermalization)
     params::WignerParams
@@ -49,15 +48,15 @@ mutable struct WignerMC{AlgType, BiasType} <: AbstractMC
 
     f::Float64              # Each sweep flips f*N spins
     Nc::Expectation         # Avg cluster size
-    Nc_eta::Expectation      # Avg eta cluster size
+    Nc_eta::Expectation     # Avg eta cluster size
 end
 
 function WignerMC(; T=1.0, init_T=1.0, wigparams=default_params, B=0.0, init_B=0.0,
-    bias=nothing, Lx=48, Ly=48, corr_rad=0, algtype=:Metropolis, f=1)
+    bias=nothing, Lx=48, Ly=48, corr_rad=0, algtype=:Metropolis, meastype=:All, f=1)
     biastype = typeof(bias)
     init_spins = fill(zeros(SpinVector), (Lx, Ly))
     init_ηs = fill(zeros(SpinVector), (Lx, Ly))
-    return WignerMC{algtype, biastype}(
+    return WignerMC{algtype, biastype, meastype}(
         T, init_T, wigparams, norm(wigparams), B, init_B, bias, init_spins, init_ηs,
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
@@ -67,6 +66,7 @@ end
 
 function WignerMC(params::AbstractDict)
     algtype = get(params, :algtype, :Metropolis)
+    meastype = get(params, :meastype, :All)
     Lx, Ly = params[:Lx], params[:Ly]
     T = params[:T]
     init_T = get(params, :init_T, T)
@@ -78,5 +78,5 @@ function WignerMC(params::AbstractDict)
     init_B = get(params, :init_B, B)
     bias = get(params, :bias, nothing)
 
-    return WignerMC(; T, init_T, wigparams, B, init_B, bias, Lx, Ly, corr_rad, algtype, f)
+    return WignerMC(; T, init_T, wigparams, B, init_B, bias, Lx, Ly, corr_rad, algtype, meastype, f)
 end
