@@ -16,7 +16,6 @@ tm.sweeps = 200000
 tm.thermalization = 400000
 tm.binsize = 1000
 
-tm.init_T = 0.0365
 tm.wigparams = WignerParams("all_params.jld2", 11, 7)
 Ls = [12, 18, 24]
 for L in Ls
