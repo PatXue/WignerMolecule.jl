@@ -17,12 +17,14 @@ tm.thermalization = 400000
 tm.binsize = 2000
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
-Ls = [12, 24, 36]
+Ls = [12, 16, 20, 24, 36]
 for L in Ls
-    if L <= 24
-        global Ts = range(0.08, 0.0815, 12)
+    if L < 24
+        global Ts = range(0.081, 0.0835, 20)
+    elseif L == 24
+        global Ts = range(0.08, 0.0815, 20)
     else
-        global Ts = range(0.08, 0.081, 12)
+        global Ts = range(0.0802, 0.081, 20)
     end
     tm.parallel_tempering = (
         mc = WignerMC,
