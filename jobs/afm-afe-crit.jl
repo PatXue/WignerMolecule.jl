@@ -12,22 +12,22 @@ tm = TaskMaker()
 jobname = "afm-afe-crit"
 tm.init_type = :afm_afe
 tm.algtype = :Cluster
-tm.sweeps = 400000
+tm.sweeps = 200000
 tm.thermalization = 400000
 tm.binsize = 1000
 
 tm.init_T = 0.0365
 tm.wigparams = WignerParams("all_params.jld2", 11, 7)
-Ts = collect(range(0.0359, 0.0365, 12))
-Ls = [24, 36, 48]
-tm.parallel_tempering = (
-    mc = WignerMC,
-    parameter = :T,
-    values = Ts,
-    interval = 1
-)
+Ls = [12, 18, 24]
 for L in Ls
     tm.Lx = tm.Ly = L
+    Ts = range(0.036, 0.036 + 0.001 * (12/L)^2, 12)
+    tm.parallel_tempering = (
+        mc = WignerMC,
+        parameter = :T,
+        values = Ts,
+        interval = 1
+    )
     task(tm)
 end
 
