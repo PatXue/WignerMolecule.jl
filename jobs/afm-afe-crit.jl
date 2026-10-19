@@ -16,12 +16,12 @@ tm.sweeps = 200000
 tm.thermalization = 200000
 tm.binsize = 1000
 
-n = 15
+n = 20
 tm.wigparams = WignerParams("all_params.jld2", 11, 7)
 Ls = [12, 18, 24]
 for L in Ls
     tm.Lx = tm.Ly = L
-    Ts = range(0.0361, 0.0361 + 0.002 * (12/L)^2, n)
+    Ts = range(0.036, 0.036 + 0.002 * (12/L)^2, n)
     tm.parallel_tempering = (
         mc = WignerMC,
         parameter = :T,
