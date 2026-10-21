@@ -13,19 +13,13 @@ tm.estimate_covariance = true
 tm.init_type = :afm_fe
 tm.algtype = :Cluster
 tm.sweeps = 200000
-tm.thermalization = 200000
-tm.binsize = 2000
+tm.thermalization = 400000
+tm.binsize = 1000
 
 tm.wigparams = WignerParams("all_params.jld2", 11, 10)
 Ls = [12, 14, 16, 20, 24, 36, 48]
 for L in Ls
-    if L < 24
-        global Ts = range(0.0515, 0.0515 + (12/L)^2 * 0.002, 20)
-    elseif L == 24
-        global Ts = range(0.0515, 0.052, 20)
-    else
-        global Ts = range(0.05115, 0.0515, 20)
-    end
+    global Ts = range(0.05115, 0.05115 + (0.00285 * (12/L)^2), 20)
     tm.parallel_tempering = (
         mc = WignerMC,
         parameter = :T,
