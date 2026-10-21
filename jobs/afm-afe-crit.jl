@@ -10,6 +10,7 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "afm-afe-crit"
+tm.estimate_covariance = true
 tm.init_type = :afm_afe
 tm.algtype = :Cluster
 tm.sweeps = 200000

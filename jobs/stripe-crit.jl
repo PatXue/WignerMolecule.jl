@@ -10,6 +10,7 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "stripe-crit"
+tm.estimate_covariance = true
 tm.init_type = :stripe
 tm.algtype = :Cluster
 tm.sweeps = 200000
