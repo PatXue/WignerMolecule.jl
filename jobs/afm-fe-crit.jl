@@ -11,14 +11,15 @@ tm = TaskMaker()
 jobname = "afm-fe-crit"
 tm.estimate_covariance = true
 tm.init_type = :afm_fe
+tm.meastype = :ScalarOnly
 tm.algtype = :Cluster
 tm.sweeps = 200000
 tm.thermalization = 400000
-tm.binsize = 1000
+tm.binsize = 10
 
 n = 20
 tm.wigparams = WignerParams("all_params.jld2", 11, 10)
-Ls = [12, 16, 20, 36, 48]
+Ls = [16, 20, 24, 28, 36, 48]
 for L in Ls
     global Ts = range(0.0512, 0.052 + (0.004 * (12/L)^2), n)
     tm.parallel_tempering = (
