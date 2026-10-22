@@ -13,7 +13,7 @@ jobname = "stripe-crit"
 tm.estimate_covariance = true
 tm.init_type = :stripe
 tm.algtype = :Cluster
-tm.sweeps = 200000
+tm.sweeps = 400000
 tm.thermalization = 400000
 tm.binsize = 2000
 
