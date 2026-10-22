@@ -16,13 +16,11 @@ tm.sweeps = 200000
 tm.thermalization = 400000
 tm.binsize = 1000
 
+n = 20
 tm.wigparams = WignerParams("all_params.jld2", 11, 10)
-Ls = [12, 14, 16, 20, 24, 36, 48]
+Ls = [12, 16, 20, 36, 48]
 for L in Ls
-    global Ts = range(0.05115, 0.05115 + (0.00285 * (12/L)^2), 20)
-    if L == 48
-        global Ts = range(0.05115, 0.05115 + (0.004 * (12/L)^2), 20)
-    end
+    global Ts = range(0.0512, 0.052 + (0.004 * (12/L)^2), n)
     tm.parallel_tempering = (
         mc = WignerMC,
         parameter = :T,
@@ -37,6 +35,6 @@ job = JobInfo("$jobname", ParallelTemperingMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
-    ranks_per_run = length(Ts)
+    ranks_per_run = n
 )
 start(job, ARGS)
