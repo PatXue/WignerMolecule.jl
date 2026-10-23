@@ -15,14 +15,15 @@ tm.init_type = :afm_afe
 tm.algtype = :Cluster
 tm.sweeps = 200000
 tm.thermalization = 200000
-tm.binsize = 1000
+tm.binsize = 10
 
 n = 20
 tm.wigparams = WignerParams("all_params.jld2", 11, 7)
 Ls = [12, 16, 20, 24, 28, 32]
 for L in Ls
     tm.Lx = tm.Ly = L
-    Ts = range(0.036, 0.036 + 0.002 * (12/L)^2, n)
+    Ts = range(0.036, 0.036 + 0.003 * (12/L)^2, n)
+    tm.init_T = maximum(Ts)
     tm.parallel_tempering = (
         mc = WignerMC,
         parameter = :T,
@@ -32,7 +33,7 @@ for L in Ls
     task(tm)
 end
 
-job = JobInfo("$jobname", ParallelTemperingMC;
+job = JobInfo(jobname, ParallelTemperingMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
