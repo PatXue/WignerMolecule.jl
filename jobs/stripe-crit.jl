@@ -22,8 +22,8 @@ n = 20
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
 Ls = [16, 20, 24, 28, 32, 36]
 for L in Ls
-    Ts = range(0.08025, 0.08025 + 0.00225 * (16/L)^2, n)
-    tm.init_T = maximum(Ts)
+    Ts = range(0.08025, 0.08025 + 0.003 * (16/L)^2, n)
+    tm.init_T = maximum(Ts) + 0.001
     tm.parallel_tempering = (
         mc = WignerMC,
         parameter = :T,
