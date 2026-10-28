@@ -7,16 +7,16 @@ using JLD2
 using WignerMolecule
 
 tm = TaskMaker()
-jobname = "afm-fe"
-tm.init_type = :afm_fe
+jobname = "afm-fe-nem"
+tm.init_type = :nematic
 tm.wigparams = WignerParams("all_params.jld2", 11, 10)
 
-tm.sweeps = 50000
+tm.sweeps = 100000
 tm.thermalization = 100000
 tm.binsize = 500
-Ts = 0.008:0.008:0.08
-Ls = [48]
-fugs = [0.01, 0.05, 0.15, 0.25, 0.5, 0.75]
+Ts = 0.02:0.02:0.2
+Ls = [60]
+fugs = [0.01, 0.05, 0.25, 0.5, 1.0]
 for (T, L, fug) in Iterators.product(Ts, Ls, fugs)
     tm.Lx = tm.Ly = L
     tm.T = T
