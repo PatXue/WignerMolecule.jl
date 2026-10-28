@@ -12,7 +12,6 @@ function init_vbs_s!(mc::DimerMC)
         mc.spins[I] = SVector((Tuple(I) .+ unitcellspins[x,y])...)
     end
 end
-
 const unitcelletas = [(-0.81,0.31,0) (0.52,-0.61,0); (0.49,0.61,0) (-0.78,-0.34,0)]
 function init_vbs_eta!(mc::DimerMC)
     for I in eachindex(IndexCartesian(), mc.ηs)
@@ -28,6 +27,17 @@ function init_vbs_eta!(mc::DimerMC)
     end
 end
 
+function init_nematic_s!(mc::DimerMC)
+    for I in eachindex(IndexCartesian(), mc.spins)
+        _, y = Tuple(I)
+        mc.spins[I] = Tuple(I) .+ [0,(-1)^y]
+    end
+end
+function init_nematic_eta!(mc::DimerMC)
+    init_afm_fe_eta!(mc.ηs)
+    mc.ηs .= .- mc.ηs
+end
+
 function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
     init_type = get(params, :init_type, :vbs)
     allmonomers = true
@@ -38,6 +48,10 @@ function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
         allmonomers = false
     elseif init_type == :vbs_spin
         init_vbs_s!(mc)
+        allmonomers = false
+    elseif init_type == :nematic
+        init_nematic_s!(mc)
+        init_nematic_eta!(mc)
         allmonomers = false
     elseif init_type == :vbs_eta
         rand!(ctx.rng, mc.monospins)
