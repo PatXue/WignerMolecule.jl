@@ -2,9 +2,10 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
     Lx, Ly = size(mc.spins)
     N = Lx * Ly
 
-    η = sum(mc.ηs) ./ N
-    measure!(ctx, :ηz, abs(η[3]))
-    measure!(ctx, :ηxy, sqrt(η[1]^2 + η[2]^2))
+    measure!(ctx, :etax, sum(η -> abs(η[1]), mc.ηs) / N)
+    measure!(ctx, :etay, sum(η -> abs(η[2]), mc.ηs) / N)
+    measure!(ctx, :etaz, sum(η -> abs(η[3]), mc.ηs) / N)
+    measure!(ctx, :etapar, sum(η -> sqrt(η[1]^2 + η[2]^2), mc.ηs) / N)
 
     # Energy per lattice site
     E = total_energy(mc) / N
