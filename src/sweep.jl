@@ -123,7 +123,6 @@ function cluster_eta!(mc, T, rng)
     Cr = C3^r
     origin = SVector{2,Int}(rand(rng, 1:Lx), rand(rng, 1:Ly))
 
-    mc.spins[origin...] = Cr * mc.spins[origin...]
     mc.ηs[origin...] = Cr * mc.ηs[origin...]
     cluster = Set{SVector{2,Int}}(Ref(SVector(0,0)))
     newposns = [SVector(0,0)]
@@ -137,8 +136,6 @@ function cluster_eta!(mc, T, rng)
 
             posis = [C3ridx^i * posi for i in 0:2]
             posjs = [C3ridx^i * posj for i in 0:2]
-            sis = [mc.spins[origin + pos...] / 2 for pos in posis]
-            sjs = [mc.spins[origin + pos...] / 2 for pos in posjs]
             etais = [mc.ηs[origin + pos...] / 2 for pos in posis]
             etajs = [mc.ηs[origin + pos...] / 2 for pos in posjs]
             # oldE is energy if only posis are rotated (and not posjs)
@@ -147,16 +144,16 @@ function cluster_eta!(mc, T, rng)
             for i in 1:3
                 d = Dimer(posis[i], posjs[i])
                 eta = etais[i]
-                s = sis[i]
+                s = mc.spins[posis[i]...]
                 newetaj = Cr * etajs[mod1(i-r, 3)]
-                newsj = Cr * sjs[mod1(i-r, 3)]
+                sj = mc.spins[posjs[i]...]
                 if isoriented(d, mc)
                     oldE += bond_energy(mc, d)
-                    newE += bond_energy(mc, s, newsj, eta, newetaj, getν(d, mc))
+                    newE += bond_energy(mc, s, sj, eta, newetaj, getν(d, mc))
                 else
                     d = orientdimer(d, mc)
                     oldE += bond_energy(mc, d)
-                    newE += bond_energy(mc, newsj, s, newetaj, eta, getν(d, mc))
+                    newE += bond_energy(mc, sj, s, newetaj, eta, getν(d, mc))
                 end
             end
             prob = 1 - exp(-(oldE - newE) / 3T)
@@ -165,7 +162,6 @@ function cluster_eta!(mc, T, rng)
                 for i in 1:3
                     newi = mod1(i-r, 3)
                     pos = posjs[i]
-                    mc.spins[origin + pos...] = 2Cr * sjs[newi]
                     mc.ηs[origin + pos...] = 2Cr * etajs[newi]
                     push!(cluster, mod(pos, mc))
                     push!(newposns, pos)
@@ -221,10 +217,10 @@ function Carlo.sweep!(mc::WignerMC{:ClusterEta}, ctx::Carlo.MCContext)
             addsample!(mc.Nc, Nc)
         end
     else
-        for _ in 1:cld(mc.f * N, mc.Nc_eta.val)
+        for _ in 1:mc.Nc_eta.val
             cluster_eta!(mc, T, rng)
         end
-        for _ in 1:cld(mc.f * N, mc.Nc.val)
+        for _ in 1:mc.Nc.val
             cluster_spin!(mc, T, rng)
         end
     end
