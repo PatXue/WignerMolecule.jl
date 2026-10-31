@@ -15,15 +15,14 @@ tm.meastype = :ScalarOnly
 tm.init_type = :stripe
 tm.algtype = :Cluster
 tm.sweeps = 200000
-tm.thermalization = 400000
+tm.thermalization = 200000
 tm.binsize = 10
 
 n = 20
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
-Ls = [16, 20, 24, 28, 32, 36]
+Ls = [72]
 for L in Ls
-    Ts = range(0.08, 0.08 + 0.003 * (16/L)^2, n)
-    tm.init_T = maximum(Ts) + 0.001
+    Ts = range(0.08, 0.0805, n)
     tm.parallel_tempering = (
         mc = WignerMC,
         parameter = :T,
