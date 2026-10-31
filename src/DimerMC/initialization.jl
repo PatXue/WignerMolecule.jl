@@ -29,8 +29,8 @@ end
 
 function init_nematic_s!(mc::DimerMC)
     for I in eachindex(IndexCartesian(), mc.spins)
-        _, y = Tuple(I)
-        mc.spins[I] = Tuple(I) .+ [0,(-1)^y]
+        x, y = Tuple(I)
+        mc.spins[I] = Tuple(I) .+ [0,(-1)^(x+y)]
     end
 end
 function init_nematic_eta!(mc::DimerMC)
