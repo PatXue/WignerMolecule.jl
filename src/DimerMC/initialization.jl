@@ -29,6 +29,12 @@ end
 
 function init_nematic_s!(mc::DimerMC)
     for I in eachindex(IndexCartesian(), mc.spins)
+        _, y = Tuple(I)
+        mc.spins[I] = Tuple(I) .+ [0,(-1)^y]
+    end
+end
+function init_nematic_s2!(mc::DimerMC)
+    for I in eachindex(IndexCartesian(), mc.spins)
         x, y = Tuple(I)
         mc.spins[I] = Tuple(I) .+ [0,(-1)^(x+y)]
     end
@@ -51,6 +57,10 @@ function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
         allmonomers = false
     elseif init_type == :nematic
         init_nematic_s!(mc)
+        init_nematic_eta!(mc)
+        allmonomers = false
+    elseif init_type == :nematic2
+        init_nematic_s2!(mc)
         init_nematic_eta!(mc)
         allmonomers = false
     elseif init_type == :vbs_eta
