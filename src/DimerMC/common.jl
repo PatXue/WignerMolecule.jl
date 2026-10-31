@@ -29,7 +29,7 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
         measure!(ctx, Symbol("sk_corr_", f), scorr)
         measure!(ctx, Symbol("etak_corr_", f), etacorr)
     end
-    measure!(ctx, :n_monomer, mc.sks[1,1,4] / N)
+    measure!(ctx, :n_monomer, mc.sks[1,1,4])
 
     for phase in (:fm, :stripe)
         if phase == :fm
