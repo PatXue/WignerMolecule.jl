@@ -19,7 +19,7 @@ tm.binsize = 1000
 allparams = load_object("params_interpolated_quarter.jld2")
 Ls = [60]
 Ts = [0.5, 1.0, 2.0]
-ams = range(7, 8.5, 10)
+ams = range(7.2, 7.8, 10)
 for (am, T, L) in Iterators.product(ams, Ts, Ls)
     tm.corr_rad = 2
     tm.Lx = tm.Ly = L
