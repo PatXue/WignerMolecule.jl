@@ -40,8 +40,14 @@ function init_nematic_s2!(mc::DimerMC)
     end
 end
 function init_nematic_eta!(mc::DimerMC)
-    init_afm_fe_eta!(mc.ηs)
-    mc.ηs .= .- mc.ηs
+    for I in eachindex(IndexCartesian(), mc.ηs)
+        _, y = Tuple(I)
+        if y%2 == 1
+            mc.ηs[I] = SVector(0.0,1,0)
+        else
+            mc.ηs[I] = SVector(1.0,0,0)
+        end
+    end
 end
 
 function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
