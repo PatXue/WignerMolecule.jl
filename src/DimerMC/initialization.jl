@@ -49,6 +49,16 @@ function init_nematic_eta!(mc::DimerMC)
         end
     end
 end
+function init_nematic_eta2!(mc::DimerMC)
+    for I in eachindex(IndexCartesian(), mc.ηs)
+        x, y = Tuple(I)
+        if (x+y)%2 == 1
+            mc.ηs[I] = SVector(1.0,0,0)
+        else
+            mc.ηs[I] = SVector(0.0,1,0)
+        end
+    end
+end
 
 function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
     init_type = get(params, :init_type, :vbs)
@@ -67,7 +77,7 @@ function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
         allmonomers = false
     elseif init_type == :nematic2
         init_nematic_s2!(mc)
-        init_nematic_eta!(mc)
+        init_nematic_eta2!(mc)
         allmonomers = false
     elseif init_type == :vbs_eta
         rand!(ctx.rng, mc.monospins)
