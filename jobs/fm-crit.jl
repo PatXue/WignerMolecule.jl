@@ -19,12 +19,12 @@ tm.init_type = :const
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 9)
 Ts = [0.095, 0.0975, 0.1, 0.1005, 0.101, 0.1015, 0.102, 0.1025, 0.105]
-Ls = [24, 48, 96]
+Ls = [24, 48, 72, 96]
 tm.parallel_tempering = (
     mc = WignerMC,
     parameter = :T,
     values = Ts,
-    interval = 5
+    interval = 1
 )
 for L in Ls
     tm.Lx = tm.Ly = L
