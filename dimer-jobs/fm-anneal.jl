@@ -10,18 +10,19 @@ tm = TaskMaker()
 jobname = "fm-anneal"
 tm.init_T = 2.0
 tm.init_type = :rand
+tm.corr_rad = 2
 tm.wigparams = WignerParams("all_params.jld2", 5, 9)
 
 tm.sweeps = 50000
 tm.thermalization = 100000
 tm.binsize = 500
-Ts = Iterators.flatten((0.02:0.01:0.09, 0.1:0.025:0.2))
-Ls = [48]
-fugs = [0.05, 0.5, 1.0, 2.0]
-for (T, L, fug) in Iterators.product(Ts, Ls, fugs)
+Ts = range(0.02, 0.15, 5)
+Ls = [60]
+βμs = range(-1, 3, 10)
+for (L, βμ, T) in Iterators.product(Ls, βμs, Ts)
     tm.Lx = tm.Ly = L
-    tm.corr_rad = div(L, 24)
-    tm.fug = fug
+    tm.betamu = βμ
+    tm.fug = exp(-βμ)
     tm.T = T
     task(tm)
 end
