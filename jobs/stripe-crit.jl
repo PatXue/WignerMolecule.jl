@@ -20,7 +20,7 @@ tm.binsize = 10
 
 n = 20
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
-Ls = [72]
+Ls = [120]
 for L in Ls
     Ts = range(0.0802, 0.0805, n)
     tm.parallel_tempering = (
