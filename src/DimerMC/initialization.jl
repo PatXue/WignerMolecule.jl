@@ -52,7 +52,7 @@ end
 function init_nematic_eta2!(mc::DimerMC)
     for I in eachindex(IndexCartesian(), mc.ηs)
         x, y = Tuple(I)
-        if (x+y)%2 == 1
+        if (x+y)%2 == 0
             mc.ηs[I] = SVector(1.0,0,0)
         else
             mc.ηs[I] = SVector(0.0,1,0)
