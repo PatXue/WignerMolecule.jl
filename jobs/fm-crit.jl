@@ -11,10 +11,11 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "fm-crit"
 
+tm.meastype = :ScalarOnly
 tm.algtype = :Heatbath
 tm.sweeps = 100000
 tm.thermalization = 100000
-tm.binsize = 1000
+tm.binsize = 10
 tm.init_type = :const
 
 tm.wigparams = WignerParams("all_params.jld2", 5, 9)
