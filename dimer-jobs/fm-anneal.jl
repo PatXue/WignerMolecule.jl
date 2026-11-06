@@ -13,12 +13,12 @@ tm.init_type = :rand
 tm.corr_rad = 2
 tm.wigparams = WignerParams("all_params.jld2", 5, 9)
 
-tm.sweeps = 50000
+tm.sweeps = 100000
 tm.thermalization = 100000
 tm.binsize = 500
-Ts = range(0.02, 0.15, 5)
+Ts = range(0.02, 0.12, 6)
 Ls = [60]
-βμs = range(-1, 3, 10)
+βμs = range(-2, 3, 10)
 for (L, βμ, T) in Iterators.product(Ls, βμs, Ts)
     tm.Lx = tm.Ly = L
     tm.betamu = βμ
