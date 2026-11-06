@@ -11,12 +11,12 @@ tm.init_type = :fe
 tm.B = 0.001
 tm.allchis = true
 
-Ls = [24, 48]
+Ls = [48, 60, 72, 84]
 Jzs = [0.75, 0.925, 0.95, 1.05, 1.2, 1.5]
 Ts = 0.3:0.1:1.7
 for (T, Jz, L) in Iterators.product(Ts, Jzs, Ls)
     tm.sweeps = 100000
-    tm.thermalization = 50000
+    tm.thermalization = 100000
     tm.binsize = 1000
     tm.init_type = (Jz > 1) ? :fm : :fe
 
