@@ -11,6 +11,7 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
     E = total_energy(mc) / N
     measure!(ctx, :Energy, E)
     measure!(ctx, :Energy2, E^2)
+    measure!(ctx, :Energy4, E^4)
 
     update_fourier!(mc)
     for f in corr_posns
@@ -31,13 +32,19 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
     end
     measure!(ctx, :n_monomer, mc.sks[1,1,4])
 
-    for phase in (:fm, :stripe)
+    for phase in (:fm, :stripe, :afm_fe, :afm_afe)
         if phase == :fm
             posns = [SVector(1,1)]
             as = [SVector(0.0,0,1)]
         elseif phase == :stripe
             posns = [SVector{2,Int}(M(Lx, Ly)), SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly))]
             as = [SVector(1/2,√3/2,0), SVector(-1.0,0,0), SVector(1/2,-√3/2,0)]
+        elseif phase == :afm_fe
+            posns = [SVector(1,1), SVector(1,1)]
+            as = [SVector(0.0,1,0), SVector(1.0,0,0)]
+        elseif phase == :afm_afe
+            posns = [SVector{2,Int}(M2(Lx, Ly)), SVector{2,Int}(M3(Lx, Ly)), SVector{2,Int}(M(Lx, Ly))]
+            as = [SVector(0.0,1,0), SVector(-√3/2,-1/2,0), SVector(√3/2,-1/2,0)]
         end
         etacorr = 0.0
         for (pos, a) in Iterators.zip(posns, as)
