@@ -17,11 +17,11 @@ function heatbath_spin(Bvec, T; rng)
     # Generate parallel component
     Bhat = Bvec / B
     c = B / 2T
-    cosθ = -log(exp(c) - 2*rand(rng)*sinh(c)) / c
+    cosθ = -1 - log(1 - rand(rng) * (1-exp(-2c))) / c
     s = Bhat * cosθ
     # Find a basis of B's orthogonal subspace
     u = Bhat × SVector(1,0,0)
-    if isapprox(norm(u), 0.0, atol=1e-4)
+    if isapprox(norm(u), 0.0, atol=0.1)
         u = Bhat × SVector(0,1,0)
     end
     u /= norm(u)
@@ -30,7 +30,14 @@ function heatbath_spin(Bvec, T; rng)
     ϕ = 2pi * rand(rng)
     s += sqrt(1-norm(s)^2) * (u*cos(ϕ) + v*sin(ϕ))
 
-    @assert norm(s) ≈ 1.0
+    try
+        @assert norm(s) ≈ 1.0
+    catch e
+        println(s)
+        println(Bvec)
+        println(T)
+        throw(e)
+    end
     return s
 end
 
