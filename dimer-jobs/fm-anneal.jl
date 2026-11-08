@@ -8,22 +8,22 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "fm-anneal"
-tm.init_T = 2.0
-tm.init_type = :rand
+tm.init_type = :fm
 tm.corr_rad = 2
 tm.wigparams = WignerParams("all_params.jld2", 5, 9)
 
-tm.sweeps = 100000
-tm.thermalization = 100000
-tm.binsize = 500
-Ts = [0.001, 0.01, 0.02, 0.04, 0.08, 0.12]
+tm.sweeps = 200000
+tm.thermalization = 200000
+tm.binsize = 1000
+Ts = [0.01, 0.02, 0.04, 0.08, 0.12]
 Ls = [60]
-βμs = range(-4, 4, 20)
+βμs = range(-8, 4, 20)
 for (L, βμ, T) in Iterators.product(Ls, βμs, Ts)
     tm.Lx = tm.Ly = L
     tm.betamu = βμ
     tm.fug = exp(-βμ)
     tm.T = T
+    tm.init_T = T + 0.2
     task(tm)
 end
 
