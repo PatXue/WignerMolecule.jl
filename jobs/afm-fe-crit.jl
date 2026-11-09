@@ -19,8 +19,9 @@ tm.binsize = 10
 
 n = 20
 tm.wigparams = WignerParams("all_params.jld2", 11, 10)
-Ls = [120, 96, 84, 72, 60]
+Ls = [36, 48, 60]
 for L in Ls
+    tm.init_T = 0.0515
     if L == 120
         Ts = range(0.05122, 0.05122 + 0.00008, n)
     else
