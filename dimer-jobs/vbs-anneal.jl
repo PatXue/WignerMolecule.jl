@@ -10,6 +10,7 @@ tm = TaskMaker()
 jobname = "vbs-anneal"
 tm.init_T = 2.0
 tm.init_type = :rand
+tm.algtype = :Worm
 tm.corr_rad = 2
 tm.wigparams = WignerParams("all_params.jld2", 10, 7)
 
@@ -18,7 +19,7 @@ tm.thermalization = 50000
 tm.binsize = 250
 Ts = [0.02, 0.05]
 Ls = [72]
-βμs = range(-5, 5, 10)
+βμs = range(-10, 10, 20)
 for (L, βμ, T) in Iterators.product(Ls, βμs, Ts)
     tm.Lx = tm.Ly = L
     tm.betamu = βμ
