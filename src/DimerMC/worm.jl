@@ -57,15 +57,15 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, T, rng)
         if mc.worm[postoint(posj, mc)+1] == -1
             nj = postoint(posj, mc)
             nk = postoint(mc.spins[posj...], mc)
-            worm[nj+1] = nk
-            worm[nk+1] = nj
+            mc.worm[nj+1] = nk
+            mc.worm[nk+1] = nj
         end
         pos, mc.spins[posj...] = mc.spins[posj...], pos
         steps += 1
 
         if steps > 100 * length(mc.spins) # Retry after loop exceeds 100N
             for i in 1:length(mc.worm)
-                if worm[i] != -1
+                if mc.worm[i] != -1
                     pos = inttopos(i-1, mc)
                     posj = inttopos(mc.worm[i], mc)
                     mc.spins[pos...] = posj
@@ -119,8 +119,8 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, T, rng)
         if mc.worm[postoint(posj, mc)+1] == -1
             nj = postoint(posj, mc)
             nk = postoint(mc.spins[posj...], mc)
-            worm[nj+1] = nk
-            worm[nk+1] = nj
+            mc.worm[nj+1] = nk
+            mc.worm[nk+1] = nj
         end
         mc.spins[pos...] = posj
         pos, mc.spins[posj...] = mc.spins[posj...], pos
@@ -128,7 +128,7 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, T, rng)
 
         if steps > 100 * length(mc.spins) # Retry after loop exceeds 100N
             for i in 1:length(mc.worm)
-                if worm[i] != -1
+                if mc.worm[i] != -1
                     pos = inttopos(i-1, mc)
                     posj = inttopos(mc.worm[i], mc)
                     mc.spins[pos...] = posj
