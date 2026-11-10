@@ -122,7 +122,7 @@ function Carlo.parallel_tempering_log_weight_ratio(mc::DimerMC, param_name::Symb
     if param_name == :T
         return -(1/new_val - 1/mc.T) * total_energy(mc)
     elseif param_name == :fug
-        N = mc.Lx * mc.Ly
+        N = length(mc.spins)
         return log(new_val / mc.fug) * (N - length(mc.monomers)) / 2
     else
         throw(ArgumentError("Parallel tempering not supported for $param_name"))
