@@ -5,10 +5,11 @@ mutable struct DimerMC{AlgType} <: AbstractMC
     params::WignerParams
     fug::Float64        # Fugacity of a dimer
 
-    spins::PeriodicMatrix{SVector{2,Int}}  # Matrix holding position (x,y) of entangled partner
+    spins::PeriodicMatrix{SVector{2,Int}}   # Matrix holding position (x,y) of entangled partner
     monospins::PeriodicMatrix{SpinVector}
     ηs::PeriodicMatrix{SpinVector}
     monomers::BitSet
+    worm::Vector{Int}                       # Store previous config along worm path
 
     sks::PeriodicArray{ComplexF64, 3}
     ηks::PeriodicArray{ComplexF64, 3}       # Fourier transformed ηs
@@ -25,9 +26,16 @@ function DimerMC(; T=0, init_T=0, wigparams=default_params,
     H0 = norm(wigparams)
     Nw = Ref{Expectation}(Expectation(Lx, 0))
 
+    if algtype == :Worm
+        worm = fill(-1, Lx * Ly)
+    else
+        worm = []
+    end
+
     return DimerMC{algtype}(
         T, init_T, H0, wigparams, fug,
-        init_ss, init_ssmono, init_ηs, BitSet(0:Lx*Ly-1),
+        init_ss, init_ssmono, init_ηs,
+        BitSet(0:Lx*Ly-1), worm,
         Array{ComplexF64}(undef, (Lx, Ly, 4)),
         Array{ComplexF64}(undef, (Lx, Ly, 3)),
         corr_rad, Nw, realcorrs

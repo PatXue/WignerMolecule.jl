@@ -23,7 +23,9 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, T, rng)
     pos = init_pos # Current worm head position
     posf = mc.spins[pos...] # Partner of init_pos, termination point
     # Store old config along worm path
-    worm = Dict{Int, Int}(postoint(pos, mc) => postoint(posf, mc), postoint(posf, mc) => postoint(pos, mc))
+    fill!(mc.worm, -1)
+    mc.worm[postoint(pos, mc)+1] = postoint(posf, mc)
+    mc.worm[postoint(posf, mc)+1] = postoint(pos, mc)
     while true
         Zs = zeros(6)
         for i in 1:6
@@ -52,18 +54,22 @@ function worm_dimer!(mc::DimerMC{:Worm}, init_pos, T, rng)
             mc.spins[posj...] = pos
             break
         end
-        if !haskey(worm, postoint(posj, mc))
+        if mc.worm[postoint(posj, mc)+1] == -1
             nj = postoint(posj, mc)
             nk = postoint(mc.spins[posj...], mc)
-            worm[nj] = nk
-            worm[nk] = nj
+            worm[nj+1] = nk
+            worm[nk+1] = nj
         end
         pos, mc.spins[posj...] = mc.spins[posj...], pos
         steps += 1
 
         if steps > 100 * length(mc.spins) # Retry after loop exceeds 100N
-            for (n, nj) in pairs(worm)
-                mc.spins[inttopos(n, mc)...] = inttopos(nj, mc)
+            for i in 1:length(mc.worm)
+                if worm[i] != -1
+                    pos = inttopos(i-1, mc)
+                    posj = inttopos(mc.worm[i], mc)
+                    mc.spins[pos...] = posj
+                end
             end
             return -1
         end
@@ -84,7 +90,8 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, T, rng)
     pos = init_pos # Current worm head position
     new_s = rand(rng, SpinVector)
     # Store old config along worm path
-    worm = Dict{Int, Int}(postoint(pos, mc) => postoint(pos, mc))
+    fill!(mc.worm, -1)
+    mc.worm[postoint(pos, mc)+1] = postoint(pos, mc)
     while true
         Zs = zeros(7)
         for i in 1:6
@@ -109,19 +116,23 @@ function worm_mono!(mc::DimerMC{:Worm}, init_pos, T, rng)
         if !mod_equiv(mc.spins[pos...], posj, mc)
             changes += 1
         end
-        if !haskey(worm, postoint(posj, mc))
+        if mc.worm[postoint(posj, mc)+1] == -1
             nj = postoint(posj, mc)
             nk = postoint(mc.spins[posj...], mc)
-            worm[nj] = nk
-            worm[nk] = nj
+            worm[nj+1] = nk
+            worm[nk+1] = nj
         end
         mc.spins[pos...] = posj
         pos, mc.spins[posj...] = mc.spins[posj...], pos
         steps += 1
 
         if steps > 100 * length(mc.spins) # Retry after loop exceeds 100N
-            for (n, nj) in pairs(worm)
-                mc.spins[inttopos(n, mc)...] = inttopos(nj, mc)
+            for i in 1:length(mc.worm)
+                if worm[i] != -1
+                    pos = inttopos(i-1, mc)
+                    posj = inttopos(mc.worm[i], mc)
+                    mc.spins[pos...] = posj
+                end
             end
             return -1
         end
