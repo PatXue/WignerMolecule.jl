@@ -118,3 +118,22 @@ function Carlo.read_checkpoint!(mc::DimerMC, in::HDF5.Group)
     return nothing
 end
 
+function Carlo.parallel_tempering_log_weight_ratio(mc::DimerMC, param_name::Symbol, new_val)
+    if param_name == :T
+        return -(1/new_val - 1/mc.T) * total_energy(mc)
+    elseif param_name == :fug
+        N = mc.Lx * mc.Ly
+        return log(new_val / mc.fug) * (N - length(mc.monomers)) / 2
+    else
+        throw(ArgumentError("Parallel tempering not supported for $param_name"))
+    end
+end
+function Carlo.parallel_tempering_change_parameter!(mc::DimerMC, param_name::Symbol, new_val)
+    if param_name == :T
+        mc.T = new_val
+    elseif param_name == :fug
+        mc.fug = new_val
+    else
+        throw(ArgumentError("Parallel tempering not supported for $param_name"))
+    end
+end
