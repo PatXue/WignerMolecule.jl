@@ -15,15 +15,15 @@ tm.wigparams = WignerParams("all_params.jld2", 5, 6)
 tm.sweeps = 200000
 tm.thermalization = 200000
 tm.binsize = 1000
-Ts = [0.01, 0.02, 0.04, 0.08, 0.1]
+Ts = [0.02, 0.04]
 Ls = [60]
-βμs = range(-7, 2, 20)
+βμs = range(-10, 2, 20)
 for (L, βμ, T) in Iterators.product(Ls, βμs, Ts)
     tm.Lx = tm.Ly = L
     tm.betamu = βμ
     tm.fug = exp(-βμ)
     tm.T = T
-    tm.init_T = T + 0.2
+    tm.init_T = T + 0.1
     task(tm)
 end
 
