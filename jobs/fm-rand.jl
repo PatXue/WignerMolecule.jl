@@ -11,14 +11,14 @@ tm = TaskMaker()
 jobname = "fm-rand"
 tm.init_type = :rand
 tm.algtype = :Heatbath
-tm.init_T = 1.0
+tm.init_T = 0.12
 tm.sweeps = 50000
 tm.thermalization = 50000
 tm.binsize = 250
 
-tm.wigparams = WignerParams("all_params.jld2", 5, 9)
-Ts = 0.02:0.02:0.2
-Ls = [24, 48, 72]
+tm.wigparams = WignerParams("params_interpolated_quarter.jld2", (8.5, 6.5))
+Ts = range(0.005, 0.08, 10)
+Ls = [84]
 for L in Ls
     tm.Lx = tm.Ly = L
     tm.corr_rad = 2
