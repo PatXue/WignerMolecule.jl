@@ -101,6 +101,7 @@ function Carlo.write_checkpoint(mc::DimerMC, out::HDF5.Group)
     out["etas"] = mc.ηs
     out["Nw_val"] = (mc.Nw[]).val
     out["Nw_n"] = (mc.Nw[]).n
+    out["betamu"] = log(mc.fug)
     return nothing
 end
 function Carlo.read_checkpoint!(mc::DimerMC, in::HDF5.Group)
