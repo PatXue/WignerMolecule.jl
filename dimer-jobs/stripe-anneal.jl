@@ -8,16 +8,16 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "stripe-anneal"
-tm.init_type = :stripe
+tm.init_type = :rand
 tm.corr_rad = 3
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
 
 n = 20
 tm.sweeps = 200000
-tm.thermalization = 200000
+tm.thermalization = 400000
 tm.binsize = 1000
-Ls = [60]
-Ts = [0.02, 0.04]
+Ls = [72]
+Ts = [0.02, 0.04, 0.08, 0.12]
 tm.betamus = range(-2, 10, n)
 for (L, T) in Iterators.product(Ls, Ts)
     tm.Lx = tm.Ly = L
