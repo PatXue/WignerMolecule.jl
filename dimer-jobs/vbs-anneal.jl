@@ -9,7 +9,7 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "vbs-anneal"
 tm.init_type = :rand
-tm.corr_rad = 2
+tm.corr_rad = 3
 
 tm.wigparams = WignerParams("all_params.jld2", 10, 7)
 tm.sweeps = 200000
@@ -18,8 +18,8 @@ tm.binsize = 1000
 
 n = 20
 Ls = [60]
-Ts = [0.02, 0.04]
-tm.betamus = range(-20, 0, 20)
+Ts = [0.02, 0.04, 0.06, 0.08]
+tm.betamus = range(-30, -10, 20)
 for (L, T) in Iterators.product(Ls, Ts)
     tm.Lx = tm.Ly = L
     tm.parallel_tempering = (
