@@ -11,25 +11,31 @@ jobname = "fm-anneal"
 tm.init_type = :fm
 tm.corr_rad = 2
 tm.wigparams = WignerParams("all_params.jld2", 5, 9)
-
 tm.sweeps = 200000
 tm.thermalization = 200000
 tm.binsize = 1000
-Ts = [0.01, 0.02, 0.04, 0.08, 0.12]
+
+n = 20
 Ls = [60]
-βμs = range(-8, 4, 20)
-for (L, βμ, T) in Iterators.product(Ls, βμs, Ts)
+Ts = [0.005, 0.01, 0.02, 0.04, 0.08, 0.12]
+tm.betamus = range(-4, 8, n)
+for (L, T) in Iterators.product(Ls, Ts)
     tm.Lx = tm.Ly = L
-    tm.betamu = βμ
-    tm.fug = exp(-βμ)
+    tm.parallel_tempering = (
+        mc = DimerMC,
+        parameter = :fug,
+        values = exp.(tm.betamus),
+        interval = 1
+    )
     tm.T = T
-    tm.init_T = T + 0.2
+    tm.init_T = T + 0.1
     task(tm)
 end
 
-job = JobInfo("$jobname", DimerMC;
+job = JobInfo("$jobname", ParallelTemperingMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
+    ranks_per_run = n
 )
 start(job, ARGS)
