@@ -35,7 +35,7 @@ struct EtaMC{AlgType} <: AbstractMC
     corr_rad::Int
 end
 
-function EtaMC(; T=1.0, init_T=1.0, annealT=1.0, B=0.0, etaparams=EtaParams(0.0,0.0), algtype=:Metropolis,
+function EtaMC(; T=1.0, init_T=1.0, annealT=0.0, B=0.0, etaparams=EtaParams(0.0,0.0), algtype=:Metropolis,
     Lx=24, Ly=24, corr_rad=0)
     init = fill(zeros(SpinVector), (Lx, Ly))
     return EtaMC{algtype}(
