@@ -6,18 +6,19 @@ using Carlo.JobTools
 using WignerMolecule
 
 tm = TaskMaker()
-jobname = "jz_cut"
-tm.init_type = :fm
-tm.B = 0.01
+jobname = "jz2"
+tm.init_type = :rand
+tm.B = 0.001
 
-Ls = [24]
-Ts = [0.1, 0.2, 0.4]
-Jps = 0.5:0.1:1.5
+tm.sweeps = 200000
+tm.thermalization = 200000
+tm.binsize = 500
+
+Ls = [72]
+Ts = Base.LogRange(1e-4, 1e-1, 5)
+Jps = range(1.5, 2, 20)
 for (Jp, T, L) in Iterators.product(Jps, Ts, Ls)
-    tm.sweeps = 20000
-    tm.thermalization = 20000
-    tm.binsize = 100
-    tm.wigparams = EtaParams(0.4, Jp)
+    tm.wigparams = EtaParams(2, Jp)
     tm.T = T
     tm.Lx = tm.Ly = L
     tm.Jp = Jp
