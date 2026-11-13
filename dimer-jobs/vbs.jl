@@ -8,24 +8,35 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "vbs"
-tm.wigparams = WignerParams("all_params.jld2", 10, 6)
+tm.init_type = :vbs
+tm.corr_rad = 2
 
-tm.sweeps = 50000
-tm.thermalization = 100000
-tm.binsize = 250
-Ts = 0.01:0.01:0.15
-Ls = [48]
-fugs = [0.01, 0.05, 0.15, 0.25, 0.5, 1.0]
-for (T, L, fug) in Iterators.product(Ts, Ls, fugs)
+tm.wigparams = WignerParams("all_params.jld2", 10, 7)
+tm.sweeps = 200000
+tm.thermalization = 400000
+tm.binsize = 1000
+
+n = 20
+Ls = [72]
+Ts = [0.02, 0.04, 0.06, 0.08]
+tm.betamus = range(-30, 0, 20)
+for (L, T) in Iterators.product(Ls, Ts)
     tm.Lx = tm.Ly = L
+    tm.parallel_tempering = (
+        mc = DimerMC,
+        parameter = :fug,
+        values = exp.(tm.betamus),
+        interval = 1
+    )
     tm.T = T
-    tm.fug = fug
+    tm.init_T = T + 0.1
     task(tm)
 end
 
-job = JobInfo("$jobname", DimerMC;
+job = JobInfo("$jobname", ParallelTemperingMC;
     run_time = "24:00:00",
     checkpoint_time = "30:00",
     tasks = make_tasks(tm),
+    ranks_per_run = n
 )
 start(job, ARGS)
