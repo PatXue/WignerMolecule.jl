@@ -14,14 +14,14 @@ tm.init_type = :rand
 tm.sweeps = 100000
 tm.thermalization = 100000
 tm.binsize = 1000
-tm.corr_rad = 3
 
 tm.init_T = 0.12
-Ls = [84]
+Ls = [84, 48, 60, 72]
 Ts = [0.007, 0.01, 0.02, 0.04, 0.08, 0.12, 0.002]
 ams = 4:0.5:11
 ers = 5:0.5:11
 for (am, er, T, L) in Iterators.product(ams, ers, Ts, Ls)
+    tm.corr_rad = cld(3L, 84)
     tm.Lx = tm.Ly = L
     tm.am = am
     tm.er = er
