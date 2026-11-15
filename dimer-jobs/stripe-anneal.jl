@@ -8,7 +8,7 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "stripe-anneal"
-tm.init_type = :rand
+tm.init_type = :stripe
 tm.corr_rad = 3
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
 
@@ -28,7 +28,7 @@ for (L, T) in Iterators.product(Ls, Ts)
         interval = 1
     )
     tm.T = T
-    tm.init_T = T + 0.1
+    tm.init_T = T + 0.08
     task(tm)
 end
 
