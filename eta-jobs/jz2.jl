@@ -12,12 +12,12 @@ tm.B = 0.001
 tm.init_T = 5.0
 
 tm.sweeps = 200000
-tm.thermalization = 200000
-tm.binsize = 500
+tm.thermalization = 400000
+tm.binsize = 1000
 
 Ls = [72]
 Ts = Base.LogRange(1e-4, 1e-1, 5)
-Jps = range(1.5, 2.5, 20)
+Jps = range(1.5, 2, 20)
 for (Jp, T, L) in Iterators.product(Jps, Ts, Ls)
     tm.wigparams = EtaParams(2, Jp)
     tm.T = T
