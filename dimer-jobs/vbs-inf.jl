@@ -16,11 +16,12 @@ tm.sweeps = 10000
 tm.thermalization = 10000
 tm.binsize = 100
 tm.T = Inf
-fugs = 0.1:0.1:2.0
+betamus = Iterators.flatten((range(-10, 10, 20), 0))
 Ls = [48]
-for (fug, L) in Iterators.product(fugs, Ls)
+for (betamu, L) in Iterators.product(betamus, Ls)
     tm.Lx = tm.Ly = L
-    tm.fug = fug
+    tm.betamu = betamu
+    tm.fug = exp(betamu)
     task(tm)
 end
 
