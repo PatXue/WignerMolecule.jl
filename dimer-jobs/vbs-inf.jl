@@ -9,11 +9,10 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "vbs-inf"
 tm.init_type = :rand
-tm.algtype = :Worm
 tm.wigparams = WignerParams("all_params.jld2", 10, 6)
 
-tm.sweeps = 10000
-tm.thermalization = 10000
+tm.sweeps = 20000
+tm.thermalization = 20000
 tm.binsize = 100
 tm.T = Inf
 betamus = Iterators.flatten((range(-10, 10, 20), 0))
