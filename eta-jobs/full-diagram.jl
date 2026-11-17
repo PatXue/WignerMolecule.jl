@@ -18,17 +18,18 @@ tm.sweeps = 100000
 tm.thermalization = 200000
 tm.binsize = 500
 
-Ls = [60]
-Ts = [0.1, 0.5, 0.75, 1.0, 1.5]
-Jzs = range(0.8, 2, 20)
+Ls = [48]
+Ts = [0.5, 1.0, 1.5]
+Jzs = range(0, 2, 20)
 for (Jz, T, L) in Iterators.product(Jzs, Ts, Ls)
     if Jz == 1.0
         Jz += 0.01
     end
-    b = max(1.0, Jz)
+    b = max(1.0, 0.75Jz + 0.25)
     Jps = Iterators.flatten((
-        range(b-0.8, b-0.3, 3),
-        b-0.25, b-0.2, b-0.15, b-0.1, b-0.05, b-0.025, b+0.025, b+0.05, b+0.1, b+0.15, b+0.2
+        range(b-1, b-0.3, 3),
+        b-0.25, b-0.2, b-0.15, b-0.1, b-0.05, b-0.025,
+        b+0.025, b+0.05, b+0.1, b+0.15, b+0.2, b+0.25, b+0.3
     ))
     tm.T = T
     tm.Lx = tm.Ly = L
