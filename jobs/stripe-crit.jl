@@ -20,7 +20,7 @@ tm.binsize = 10
 
 n = 40
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
-Ls = [24, 36, 48, 60, 72, 84, 96]
+Ls = [24, 36, 48, 60, 72, 84, 96, 108, 120]
 Tmin = 0.08025
 for L in Ls
     Ts = range(0.0802, 0.0803 + 0.0003 * (60/L)^2.1, n)
