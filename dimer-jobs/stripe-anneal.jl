@@ -17,7 +17,7 @@ tm.sweeps = 200000
 tm.thermalization = 400000
 tm.binsize = 1000
 Ls = [72]
-Ts = [0.02, 0.04, 0.08, 0.12]
+Ts = [0.02, 0.04, 0.06, 0.08]
 tm.betamus = range(-2, 10, n)
 for (L, T) in Iterators.product(Ls, Ts)
     tm.Lx = tm.Ly = L
@@ -28,7 +28,6 @@ for (L, T) in Iterators.product(Ls, Ts)
         interval = 1
     )
     tm.T = T
-    tm.init_T = T + 0.08
     task(tm)
 end
 
