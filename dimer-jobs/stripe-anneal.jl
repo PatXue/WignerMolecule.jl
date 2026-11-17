@@ -9,7 +9,7 @@ using WignerMolecule
 tm = TaskMaker()
 jobname = "stripe-anneal"
 tm.init_type = :stripe
-tm.corr_rad = 3
+tm.corr_rad = 2
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
 
 n = 20
@@ -18,7 +18,7 @@ tm.thermalization = 400000
 tm.binsize = 1000
 Ls = [72]
 Ts = [0.02, 0.04, 0.06, 0.08]
-tm.betamus = range(-2, 10, n)
+tm.betamus = range(-4, 20, n)
 for (L, T) in Iterators.product(Ls, Ts)
     tm.Lx = tm.Ly = L
     tm.parallel_tempering = (
