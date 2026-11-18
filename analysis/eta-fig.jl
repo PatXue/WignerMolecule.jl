@@ -29,10 +29,10 @@ bTs = unique(bresults.data[:,:T])
 bJps = unique(bresults.data[:, :Jp])
 bJzs = unique(bresults.data[:, :Jz])
 
-fig = Figure(size=(2width, 0.87width), figure_padding=1, fontsize=9pt)
+fig = Figure(size=(2width, 0.87width), figure_padding=3, fontsize=9pt)
 
 subf = fig[1,1] = GridLayout()
-ax = Axis(subf[1,1], title=L"T=0.8",
+ax = Axis(subf[1,1], title=L"\textbf{(a)} $T=0.8$",
     xlabel=L"J_+", ylabel=L"J_z", aspect=DataAspect(),
     limits=((0,2), (0,2)),
     xlabelpadding=0, ylabelpadding=0,
@@ -61,9 +61,11 @@ Legend(subf[2,1],
     ["Stripe", "FM", "FE"],
     patchsize=(5,5),
     orientation=:horizontal,
-    tellwidth=true,
+    tellwidth=true, tellheight=true,
     valign=:top,
 )
+rowsize!(subf, 2, 0.1width)
+rowgap!(subf, 5)
 
 cols = 3
 subf = fig[1,2] = GridLayout()
