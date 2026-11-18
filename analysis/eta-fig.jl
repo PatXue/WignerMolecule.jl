@@ -110,7 +110,7 @@ for i in 1:3
     end, Jps, Jzs)
 
     hm1 = contourf!(ax1, Jps, Jzs, chis, levels=range(minchi, 0.001, 20))
-    hm2 = contourf!(ax2, Jps, Jzs, fms, levels=range(0, 1, 15))
+    hm2 = contourf!(ax2, Jps, Jzs, fms, levels=range(0, 1, 20))
     linesegments!(
         ax1, [(0,1), (1,1), (1,0), (1,1), (1,1), (1.75,2)],
         linestyle=:dash, linewidth=0.5pt, color=:red
