@@ -61,8 +61,8 @@ function Carlo.measure!(mc::DimerMC, ctx::Carlo.MCContext)
         measure!(ctx, Symbol("etak_quar_", phase), etacorr^2)
     end
 
-    measure!(ctx, :Hdimer, sum(x -> real(-abs2(x)*log(abs2(x))), mc.sks))
-    measure!(ctx, :Heta, sum(x -> real(-abs2(x)*log(abs2(x))), mc.ηks))
+    measure!(ctx, :Hdimer, sum(singleH ∘ abs2, mc.sks))
+    measure!(ctx, :Heta, sum(singleH ∘ abs2, mc.ηks))
     if mc.realcorrs
         mc.sks .= abs2.(mc.sks)
         mc.ηks .= abs2.(mc.ηks)

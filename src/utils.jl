@@ -105,6 +105,9 @@ function chirality2(spins)
     return Q / length(spins)
 end
 
+# Information contribution from a single value
+singleH(x) = x == 0 ? 0 : -x * log(x)
+
 # Randomize spins in MC
 function randomize!(mc::WignerMC)
     rand!(mc.spins)
