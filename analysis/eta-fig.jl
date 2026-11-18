@@ -77,14 +77,14 @@ for i in 1:3
     pos = [cld(i, cols), mod1(i, cols)]
     T = Ts[i]
     ax1 = Axis(
-        subf[pos...], title=L"T = %$T", aspect=DataAspect(),
+        subf[pos...], title=L"\textbf{(%$([:b,:c,:d][i]))} $T = %$T$", aspect=DataAspect(),
         limits=((0,2), (0,2)),
         xlabel = L"J_+", ylabel=L"J_z",
         xlabelvisible=false, ylabelvisible=pos[2] == 1,
         xticksvisible=false, xticklabelsvisible=false,
         yticksvisible=pos[2] == 1, yticklabelsvisible=pos[2] == 1,
         xlabelpadding=0, ylabelpadding=0,
-        xticks=[1,2], yticks=[1,2],
+        xticks=[0,1,2], yticks=[1,2],
         xticksize=2, yticksize=2,
     )
     ax2 = Axis(
@@ -94,7 +94,7 @@ for i in 1:3
         xlabelvisible=true, ylabelvisible=pos[2] == 1,
         yticksvisible=pos[2] == 1, yticklabelsvisible=pos[2] == 1,
         xlabelpadding=0, ylabelpadding=0,
-        xticks=[1,2], yticks=[1,2],
+        xticks=[0,1,2], yticks=[1,2],
         xticksize=2, yticksize=2,
     )
 
@@ -108,16 +108,6 @@ for i in 1:3
         df = subset(results.data, :T => checkeq(Ts[i]), :Jz => checkeq(Jz), :Jp => checkeq(Jp))
         return getfield(df[1, :sk_corr_fm], :val)
     end, Jps, Jzs)
-    lo_ids = filter(s -> s < 0.1, 1:length(fms))
-    hi_ids = filter(s -> s >= 0.1, 1:length(fms))
-    lo_coords = [vec(coords)[i] for i in lo_ids]
-    hi_coords = [vec(coords)[i] for i in hi_ids]
-    # itpchi = interpolate(vec(coords), vec(chis), derivative=true)
-    # lo_itpfm = interpolate(vec(coords), vec(fms))
-    # hi_itpfm = interpolate(vec(coords), vec(fms))
-
-    # chis = reshape(itpchi(vec(_denseJps), vec(_denseJzs); method=Sibson()), size(_denseJps))
-    # fms = reshape(itpfm(vec(_denseJps), vec(_denseJzs); method=Sibson()), size(_denseJps))
 
     hm1 = contourf!(ax1, Jps, Jzs, chis, levels=range(minchi, 0.001, 20))
     hm2 = contourf!(ax2, Jps, Jzs, fms, levels=range(0, 1, 15))
@@ -150,9 +140,9 @@ for i in 1:3
             ticksize=2, labelpadding=1,
             size = 8, height=0.3width
         )
+        rowgap!(subf, 5)
+        colgap!(subf, 5)
     end
-    rowgap!(subf, 5)
-    colgap!(subf, 5)
 end
 
 rowgap!(fig.layout, 5)
