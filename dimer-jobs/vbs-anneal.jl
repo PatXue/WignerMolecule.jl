@@ -16,10 +16,10 @@ tm.sweeps = 200000
 tm.thermalization = 200000
 tm.binsize = 1000
 
-n = 20
+n = 30
 Ls = [60]
-Ts = [0.02, 0.04, 0.06, 0.08]
-tm.betamus = range(-30, -10, 20)
+Ts = [0.01, 0.02, 0.03, 0.04, 0.06, 0.08]
+tm.betamus = range(-30, 0, n)
 for (L, T) in Iterators.product(Ls, Ts)
     tm.Lx = tm.Ly = L
     tm.parallel_tempering = (
@@ -29,7 +29,7 @@ for (L, T) in Iterators.product(Ls, Ts)
         interval = 1
     )
     tm.T = T
-    tm.init_T = T + 0.1
+    tm.init_T = 0.1
     task(tm)
 end
 
