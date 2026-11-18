@@ -8,18 +8,18 @@ using WignerMolecule
 
 tm = TaskMaker()
 jobname = "afm-fe-anneal"
-tm.init_type = :rand
+tm.init_type = :afm_fe
 tm.corr_rad = 2
 
 tm.wigparams = WignerParams("all_params.jld2", 11, 10)
 tm.sweeps = 200000
-tm.thermalization = 200000
+tm.thermalization = 400000
 tm.binsize = 1000
 
 n = 20
 Ls = [72]
 Ts = [0.005, 0.01, 0.02, 0.04]
-tm.betamus = range(-10, 10, 20)
+tm.betamus = range(-20, 0, 20)
 for (L, T) in Iterators.product(Ls, Ts)
     tm.Lx = tm.Ly = L
     tm.parallel_tempering = (
@@ -29,7 +29,7 @@ for (L, T) in Iterators.product(Ls, Ts)
         interval = 1
     )
     tm.T = T
-    tm.init_T = 0.1
+    tm.init_T = 0.04
     task(tm)
 end
 
