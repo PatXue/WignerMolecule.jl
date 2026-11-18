@@ -125,7 +125,7 @@ for i in 1:3
     if i == cols
         Colorbar(
             subf[1, cols+1], hm1,
-            label=L"\left\langle\chi_\Gamma^2\right\rangle - \left\langle\chi_0^2\right\rangle",
+            label=L"(\left\langle\chi_\Gamma^2\right\rangle - \left\langle\chi_0^2\right\rangle)/N",
             tellheight=false,
             halign=:left,
             ticks=[0, 0.0005, 0.001],
