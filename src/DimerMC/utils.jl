@@ -49,6 +49,7 @@ function update_fourier!(mc::DimerMC)
     for (x, y) in Iterators.product(1:Lx, 1:Ly)
         disp = mc.spins[x,y] - [x,y]
         mc.sks[x,y,1:3] .= [mod_equiv(disp, oriented_disps[i], mc) for i in 1:3]
+        mc.sks[x,y,1:3] .*= 2
         mc.sks[x,y,4] = mod_equiv(disp, [0,0], mc)
     end
     fft!(mc.sks.array, (1, 2))
