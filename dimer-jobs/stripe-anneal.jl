@@ -12,13 +12,13 @@ tm.init_type = :stripe
 tm.corr_rad = 2
 tm.wigparams = WignerParams("all_params.jld2", 5, 6)
 
-n = 20
+n = 30
 tm.sweeps = 200000
-tm.thermalization = 400000
+tm.thermalization = 200000
 tm.binsize = 1000
 Ls = [72]
-Ts = [0.01, 0.02, 0.03, 0.04, 0.06, 0.1]
-tm.betamus = range(-4, 30, n)
+Ts = [0.01, 0.02, 0.03, 0.04, 0.06, 0.09]
+tm.betamus = range(-10, 40, n)
 for (L, T) in Iterators.product(Ls, Ts)
     tm.Lx = tm.Ly = L
     tm.parallel_tempering = (
@@ -28,7 +28,7 @@ for (L, T) in Iterators.product(Ls, Ts)
         interval = 1
     )
     tm.T = T
-    tm.init_T = T + 0.02
+    tm.init_T = 0.06
     task(tm)
 end
 

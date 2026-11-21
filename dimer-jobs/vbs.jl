@@ -13,15 +13,14 @@ tm.corr_rad = 2
 
 tm.wigparams = WignerParams("all_params.jld2", 10, 7)
 tm.sweeps = 200000
-tm.thermalization = 400000
+tm.thermalization = 200000
 tm.binsize = 1000
 
 n = 20
 Ls = [72]
 Ts = [0.01, 0.02, 0.03, 0.04, 0.06, 0.08]
 for (L, T) in Iterators.product(Ls, Ts)
-    mean = 10 * 0.06/T
-    tm.betamus = range(mean-15, mean+15, 20)
+    tm.betamus = range(-30, 10, 20)
     tm.Lx = tm.Ly = L
     tm.parallel_tempering = (
         mc = DimerMC,
@@ -30,7 +29,7 @@ for (L, T) in Iterators.product(Ls, Ts)
         interval = 1
     )
     tm.T = T
-    tm.init_T = T+0.01
+    tm.init_T = T + 0.02
     task(tm)
 end
 
