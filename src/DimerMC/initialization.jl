@@ -70,7 +70,7 @@ end
 function init_zigzag_eta!(mc::DimerMC)
     for I in eachindex(IndexCartesian(), mc.spins)
         _, y = Tuple(I)
-        etas = [[1,0,0], [0,1,0], [1,0,0], [0,1,0]]
+        etas = [[1,0,0], [0,1,0], [1,0,0], [0,-1,0]]
         mc.ηs[I] = etas[mod1(y, 4)]
     end
 end
