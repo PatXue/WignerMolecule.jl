@@ -60,6 +60,21 @@ function init_nematic_eta2!(mc::DimerMC)
     end
 end
 
+function init_zigzag_s!(mc::DimerMC)
+    for I in eachindex(IndexCartesian(), mc.spins)
+        _, y = Tuple(I)
+        disps = [[0,1], [0,-1], [-1,1], [1,-1]]
+        mc.spins[I] = Tuple(I) .+ disps[mod1(y, 4)]
+    end
+end
+function init_zigzag_eta!(mc::DimerMC)
+    for I in eachindex(IndexCartesian(), mc.spins)
+        _, y = Tuple(I)
+        etas = [[1,0,0], [0,1,0], [1,0,0], [0,1,0]]
+        mc.ηs[I] = etas[mod1(y, 4)]
+    end
+end
+
 function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
     init_type = get(params, :init_type, :vbs)
     allmonomers = true
@@ -78,6 +93,10 @@ function Carlo.init!(mc::DimerMC, ctx::Carlo.MCContext, params::AbstractDict)
     elseif init_type == :nematic2
         init_nematic_s2!(mc)
         init_nematic_eta2!(mc)
+        allmonomers = false
+    elseif init_type == :zigzag
+        init_zigzag_s!(mc)
+        init_zigzag_eta!(mc)
         allmonomers = false
     elseif init_type == :vbs_eta
         rand!(ctx.rng, mc.monospins)
