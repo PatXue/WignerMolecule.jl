@@ -18,9 +18,9 @@ tm.binsize = 1000
 
 n = 20
 Ls = [72]
-Ts = [0.01, 0.02, 0.03, 0.04, 0.06, 0.08]
+Ts = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07]
 for (L, T) in Iterators.product(Ls, Ts)
-    tm.betamus = range(-30, 10, 20)
+    tm.betamus = range(-40, 10, n)
     tm.Lx = tm.Ly = L
     tm.parallel_tempering = (
         mc = DimerMC,
@@ -29,7 +29,7 @@ for (L, T) in Iterators.product(Ls, Ts)
         interval = 1
     )
     tm.T = T
-    tm.init_T = T + 0.02
+    tm.init_T = 0.04
     task(tm)
 end
 
