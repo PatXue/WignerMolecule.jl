@@ -19,7 +19,7 @@ width = 8.5cm
 
 idxtoreal(v) = v[1] * [1, 0] + v[2] * [1/2, √3/2]
 
-fig = Figure(size=(width, 0.5width), figure_padding=1, fontsize=9pt)
+fig = Figure(size=(width, 0.3width), figure_padding=1, fontsize=9pt)
 markersize = 4pt
 bondwidth = 2pt
 posns = [[0,0], [1,0], [0,1], [1,1]]
@@ -31,13 +31,20 @@ initbonds = [
     [plaquette[2], plaquette[3]],
     [],
     [plaquette[1], plaquette[3]],
-    [plaquette[1], plaquette[2], plaquette[3], plaquette[4]],
+    [plaquette[1], plaquette[3], plaquette[2], plaquette[4]],
 ]
 finalbonds = [
     [],
     [plaquette[2], plaquette[3]],
     [plaquette[1], plaquette[2]],
-    [plaquette[1], plaquette[3], plaquette[2], plaquette[4]],
+    [plaquette[1], plaquette[2], plaquette[3], plaquette[4]],
+]
+lattice = [
+    plaquette[1], plaquette[2],
+    plaquette[1], plaquette[3],
+    plaquette[2], plaquette[3],
+    plaquette[2], plaquette[4],
+    plaquette[4], plaquette[3]
 ]
 
 subfs = []
@@ -49,6 +56,7 @@ for i in eachindex(posns, labels, initbonds, finalbonds)
     ax = Axis(subf[1,1], aspect=DataAspect(), limits=((-pad, 1.5+pad), (-pad, √3/2+pad)))
     hidespines!(ax)
     hidedecorations!(ax)
+    linesegments!(ax, lattice; linewidth=0.5bondwidth, color=:snow2)
     if length(initbonds[i]) != 0
         linesegments!(ax, initbonds[i]; linewidth=bondwidth, color=Makie.wong_colors()[1])
     end
@@ -59,6 +67,7 @@ for i in eachindex(posns, labels, initbonds, finalbonds)
     ax = Axis(subf[1,3], aspect=DataAspect(), limits=((-pad, 1.5+pad), (-pad, √3/2+pad)))
     hidespines!(ax)
     hidedecorations!(ax)
+    linesegments!(ax, lattice; linewidth=0.5bondwidth, color=:snow2)
     if length(finalbonds[i]) != 0
         linesegments!(ax, finalbonds[i]; linewidth=bondwidth, color=Makie.wong_colors()[1])
     end
