@@ -21,6 +21,7 @@ idxtoreal(v) = v[1] * [1, 0] + v[2] * [1/2, √3/2]
 
 fig = Figure(size=(width, 0.5width), figure_padding=1, fontsize=9pt)
 markersize = 3pt
+bondwidth = 2pt
 posns = [[0,0], [1,0], [0,1], [1,1]]
 labels = ["(a)", "(b)", "(c)", "(d)"]
 plaquette = Tuple.(5 .* idxtoreal.(posns))
@@ -32,20 +33,39 @@ plaquette = Tuple.(5 .* idxtoreal.(posns))
 #     ClosePath(),
 # ])
 
+initbonds = [
+    [plaquette[2], plaquette[3]],
+    [],
+    [plaquette[1], plaquette[3]],
+    [plaquette[1], plaquette[2], plaquette[3], plaquette[4]],
+]
+finalbonds = [
+    [],
+    [plaquette[2], plaquette[3]],
+    [plaquette[1], plaquette[2]],
+    [plaquette[1], plaquette[3], plaquette[2], plaquette[4]],
+]
+
 subfs = []
-for i in eachindex(posns, labels)
+for i in eachindex(posns, labels, initbonds, finalbonds)
     pos = posns[i] + [1,1]
     subf = fig[pos...] = GridLayout()
 
     ax = Axis(subf[1,1], aspect=DataAspect())
     hidespines!(ax)
     hidedecorations!(ax)
-    lines!(ax, plaquette[2:3]; linewidth=0.5pt, linestyle=:dash, color=:red)
+    if length(initbonds[i]) != 0
+        linesegments!(ax, initbonds[i]; linewidth=bondwidth, color=Makie.wong_colors()[1])
+    end
+    lines!(ax, plaquette[2:3]; linewidth=pt, linestyle=:dash, color=:red)
     scatter!(ax, plaquette; marker=:circle, markersize, color=:black)
 
     ax = Axis(subf[1,3], aspect=DataAspect())
     hidespines!(ax)
     hidedecorations!(ax)
+    if length(finalbonds[i]) != 0
+        linesegments!(ax, finalbonds[i]; linewidth=bondwidth, color=Makie.wong_colors()[1])
+    end
     scatter!(ax, plaquette; marker=:circle, markersize, color=:black)
 
     ax = Axis(subf[1,2], aspect=DataAspect())
