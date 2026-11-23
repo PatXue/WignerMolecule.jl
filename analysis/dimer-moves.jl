@@ -19,7 +19,7 @@ width = 8.5cm
 
 idxtoreal(v) = v[1] * [1, 0] + v[2] * [1/2, √3/2]
 
-fig = Figure(size=(width, 0.3width), figure_padding=1, fontsize=9pt)
+fig = Figure(size=(width, 0.4width), figure_padding=1, fontsize=9pt)
 markersize = 4pt
 bondwidth = 2pt
 posns = [[0,0], [1,0], [0,1], [1,1]]
@@ -83,7 +83,7 @@ for i in eachindex(posns, labels, initbonds, finalbonds)
         tipwidth=3pt, tiplength=0.1cm
     )
 
-    Label(subf[1,1,TopLeft()], labels[i])
+    Label(subf[1,2,Top()], labels[i])
 
     colsize!(subf, 2, Auto(0.25))
     colgap!(subf, 5)
@@ -92,5 +92,5 @@ for i in eachindex(posns, labels, initbonds, finalbonds)
 end
 
 colgap!(fig.layout, 5)
-rowgap!(fig.layout, 5)
+rowgap!(fig.layout, 10)
 save("dimer-plots/dimer_moves.pdf", fig)
