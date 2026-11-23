@@ -32,7 +32,7 @@ bJzs = unique(bresults.data[:, :Jz])
 fig = Figure(size=(2width, 0.87width), figure_padding=3, fontsize=9pt)
 
 subf = fig[1,1] = GridLayout()
-ax = Axis(subf[1,1], title=L"\textbf{(a)} $T=0.8$",
+ax = Axis(subf[1,1], title=L"(a) $T=0.8$",
     xlabel=L"J_+", ylabel=L"J_z", aspect=DataAspect(),
     limits=((0,2), (0,2)),
     xlabelpadding=0, ylabelpadding=0,
@@ -77,7 +77,7 @@ for i in 1:3
     pos = [cld(i, cols), mod1(i, cols)]
     T = Ts[i]
     ax1 = Axis(
-        subf[pos...], title=L"\textbf{(%$([:b,:c,:d][i]))} $T = %$T$", aspect=DataAspect(),
+        subf[pos...], title=L"(%$([:b,:c,:d][i])) $T = %$T$", aspect=DataAspect(),
         limits=((0,2), (0,2)),
         xlabel = L"J_+", ylabel=L"J_z",
         xlabelvisible=false, ylabelvisible=pos[2] == 1,
@@ -125,7 +125,7 @@ for i in 1:3
     if i == cols
         Colorbar(
             subf[1, cols+1], hm1,
-            label=L"(\left\langle\chi_\Gamma^2\right\rangle - \left\langle\chi_0^2\right\rangle)/N",
+            label=L"\tilde\chi",
             tellheight=false,
             halign=:left,
             ticks=[0, 0.0005, 0.001],
