@@ -43,6 +43,7 @@ finalbonds = [
 subfs = []
 for i in eachindex(posns, labels, initbonds, finalbonds)
     pos = posns[i] + [1,1]
+    pos = [pos[2], pos[1]]
     subf = fig[pos...] = GridLayout()
 
     ax = Axis(subf[1,1], aspect=DataAspect(), limits=((-pad, 1.5+pad), (-pad, √3/2+pad)))
