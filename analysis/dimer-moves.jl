@@ -36,7 +36,7 @@ initbonds = [
 finalbonds = [
     [],
     [plaquette[2], plaquette[3]],
-    [plaquette[1], plaquette[2]],
+    [plaquette[3], plaquette[2]],
     [plaquette[1], plaquette[2], plaquette[3], plaquette[4]],
 ]
 lattice = [
@@ -58,7 +58,7 @@ for i in eachindex(posns, labels, initbonds, finalbonds)
     hidedecorations!(ax)
     linesegments!(ax, lattice; linewidth=0.5bondwidth, color=:snow2)
     if length(initbonds[i]) != 0
-        linesegments!(ax, initbonds[i]; linewidth=bondwidth, color=Makie.wong_colors()[1])
+        linesegments!(ax, initbonds[i]; linewidth=bondwidth, color=Makie.wong_colors(0.75)[1])
     end
     lines!(ax, plaquette[2:3]; linewidth=pt, linestyle=:dash, color=:red)
     scatter!(ax, plaquette; marker=:circle, markersize, color=:black)
@@ -69,7 +69,7 @@ for i in eachindex(posns, labels, initbonds, finalbonds)
     hidedecorations!(ax)
     linesegments!(ax, lattice; linewidth=0.5bondwidth, color=:snow2)
     if length(finalbonds[i]) != 0
-        linesegments!(ax, finalbonds[i]; linewidth=bondwidth, color=Makie.wong_colors()[1])
+        linesegments!(ax, finalbonds[i]; linewidth=bondwidth, color=Makie.wong_colors(0.75)[1])
     end
     scatter!(ax, plaquette; marker=:circle, markersize, color=:black)
     scatter!(ax, plaquette; marker=:circle, markersize=0.7markersize, color=:white)
