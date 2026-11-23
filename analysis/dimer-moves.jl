@@ -20,18 +20,12 @@ width = 8.5cm
 idxtoreal(v) = v[1] * [1, 0] + v[2] * [1/2, √3/2]
 
 fig = Figure(size=(width, 0.5width), figure_padding=1, fontsize=9pt)
-markersize = 3pt
+markersize = 4pt
 bondwidth = 2pt
 posns = [[0,0], [1,0], [0,1], [1,1]]
 labels = ["(a)", "(b)", "(c)", "(d)"]
-plaquette = Tuple.(5 .* idxtoreal.(posns))
-# hollow_circle = BezierPath([
-#     MoveTo(Point(1, 0)),
-#     EllipticalArc(Point(0, 0), 1, 1, 0, 0, 2pi),
-#     MoveTo(Point(0.9, 0)),
-#     EllipticalArc(Point(0, 0), 0.9, 0.9, 0, 0, 2pi),
-#     ClosePath(),
-# ])
+plaquette = Tuple.(idxtoreal.(posns))
+pad = 0.1
 
 initbonds = [
     [plaquette[2], plaquette[3]],
@@ -51,7 +45,7 @@ for i in eachindex(posns, labels, initbonds, finalbonds)
     pos = posns[i] + [1,1]
     subf = fig[pos...] = GridLayout()
 
-    ax = Axis(subf[1,1], aspect=DataAspect())
+    ax = Axis(subf[1,1], aspect=DataAspect(), limits=((-pad, 1.5+pad), (-pad, √3/2+pad)))
     hidespines!(ax)
     hidedecorations!(ax)
     if length(initbonds[i]) != 0
@@ -59,14 +53,16 @@ for i in eachindex(posns, labels, initbonds, finalbonds)
     end
     lines!(ax, plaquette[2:3]; linewidth=pt, linestyle=:dash, color=:red)
     scatter!(ax, plaquette; marker=:circle, markersize, color=:black)
+    scatter!(ax, plaquette; marker=:circle, markersize=0.7markersize, color=:white)
 
-    ax = Axis(subf[1,3], aspect=DataAspect())
+    ax = Axis(subf[1,3], aspect=DataAspect(), limits=((-pad, 1.5+pad), (-pad, √3/2+pad)))
     hidespines!(ax)
     hidedecorations!(ax)
     if length(finalbonds[i]) != 0
         linesegments!(ax, finalbonds[i]; linewidth=bondwidth, color=Makie.wong_colors()[1])
     end
     scatter!(ax, plaquette; marker=:circle, markersize, color=:black)
+    scatter!(ax, plaquette; marker=:circle, markersize=0.7markersize, color=:white)
 
     ax = Axis(subf[1,2], aspect=DataAspect())
     hidespines!(ax)
