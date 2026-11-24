@@ -54,9 +54,10 @@ bJzs = unique(bresults.data[:, :Jz])
 fig = Figure(size=(2width, 0.87width), figure_padding=3, fontsize=9pt)
 
 subf = fig[1,1] = GridLayout()
-ax = Axis(subf[1,1], title=L"(a) $T=0.8$",
+ax = Axis(subf[1,1], title=L"Order Param. Mag. $(T=0.8)$",
     xlabel=L"J_+", ylabel=L"J_z", aspect=DataAspect(),
     limits=((0,2), (0,2)),
+    xgridvisible=false, ygridvisible=false,
     xlabelpadding=0, ylabelpadding=0,
     xticksize=2, yticksize=2,
     xticks = [0, 1, 2], yticks = [0, 1, 2],
@@ -88,6 +89,7 @@ Legend(subf[2,1],
 )
 rowsize!(subf, 2, 0.1width)
 rowgap!(subf, 5)
+Label(fig[1,1,TopLeft()], "(a)")
 
 cols = 3
 subf = fig[1,2] = GridLayout()
@@ -96,15 +98,16 @@ df = df_extrap
 # minchi = round(minimum(allchis), sigdigits=1)
 # maxchi = round(maximum(allchis), sigdigits=1)
 for i in 1:3
-    pos = [cld(i, cols), mod1(i, cols)]
+    pos = [cld(i, cols), mod1(i, cols)] + [0,1]
     T = Ts[i]
     ax1 = Axis(
-        subf[pos...], title=L"(%$([:b,:c,:d][i])) $T = %$T$", aspect=DataAspect(),
+        subf[pos...], title=L"T = %$T", aspect=DataAspect(),
         limits=((0,2), (0,2)),
+        xgridvisible=false, ygridvisible=false,
         xlabel = L"J_+", ylabel=L"J_z",
-        xlabelvisible=false, ylabelvisible=pos[2] == 1,
+        xlabelvisible=false, ylabelvisible=pos[2] == 2,
         xticksvisible=false, xticklabelsvisible=false,
-        yticksvisible=pos[2] == 1, yticklabelsvisible=pos[2] == 1,
+        yticksvisible=pos[2] == 1, yticklabelsvisible=pos[2] == 2,
         xlabelpadding=0, ylabelpadding=0,
         xticks=[0,1,2], yticks=[1,2],
         xticksize=2, yticksize=2,
@@ -112,9 +115,10 @@ for i in 1:3
     ax2 = Axis(
         subf[pos+[1,0]...], aspect=DataAspect(),
         limits=((0,2), (0,2)),
+        xgridvisible=false, ygridvisible=false,
         xlabel = L"J_+", ylabel=L"J_z",
-        xlabelvisible=true, ylabelvisible=pos[2] == 1,
-        yticksvisible=pos[2] == 1, yticklabelsvisible=pos[2] == 1,
+        xlabelvisible=true, ylabelvisible=pos[2] == 2,
+        yticksvisible=pos[2] == 1, yticklabelsvisible=pos[2] == 2,
         xlabelpadding=0, ylabelpadding=0,
         xticks=[0,1,2], yticks=[1,2],
         xticksize=2, yticksize=2,
@@ -147,7 +151,7 @@ for i in 1:3
 
     if i == cols
         Colorbar(
-            subf[1, cols+1], hm1,
+            subf[1, cols+2], hm1,
             label=L"\tilde\chi",
             tellheight=false,
             halign=:left,
@@ -156,7 +160,7 @@ for i in 1:3
             size = 8, height=0.3width
         )
         Colorbar(
-            subf[2, cols+1], hm2,
+            subf[2, cols+2], hm2,
             label=L"FM Order $\eta^{zz}(\Gamma)$",
             tellheight=false,
             halign=:left,
@@ -168,7 +172,11 @@ for i in 1:3
     end
 end
 
+Label(subf[:,1,Top()], "(b)")
+colsize!(subf, 1, 0.1pt)
+
 rowgap!(fig.layout, 5)
 colgap!(fig.layout, 5)
+colsize!(fig.layout, 1, Relative(0.3))
 save("eta-plots/main_fig.pdf", fig)
 fig
