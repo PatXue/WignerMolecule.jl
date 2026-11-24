@@ -19,10 +19,10 @@ width = 8.5cm
 
 idxtoreal(v) = v[1] * [1, 0] + v[2] * [1/2, √3/2]
 
-fig = Figure(size=(width, width), figure_padding=1, fontsize=9pt)
+fig = Figure(size=(width, 0.4width), figure_padding=1, fontsize=9pt)
 markersize = 4pt
 bondwidth = 2pt
-posns = [[i,1] for i in 1:4]
+posns = [[cld(i,2), mod1(i,2)] for i in 1:4]
 labels = ["(a)", "(b)", "(c)", "(d)"]
 plaquette = Tuple.(idxtoreal.([[0,0], [1,0], [0,1], [1,1]]))
 pad = 0.1
@@ -82,7 +82,7 @@ for i in eachindex(posns, labels, initbonds, finalbonds)
         tipwidth=3pt, tiplength=0.1cm
     )
 
-    Label(subf[1,1,Left()], labels[i])
+    Label(fig[pos..., Top()], labels[i])
 
     colsize!(subf, 2, Auto(0.25))
     colgap!(subf, 5)
