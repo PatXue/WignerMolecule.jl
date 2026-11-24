@@ -16,12 +16,34 @@ pt = 4/3
 cm = inch / 2.54
 width = 8.5cm
 
+function linfit(xs, ys; weight=true)
+    A = ones(length(xs), 2)
+    A[:, 2] = xs
+    if weight
+        W = Diagonal(getfield.(ys, :err) .^ (-2))
+    else
+        W = Diagonal(ones(length(ys)))
+    end
+    return (A' * W * A) \ (A' * W * ys)
+end
+# Extrapolate to infinite system size
+function extrapolate(Ls, ys)
+    β = linfit(Ls .^ (-2), ys, weight=true)
+    return β[1]
+end
+
 checkeq(x) = y -> x .== y
 
 results = JobResult("../eta-jobs", "full-diagram")
-Ts = unique(results.data[:,:T])
-Jps = hcat([unique(df[:, :Jp]) for df in groupby(results.data, :Jz)]...)
-Jzs = collect(hcat([unique(results.data[:, :Jz]) for _ in 1:size(Jps, 1)]...)')
+vars = [:sk_corr_fm, :chik_corr_Γ, :chi2avg]
+# df_extrap = combine(
+#     groupby(results.data, [:Jz, :T]),
+#     [[:Lx, x] => extrapolate => x for x in vars]...,
+# )
+df_extrap = results.data
+Ts = unique(df_extrap[:,:T])
+Jps = hcat([unique(df[:, :Jp]) for df in groupby(df_extrap, :Jz)]...)
+Jzs = collect(hcat([unique(df_extrap[:, :Jz]) for _ in 1:size(Jps, 1)]...)')
 coords = vec(collect(Iterators.zip(Jps, Jzs)))
 
 bresults = JobResult("../eta-jobs", "full-diagram-broad")
@@ -69,10 +91,10 @@ rowgap!(subf, 5)
 
 cols = 3
 subf = fig[1,2] = GridLayout()
-df = results.data
-allchis = getfield.(real.(df[:, :chik_corr_Γ] - df[:, :chi2avg]) ./ df[:,:Lx].^2, :val)
-minchi = round(minimum(allchis), sigdigits=1)
-maxchi = round(maximum(allchis), sigdigits=1)
+df = df_extrap
+# allchis = sqrt.(abs.(getfield.(df[:, :chik_corr_Γ] - df[:, :chi2avg], :val) ./ df[:,:Lx].^2))
+# minchi = round(minimum(allchis), sigdigits=1)
+# maxchi = round(maximum(allchis), sigdigits=1)
 for i in 1:3
     pos = [cld(i, cols), mod1(i, cols)]
     T = Ts[i]
@@ -99,17 +121,18 @@ for i in 1:3
     )
 
     eq = setX -> (x -> x .≈ setX)
-    local df = subset(results.data, :T => checkeq(Ts[i]))
+    local df = subset(df_extrap, :T => checkeq(Ts[i]))
     chis = broadcast((Jp, Jz) -> begin
-        df = subset(results.data, :T => checkeq(Ts[i]), :Jz => checkeq(Jz), :Jp => checkeq(Jp))
-        return getfield(real(df[1, :chik_corr_Γ] - df[1, :chi2avg]), :val) * df[1,:Lx]^(-2)
+        df = subset(df_extrap, :T => checkeq(Ts[i]), :Jz => checkeq(Jz), :Jp => checkeq(Jp))
+        interchi = getfield(real(df[1, :chik_corr_Γ] - df[1, :chi2avg]), :val) * df[1,:Lx]^(-2)
+        return sqrt(abs(interchi))
     end, Jps, Jzs)
     fms = broadcast((Jp, Jz) -> begin
-        df = subset(results.data, :T => checkeq(Ts[i]), :Jz => checkeq(Jz), :Jp => checkeq(Jp))
+        df = subset(df_extrap, :T => checkeq(Ts[i]), :Jz => checkeq(Jz), :Jp => checkeq(Jp))
         return getfield(df[1, :sk_corr_fm], :val)
     end, Jps, Jzs)
 
-    hm1 = contourf!(ax1, Jps, Jzs, chis, levels=range(minchi, 0.001, 20))
+    hm1 = contourf!(ax1, Jps, Jzs, chis, levels=range(0, 0.0305, 20))
     hm2 = contourf!(ax2, Jps, Jzs, fms, levels=range(0, 1, 20))
     linesegments!(
         ax1, [(0,1), (1,1), (1,0), (1,1), (1,1), (1.75,2)],
@@ -128,7 +151,7 @@ for i in 1:3
             label=L"\tilde\chi",
             tellheight=false,
             halign=:left,
-            ticks=[0, 0.0005, 0.001],
+            ticks=[0, 0.01, 0.02, 0.03],
             ticksize=2, labelpadding=1,
             size = 8, height=0.3width
         )
