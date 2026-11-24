@@ -87,9 +87,10 @@ Legend(subf[2,1],
     tellwidth=true, tellheight=true,
     valign=:top,
 )
-rowsize!(subf, 2, 0.1width)
-rowgap!(subf, 5)
 Label(fig[1,1,TopLeft()], "(a)")
+rowsize!(subf, 1, Relative(0.9))
+colsize!(subf, 1, 0.5width)
+rowgap!(subf, 0)
 
 cols = 3
 subf = fig[1,2] = GridLayout()
@@ -120,7 +121,7 @@ for i in 1:3
         xlabelvisible=true, ylabelvisible=pos[2] == 2,
         yticksvisible=pos[2] == 1, yticklabelsvisible=pos[2] == 2,
         xlabelpadding=0, ylabelpadding=0,
-        xticks=[0,1,2], yticks=[1,2],
+        xticks=pos == [1,2] ? [0,1,2] : [1,2], yticks=[0,1,2],
         xticksize=2, yticksize=2,
     )
 
@@ -177,6 +178,6 @@ colsize!(subf, 1, 0.1pt)
 
 rowgap!(fig.layout, 5)
 colgap!(fig.layout, 5)
-colsize!(fig.layout, 1, Relative(0.3))
+colsize!(fig.layout, 1, Relative(0.32))
 save("eta-plots/main_fig.pdf", fig)
 fig
