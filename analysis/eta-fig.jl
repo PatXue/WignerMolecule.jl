@@ -4,6 +4,7 @@ Pkg.activate(@__DIR__)
 using CairoMakie
 using Carlo.ResultTools
 using CarloAnalysis
+import ColorSchemes.viridis
 using DataFrames
 using JLD2
 using LinearAlgebra
@@ -95,9 +96,10 @@ rowgap!(subf, 0)
 cols = 3
 subf = fig[1,2] = GridLayout()
 df = df_extrap
-# allchis = sqrt.(abs.(getfield.(df[:, :chik_corr_Γ] - df[:, :chi2avg], :val) ./ df[:,:Lx].^2))
-# minchi = round(minimum(allchis), sigdigits=1)
-# maxchi = round(maximum(allchis), sigdigits=1)
+allchis = sqrt.(abs.(getfield.(df[:, :chik_corr_Γ] - df[:, :chi2avg], :val) ./ df[:,:Lx].^2))
+minchi = round(minimum(allchis), sigdigits=1)
+maxchi = round(maximum(allchis), sigdigits=1)
+chirange = maxchi - minchi
 for i in 1:3
     pos = [cld(i, cols), mod1(i, cols)] + [0,1]
     T = Ts[i]
@@ -137,7 +139,7 @@ for i in 1:3
         return getfield(df[1, :sk_corr_fm], :val)
     end, Jps, Jzs)
 
-    hm1 = contourf!(ax1, Jps, Jzs, chis, levels=range(0, 0.0305, 20))
+    hm1 = contourf!(ax1, Jps, Jzs, chis, levels=range(minchi+0.15chirange, 0.031, 20), extendlow=:auto)
     hm2 = contourf!(ax2, Jps, Jzs, fms, levels=range(0, 1, 20))
     linesegments!(
         ax1, [(0,1), (1,1), (1,0), (1,1), (1,1), (1.75,2)],
@@ -153,12 +155,12 @@ for i in 1:3
     if i == cols
         Colorbar(
             subf[1, cols+2], hm1,
-            label=L"\tilde\chi",
+            label=L"|\tilde\chi|",
             tellheight=false,
             halign=:left,
             ticks=[0, 0.01, 0.02, 0.03],
             ticksize=2, labelpadding=1,
-            size = 8, height=0.3width
+            size = 8, height=0.35width
         )
         Colorbar(
             subf[2, cols+2], hm2,
@@ -166,7 +168,7 @@ for i in 1:3
             tellheight=false,
             halign=:left,
             ticksize=2, labelpadding=1,
-            size = 8, height=0.3width
+            size = 8, height=0.35width
         )
         rowgap!(subf, 5)
         colgap!(subf, 5)
