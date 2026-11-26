@@ -17,7 +17,7 @@ tm.fug = 1
 
 n = 20
 Ls = [72]
-inits = [:fm, :nematic, :nematic2, :zigzag]
+inits = [:fm, :nematic, :nematic2, :zigzag, :rand]
 Ts = [0.005, 0.01]
 for (T, init, L) in Iterators.product(Ts, inits, Ls)
     tm.Lx = tm.Ly = L
