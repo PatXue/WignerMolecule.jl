@@ -17,7 +17,7 @@ tm.binsize = 1000
 
 n = 20
 Ls = [72]
-Ts = [0.01, 0.02, 0.03, 0.06, 0.08, 0.11]
+Ts = [0.01, 0.02, 0.03, 0.06, 0.08, 0.11, 0.0075, 0.005, 0.0025]
 tm.betamus = range(-20, 20, n)
 for (L, T) in Iterators.product(Ls, Ts)
     tm.Lx = tm.Ly = L
